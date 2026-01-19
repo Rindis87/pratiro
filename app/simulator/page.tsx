@@ -2,8 +2,7 @@
 
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import Link from 'next/link';
-// Vi henter den sikre server-funksjonen. 
-// Denne kjører på baksiden slik at API-nøkkelen aldri vises i nettleseren.
+import { useRouter } from 'next/navigation'; // <--- Ny import for å kunne kaste ut brukere
 import { chatWithGemini } from '../actions';
 
 // --- IKONER ---
@@ -56,6 +55,8 @@ const Icons = {
 };
 
 export default function PratiroSimulator() {
+    const router = useRouter(); // <--- Ruter for å sende folk tilbake
+    const [isAuthorized, setIsAuthorized] = useState(false); // <--- Sjekk om lov til å se
     const [step, setStep] = useState(1); 
     const [age, setAge] = useState(8);
     const [gender, setGender] = useState("Gutt");
@@ -70,6 +71,19 @@ export default function PratiroSimulator() {
     const [isAnalyzing, setIsAnalyzing] = useState(false);
     
     const messagesEndRef = useRef<HTMLDivElement>(null);
+
+    // --- SIKKERHETSSJEKK ---
+    useEffect(() => {
+        // Sjekk om brukeren har "adgangskortet" i sessionStorage
+        const access = sessionStorage.getItem('pratiro_access');
+        if (access !== 'true') {
+            // Hvis ikke, send dem tilbake til forsiden
+            router.push('/');
+        } else {
+            // Hvis ja, vis innholdet
+            setIsAuthorized(true);
+        }
+    }, [router]);
 
     useEffect(() => {
         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -208,6 +222,11 @@ export default function PratiroSimulator() {
         setAnalysis(null);
         setStep(1);
     };
+
+    // Hvis ikke autorisert ennå, vis ingenting (eller en spinner) for å unngå "flash"
+    if (!isAuthorized) {
+        return <div className="min-h-screen bg-[#F0FDFA]"></div>;
+    }
 
     return (
         <main className="min-h-screen flex items-center justify-center p-4 bg-[#F0FDFA]">

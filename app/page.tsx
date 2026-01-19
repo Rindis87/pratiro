@@ -11,8 +11,9 @@ export default function LandingPage() {
 
     const handleLogin = (e: React.FormEvent) => {
         e.preventDefault();
-        // HER SETTER DU KODEN DIN:
         if (accessCode.toLowerCase() === 'pratiro2024') {
+            // VIKTIG: Vi lagrer adgangskortet i sessionStorage før vi går videre
+            sessionStorage.setItem('pratiro_access', 'true');
             router.push('/simulator');
         } else {
             setError(true);
