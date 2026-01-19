@@ -67,8 +67,17 @@ export default function PratiroSimulator() {
     const [input, setInput] = useState("");
     const [isTyping, setIsTyping] = useState(false);
     
-    const [analysis, setAnalysis] = useState<any>(null);
+interface Analysis {
+    mainFeedback: string;
+    strengths: string[];
+    improvements: string[];
+    childPerspective: string;
+    score: number;
+}
+
+    const [analysis, setAnalysis] = useState<Analysis | null>(null);
     const [isAnalyzing, setIsAnalyzing] = useState(false);
+    const [isStarting, setIsStarting] = useState(false);
     
     const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -126,8 +135,9 @@ export default function PratiroSimulator() {
     // START SIMULATION
     const startSimulation = async () => {
         const finalScenario = customScenario || scenario;
-        if (!finalScenario) return;
+        if (!finalScenario || isStarting) return;
 
+        setIsStarting(true);
         setStep(2);
         setMessages([
             { role: 'system', content: `Simulering startet: ${finalScenario} (${age} år, ${gender})` },
@@ -146,6 +156,7 @@ export default function PratiroSimulator() {
             setMessages(prev => [...prev, { role: 'ai', content: result.text }]);
         }
         setIsTyping(false);
+        setIsStarting(false);
     };
 
     // SEND MESSAGE
@@ -326,12 +337,12 @@ export default function PratiroSimulator() {
                             </div>
                         </div>
 
-                        <button 
+                        <button
                             onClick={startSimulation}
-                            disabled={(!scenario && !customScenario)}
+                            disabled={(!scenario && !customScenario) || isStarting}
                             className="w-full bg-slate-900 hover:bg-slate-800 disabled:opacity-50 disabled:cursor-not-allowed text-white text-lg font-bold py-4 rounded-xl shadow-xl shadow-slate-200 transition-all mt-2"
                         >
-                            Start Pratiro
+                            {isStarting ? 'Starter...' : 'Start Pratiro'}
                         </button>
                     </div>
                 )}
@@ -388,7 +399,7 @@ export default function PratiroSimulator() {
                                     type="text" 
                                     value={input}
                                     onChange={(e) => setInput(e.target.value)}
-                                    onKeyPress={(e) => e.key === 'Enter' && sendMessage()}
+                                    onKeyDown={(e) => e.key === 'Enter' && sendMessage()}
                                     placeholder="Skriv svaret ditt..."
                                     className="flex-1 bg-slate-50 border border-slate-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-teal-500 text-slate-900 placeholder-slate-400 font-sans"
                                     autoFocus
