@@ -2,9 +2,7 @@
 
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import Link from 'next/link';
-
-// --- KONFIGURASJON ---
-const API_KEY = process.env.NEXT_PUBLIC_GEMINI_API_KEY || ""; 
+import { chatWithGemini } from '../actions';
 
 // --- IKONER ---
 const Icons = {
@@ -55,41 +53,6 @@ const Icons = {
     )
 };
 
-// --- GEMINI API FUNKSJON ---
-const callGemini = async (prompt: string, systemInstruction: string = "") => {
-    if (!API_KEY) {
-        console.error("API-nøkkel mangler. Sjekk .env.local filen din.");
-        return "Systemfeil: API-nøkkel mangler.";
-    }
-    
-    try {
-        const response = await fetch(
-            `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${API_KEY}`,
-            {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    contents: [{ parts: [{ text: prompt }] }],
-                    systemInstruction: { parts: [{ text: systemInstruction }] },
-                }),
-            }
-        );
-
-        if (!response.ok) {
-            if (response.status === 429) {
-                throw new Error("RATE_LIMIT");
-            }
-            throw new Error(`API error: ${response.status}`);
-        }
-
-        const data = await response.json();
-        return data.candidates?.[0]?.content?.parts?.[0]?.text || "Ingen respons.";
-    } catch (error) {
-        console.error("Gemini Error:", error);
-        throw error;
-    }
-};
-
 export default function PratiroSimulator() {
     const [step, setStep] = useState(1); 
     const [age, setAge] = useState(8);
@@ -110,7 +73,6 @@ export default function PratiroSimulator() {
         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
     }, [messages, isTyping]);
 
-    // --- DYNAMIC SCENARIOS ---
     const currentScenarios = useMemo(() => {
         const ageNum = Number(age);
         if (ageNum >= 3 && ageNum <= 5) {
@@ -144,7 +106,6 @@ export default function PratiroSimulator() {
         }
     }, [age, gender]);
 
-    // START SIMULATION
     const startSimulation = async () => {
         const finalScenario = customScenario || scenario;
         if (!finalScenario) return;
@@ -158,19 +119,16 @@ export default function PratiroSimulator() {
         const prompt = `Start rollespillet. Du er et barn på ${age} år (${gender}). Situasjonen er: "${finalScenario}". Du starter samtalen/konflikten med en replikk som passer din alder og situasjonen. Vær vanskelig eller emosjonell. Svar på norsk.`;
         const systemPrompt = `Du er en rollespill-bot som spiller et barn på ${age} år (${gender}). Oppfør deg realistisk utfra alder. Ikke gi deg med en gang.`;
 
-        try {
-            const initialResponse = await callGemini(prompt, systemPrompt);
-            setMessages(prev => [...prev, { role: 'ai', content: initialResponse }]);
-        } catch (e: any) {
-            const msg = e.message === "RATE_LIMIT" 
-                ? "(Pratiro trenger en liten tenkepause. Vent 1 minutt og prøv igjen.)" 
-                : "Noe gikk galt med oppstarten. Prøv igjen.";
-            setMessages(prev => [...prev, { role: 'ai', content: msg }]);
+        const result = await chatWithGemini(prompt, systemPrompt);
+
+        if (result.error) {
+            setMessages(prev => [...prev, { role: 'ai', content: result.error === "RATE_LIMIT" ? "Pratiro trenger en liten tenkepause. Vent 1 minutt og prøv igjen." : result.error }]);
+        } else {
+            setMessages(prev => [...prev, { role: 'ai', content: result.text }]);
         }
         setIsTyping(false);
     };
 
-    // SEND MESSAGE
     const sendMessage = async () => {
         if (!input.trim()) return;
         
@@ -186,19 +144,16 @@ export default function PratiroSimulator() {
         const prompt = `Her er samtalen så langt:\n${historyText}\n\nForelderen sa akkurat det siste over. Svar som barnet (${age} år). Hold deg i karakter. Vær kort (1-3 setninger).`;
         const systemPrompt = `Du er et barn på ${age} år. Fortsett konflikten/samtalen naturlig. Reager på det forelderen sier.`;
 
-        try {
-            const response = await callGemini(prompt, systemPrompt);
-            setMessages(prev => [...prev, { role: 'ai', content: response }]);
-        } catch (e: any) {
-             const msg = e.message === "RATE_LIMIT" 
-                ? "(Puh! Hjernen min er overbelastet. Vent 1 minutt...)" 
-                : "Noe gikk galt. Prøv igjen.";
-            setMessages(prev => [...prev, { role: 'ai', content: msg }]);
+        const result = await chatWithGemini(prompt, systemPrompt);
+
+        if (result.error) {
+            setMessages(prev => [...prev, { role: 'ai', content: result.error === "RATE_LIMIT" ? "Vent 1 minutt..." : "Feil." }]);
+        } else {
+            setMessages(prev => [...prev, { role: 'ai', content: result.text }]);
         }
         setIsTyping(false);
     };
 
-    // ANALYZE
     const runAnalysis = async () => {
         setIsAnalyzing(true);
         setStep(3);
@@ -225,18 +180,15 @@ export default function PratiroSimulator() {
         }
         Svar på norsk.`;
 
-        try {
-            const raw = await callGemini(prompt);
-            const json = JSON.parse(raw.replace(/```json/g, '').replace(/```/g, ''));
-            setAnalysis(json);
-        } catch (e: any) {
-            if (e.message === "RATE_LIMIT") {
-                setAnalysis({
-                    mainFeedback: "Pratiro trenger en pause. Prøv igjen om 1 minutt.",
-                    strengths: [], improvements: [], score: 0, childPerspective: ""
-                });
-            } else {
-                setAnalysis({ mainFeedback: "Kunne ikke generere analyse.", strengths: [], improvements: [], score: 5, childPerspective: "" });
+        const result = await chatWithGemini(prompt, "Du er ekspert i barnepsykologi.");
+
+        if (result.error) {
+            setAnalysis({ mainFeedback: "Feil ved analyse.", strengths: [], improvements: [], score: 0, childPerspective: "" });
+        } else {
+            try {
+                setAnalysis(JSON.parse(result.text.replace(/```json/g, '').replace(/```/g, '')));
+            } catch {
+                setAnalysis({ mainFeedback: "Kunne ikke lese analysen.", strengths: [], improvements: [], score: 0, childPerspective: "" });
             }
         }
         setIsAnalyzing(false);
@@ -255,9 +207,7 @@ export default function PratiroSimulator() {
                 {/* Header - BRANDED */}
                 <div className="bg-teal-500 p-6 flex justify-between items-center text-white">
                     <div className="flex items-center gap-3 cursor-default">
-                        <Link href="/" className="bg-white/20 p-2 rounded-xl text-white hover:bg-white/30 transition">
-                            <Icons.Logo />
-                        </Link>
+                        <Link href="/" className="bg-white/20 p-2 rounded-xl text-white hover:bg-white/30 transition"><Icons.Logo /></Link>
                         <div>
                             <h1 className="text-3xl font-bold tracking-tight font-serif">Pratiro</h1>
                             <p className="text-teal-100 text-xs font-medium uppercase tracking-wider opacity-90">Simulatoren</p>
@@ -381,10 +331,10 @@ export default function PratiroSimulator() {
                                         }`}>
                                             {msg.role === 'user' ? <Icons.User /> : <Icons.Child />}
                                         </div>
-                                        <div className={`p-4 shadow-sm text-sm leading-relaxed ${
+                                        <div className={`p-4 shadow-sm text-[15px] leading-relaxed font-sans font-medium ${
                                             msg.role === 'user' 
                                                 ? 'bg-slate-800 text-white rounded-l-2xl rounded-tr-2xl bubble-user' 
-                                                : 'bg-white text-slate-800 border border-slate-200 rounded-r-2xl rounded-bl-2xl bubble-ai'
+                                                : 'bg-white text-slate-700 border border-slate-200 rounded-r-2xl rounded-bl-2xl bubble-ai'
                                         }`}>
                                             {msg.content}
                                         </div>
@@ -412,7 +362,7 @@ export default function PratiroSimulator() {
                                     onChange={(e) => setInput(e.target.value)}
                                     onKeyPress={(e) => e.key === 'Enter' && sendMessage()}
                                     placeholder="Skriv svaret ditt..."
-                                    className="flex-1 bg-slate-50 border border-slate-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-teal-500 text-slate-900 placeholder-slate-400"
+                                    className="flex-1 bg-slate-50 border border-slate-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-teal-500 text-slate-900 placeholder-slate-400 font-sans"
                                     autoFocus
                                 />
                                 <button 
@@ -423,12 +373,14 @@ export default function PratiroSimulator() {
                                     <Icons.Send />
                                 </button>
                             </div>
+                            
+                            {/* NEW ANALYSIS BUTTON STYLE */}
                             <button 
                                 onClick={runAnalysis}
-                                className="text-xs font-semibold text-slate-500 hover:text-teal-600 flex items-center justify-center gap-2 py-2 border-t border-slate-100 mt-1"
+                                className="w-full bg-teal-50 hover:bg-teal-100 text-teal-700 font-medium py-3 rounded-xl flex items-center justify-center gap-2 transition-colors mt-2 border border-teal-100"
                             >
                                 <Icons.Brain />
-                                Få veiledning av Pratiro
+                                Avslutt og få veiledning
                             </button>
                         </div>
                     </div>
