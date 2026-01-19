@@ -2,6 +2,8 @@
 
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import Link from 'next/link';
+// Vi henter den sikre server-funksjonen. 
+// Denne kjører på baksiden slik at API-nøkkelen aldri vises i nettleseren.
 import { chatWithGemini } from '../actions';
 
 // --- IKONER ---
@@ -73,6 +75,7 @@ export default function PratiroSimulator() {
         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
     }, [messages, isTyping]);
 
+    // --- DYNAMIC SCENARIOS ---
     const currentScenarios = useMemo(() => {
         const ageNum = Number(age);
         if (ageNum >= 3 && ageNum <= 5) {
@@ -106,6 +109,7 @@ export default function PratiroSimulator() {
         }
     }, [age, gender]);
 
+    // START SIMULATION
     const startSimulation = async () => {
         const finalScenario = customScenario || scenario;
         if (!finalScenario) return;
@@ -119,6 +123,7 @@ export default function PratiroSimulator() {
         const prompt = `Start rollespillet. Du er et barn på ${age} år (${gender}). Situasjonen er: "${finalScenario}". Du starter samtalen/konflikten med en replikk som passer din alder og situasjonen. Vær vanskelig eller emosjonell. Svar på norsk.`;
         const systemPrompt = `Du er en rollespill-bot som spiller et barn på ${age} år (${gender}). Oppfør deg realistisk utfra alder. Ikke gi deg med en gang.`;
 
+        // Kaller server-funksjonen (action) i stedet for fetch direkte
         const result = await chatWithGemini(prompt, systemPrompt);
 
         if (result.error) {
@@ -129,6 +134,7 @@ export default function PratiroSimulator() {
         setIsTyping(false);
     };
 
+    // SEND MESSAGE
     const sendMessage = async () => {
         if (!input.trim()) return;
         
@@ -144,6 +150,7 @@ export default function PratiroSimulator() {
         const prompt = `Her er samtalen så langt:\n${historyText}\n\nForelderen sa akkurat det siste over. Svar som barnet (${age} år). Hold deg i karakter. Vær kort (1-3 setninger).`;
         const systemPrompt = `Du er et barn på ${age} år. Fortsett konflikten/samtalen naturlig. Reager på det forelderen sier.`;
 
+        // Kaller server-funksjonen
         const result = await chatWithGemini(prompt, systemPrompt);
 
         if (result.error) {
@@ -154,6 +161,7 @@ export default function PratiroSimulator() {
         setIsTyping(false);
     };
 
+    // ANALYZE
     const runAnalysis = async () => {
         setIsAnalyzing(true);
         setStep(3);
@@ -180,6 +188,7 @@ export default function PratiroSimulator() {
         }
         Svar på norsk.`;
 
+        // Kaller server-funksjonen
         const result = await chatWithGemini(prompt, "Du er ekspert i barnepsykologi.");
 
         if (result.error) {
