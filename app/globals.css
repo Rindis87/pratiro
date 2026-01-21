@@ -3,17 +3,122 @@
 @tailwind utilities;
 
 :root {
-  --foreground-rgb: 15, 23, 42;
-  --background-start-rgb: 240, 253, 250;
+  /* Pratiro Design System Colors */
+  --forest: #2D4A3E;
+  --forest-light: #3D6B5A;
+  --ocean: #4A6B7C;
+  --ocean-light: #6B8FA3;
+  --sand: #F5F1EB;
+  --sand-dark: #E8E2D9;
+  --mist: #F9F8F6;
+  --bark: #5C4D3C;
+  --stone: #8B8578;
+  --text: #2C2C2C;
+  --text-soft: #5A5A5A;
+
+  /* Legacy RGB variables for compatibility */
+  --foreground-rgb: 44, 44, 44;
+  --background-start-rgb: 249, 248, 246;
   --background-end-rgb: 255, 255, 255;
+
+  /* Border radius */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --radius-2xl: 32px;
+  --radius-full: 9999px;
+
+  /* Shadows */
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.04);
+  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.08);
+  --shadow-xl: 0 16px 48px rgba(0, 0, 0, 0.10);
 }
 
 body {
   color: rgb(var(--foreground-rgb));
-  background: #F0FDFA; /* Dette er den lyse "Teal" bakgrunnsfargen */
+  background: var(--mist);
+  font-family: var(--font-dm-sans), -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
-/* Dette gjør at overskrifter får den fine, runde fonten */
+/* Headings use DM Serif Display */
 h1, h2, h3, h4, h5, h6 {
-  font-family: var(--font-fredoka), sans-serif;
+  font-family: var(--font-dm-serif), Georgia, serif;
+}
+
+/* Pratiro utility classes */
+.bg-forest { background-color: var(--forest); }
+.bg-forest-light { background-color: var(--forest-light); }
+.bg-ocean { background-color: var(--ocean); }
+.bg-sand { background-color: var(--sand); }
+.bg-mist { background-color: var(--mist); }
+.bg-bark { background-color: var(--bark); }
+
+.text-forest { color: var(--forest); }
+.text-forest-light { color: var(--forest-light); }
+.text-ocean { color: var(--ocean); }
+.text-sand { color: var(--sand); }
+.text-stone { color: var(--stone); }
+.text-bark { color: var(--bark); }
+
+.border-forest { border-color: var(--forest); }
+.border-forest-light { border-color: var(--forest-light); }
+
+/* Card hover animation */
+.card-hover {
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+}
+
+.card-hover:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.10);
+}
+
+/* Top border animation for cards */
+.card-top-border::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: var(--forest);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.25s ease;
+}
+
+.card-top-border:hover::before {
+  transform: scaleX(1);
+}
+
+/* Fade in animation */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.fade-in {
+  animation: fadeIn 0.4s ease-out forwards;
+}
+
+/* Scroll indicator animation */
+@keyframes float {
+  0%, 100% { transform: translateX(-50%) translateY(0); }
+  50% { transform: translateX(-50%) translateY(10px); }
+}
+
+.scroll-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+/* Reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+  .scroll-float,
+  .card-hover,
+  .card-top-border::before {
+    animation: none;
+    transition: none;
+  }
 }
