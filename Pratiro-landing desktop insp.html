@@ -1,0 +1,867 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pratiro – Prat i ro (Desktop Landing v2)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --forest: #2D4A3E;
+      --forest-light: #3D6B5A;
+      --ocean: #4A6B7C;
+      --ocean-light: #6B8FA3;
+      --sand: #F5F1EB;
+      --sand-dark: #E8E2D9;
+      --mist: #F9F8F6;
+      --text: #252825;
+      --text-soft: #4F5752; /* litt mørkere enn original for bedre kontrast */
+      --stone: #7D786D;
+      --bark: #5C4D3C;
+
+      --radius-xl: 28px;
+      --radius-lg: 22px;
+      --radius-md: 16px;
+      --radius-sm: 12px;
+      --shadow-sm: 0 6px 18px rgba(0,0,0,0.06);
+      --shadow-md: 0 16px 50px rgba(0,0,0,0.10);
+
+      --focus: rgba(74, 107, 124, 0.30);
+      --max: 1200px;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: var(--mist);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    a { color: inherit; }
+
+    /* Accessibility */
+    :focus-visible {
+      outline: 3px solid var(--focus);
+      outline-offset: 3px;
+      border-radius: 10px;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { scroll-behavior: auto !important; animation: none !important; transition: none !important; }
+    }
+
+    /* Top navigation */
+    .topnav {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      border-bottom: 1px solid rgba(0,0,0,0.06);
+      background: rgba(249, 248, 246, 0.75);
+      backdrop-filter: blur(10px);
+    }
+    .topnav-inner {
+      max-width: var(--max);
+      margin: 0 auto;
+      padding: 12px 18px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+    }
+    .brand .name {
+      font-family: 'DM Serif Display', Georgia, serif;
+      font-size: 1.35rem;
+      color: var(--forest);
+      letter-spacing: -0.01em;
+    }
+    .brand .pause {
+      display: inline-flex;
+      gap: 3px;
+      transform: translateY(1px);
+    }
+    .brand .pause span {
+      width: 5px;
+      height: 16px;
+      background: var(--forest);
+      border-radius: 3px;
+    }
+
+    .navlinks {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex: 1;
+      justify-content: center;
+    }
+    .navlinks a {
+      text-decoration: none;
+      font-size: 0.95rem;
+      color: var(--text-soft);
+      padding: 8px 10px;
+      border-radius: 999px;
+    }
+    .navlinks a:hover {
+      background: rgba(45, 74, 62, 0.06);
+      color: var(--forest);
+    }
+
+    .navactions {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 10px 14px;
+      border-radius: 999px;
+      border: 1px solid rgba(0,0,0,0.10);
+      background: white;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.95rem;
+      color: var(--forest);
+      box-shadow: var(--shadow-sm);
+      transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+    }
+    .btn:hover { transform: translateY(-1px); box-shadow: 0 10px 24px rgba(0,0,0,0.10); }
+    .btn.primary {
+      border-color: rgba(255,255,255,0.22);
+      background: var(--forest);
+      color: white;
+      box-shadow: 0 10px 28px rgba(45, 74, 62, 0.22);
+    }
+    .btn.primary:hover { background: var(--forest-light); }
+
+    @media (max-width: 860px) {
+      .navlinks { display: none; }
+    }
+
+    /* Hero */
+    .hero {
+      padding: 3.5rem 1.25rem 3rem;
+      background: linear-gradient(180deg, var(--mist) 0%, var(--sand) 55%, var(--sand-dark) 100%);
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse at 20% 80%, rgba(45, 74, 62, 0.06) 0%, transparent 55%),
+        radial-gradient(ellipse at 80% 20%, rgba(74, 107, 124, 0.06) 0%, transparent 55%);
+      pointer-events: none;
+    }
+
+    .hero-inner {
+      position: relative;
+      max-width: var(--max);
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 2.5rem;
+      align-items: center;
+    }
+    @media (max-width: 980px) {
+      .hero-inner { grid-template-columns: 1fr; gap: 1.75rem; }
+    }
+
+    .hero-title {
+      font-family: 'DM Serif Display', Georgia, serif;
+      font-size: clamp(2.8rem, 6vw, 4.6rem);
+      font-weight: 400;
+      color: var(--forest);
+      letter-spacing: -0.02em;
+      margin-bottom: 0.35rem;
+    }
+    .tagline {
+      font-size: 1.05rem;
+      color: var(--stone);
+      font-weight: 500;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      margin-bottom: 1.25rem;
+    }
+    .hero-description {
+      max-width: 62ch;
+      font-size: 1.08rem;
+      color: var(--text-soft);
+      font-weight: 350;
+      margin-bottom: 1.5rem;
+    }
+
+    .cta-row {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      align-items: center;
+      margin-bottom: 1.25rem;
+    }
+
+    .proof {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center;
+      margin-top: 0.2rem;
+      color: var(--text-soft);
+      font-size: 0.92rem;
+    }
+    .proof .pill {
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.70);
+      border: 1px solid rgba(0,0,0,0.06);
+    }
+
+    /* Desktop product preview (simple mock) */
+    .preview {
+      background: rgba(255,255,255,0.75);
+      border: 1px solid rgba(0,0,0,0.06);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow-md);
+      overflow: hidden;
+    }
+    .preview-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 12px 14px;
+      background: linear-gradient(135deg, rgba(45,74,62,0.96) 0%, rgba(74,107,124,0.78) 100%);
+      color: #fff;
+    }
+    .preview-top .mini {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+    .preview-top .mini .mini-name { font-family: 'DM Serif Display', Georgia, serif; font-size: 1.1rem; }
+    .preview-top .mini .mini-pause { display: flex; gap: 2px; }
+    .preview-top .mini .mini-pause span { width: 4px; height: 14px; background: #fff; border-radius: 2px; }
+    .preview-top .meta { font-size: 0.85rem; opacity: 0.92; }
+
+    .preview-body {
+      display: grid;
+      grid-template-columns: 180px 1fr;
+      min-height: 360px;
+      background: #f7f9f8;
+    }
+    .preview-nav {
+      border-right: 1px solid rgba(0,0,0,0.06);
+      padding: 12px;
+      background: linear-gradient(180deg, rgba(245,241,235,0.55) 0%, rgba(249,248,246,1) 100%);
+      display: grid;
+      gap: 8px;
+    }
+    .pnav {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      padding: 10px 10px;
+      border-radius: 14px;
+      border: 1px solid rgba(0,0,0,0.06);
+      background: #fff;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--text);
+    }
+    .pnav.active {
+      border-color: rgba(45,74,62,0.22);
+      background: rgba(45,74,62,0.08);
+      color: var(--forest);
+    }
+    .pnav small { font-weight: 500; color: var(--text-soft); }
+
+    .preview-main {
+      padding: 14px;
+      display: grid;
+      gap: 10px;
+    }
+    .pm-hero {
+      background: linear-gradient(135deg, rgba(45,74,62,0.10) 0%, rgba(74,107,124,0.08) 75%, #fff 100%);
+      border: 1px solid rgba(0,0,0,0.06);
+      border-radius: 18px;
+      padding: 12px;
+    }
+    .pm-hero h3 {
+      font-family: 'DM Serif Display', Georgia, serif;
+      font-size: 1.35rem;
+      color: var(--forest);
+      margin-bottom: 4px;
+      font-weight: 400;
+    }
+    .pm-hero p { font-size: 0.92rem; color: var(--text-soft); }
+
+    .chat {
+      display: grid;
+      gap: 8px;
+    }
+    .bubble {
+      max-width: 85%;
+      padding: 10px 11px;
+      border-radius: 16px;
+      border: 1px solid rgba(0,0,0,0.06);
+      background: #fff;
+      font-size: 0.92rem;
+    }
+    .bubble.user {
+      margin-left: auto;
+      background: rgba(45,74,62,0.08);
+      border-color: rgba(45,74,62,0.14);
+    }
+    .inputrow {
+      display: flex;
+      gap: 10px;
+      margin-top: 4px;
+      align-items: center;
+    }
+    .inputrow input {
+      flex: 1;
+      padding: 10px 10px;
+      border-radius: 14px;
+      border: 1px solid rgba(0,0,0,0.12);
+      font-size: 0.92rem;
+      background: #fff;
+    }
+
+    /* Scroll indicator */
+    .scroll-indicator {
+      display: flex;
+      justify-content: center;
+      margin-top: 2.5rem;
+      opacity: 0.9;
+      animation: float 3s ease-in-out infinite;
+    }
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(10px); }
+    }
+    .scroll-indicator svg { width: 22px; height: 22px; color: var(--stone); }
+
+    /* Sections */
+    .section {
+      padding: 5rem 1.25rem;
+      background: white;
+    }
+    .section.alt { background: var(--sand); }
+
+    .section-inner {
+      max-width: var(--max);
+      margin: 0 auto;
+    }
+
+    .section-header {
+      text-align: center;
+      max-width: 760px;
+      margin: 0 auto 3.25rem;
+    }
+    .section-header h2 {
+      font-family: 'DM Serif Display', Georgia, serif;
+      font-size: clamp(2rem, 4vw, 2.8rem);
+      color: var(--forest);
+      margin-bottom: 0.8rem;
+      font-weight: 400;
+    }
+    .section-header p {
+      color: var(--text-soft);
+      font-size: 1.08rem;
+      font-weight: 350;
+    }
+
+    /* Categories */
+    .categories-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1.6rem;
+    }
+
+    .category-card {
+      display: block;
+      text-decoration: none;
+      background: var(--mist);
+      border-radius: 24px;
+      padding: 2.25rem;
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
+      position: relative;
+      overflow: hidden;
+      border: 1px solid rgba(0,0,0,0.06);
+    }
+    .category-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.25s ease;
+      background: var(--forest);
+    }
+    .category-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08);
+    }
+    .category-card:hover::before {
+      transform: scaleX(1);
+    }
+
+    .category-card:nth-child(1) { --accent: var(--forest); }
+    .category-card:nth-child(2) { --accent: var(--ocean); }
+    .category-card:nth-child(3) { --accent: var(--bark); }
+    .category-card:nth-child(4) { --accent: var(--forest-light); }
+    .category-card:nth-child(1)::before { background: var(--forest); }
+    .category-card:nth-child(2)::before { background: var(--ocean); }
+    .category-card:nth-child(3)::before { background: var(--bark); }
+    .category-card:nth-child(4)::before { background: var(--forest-light); }
+
+    .category-icon {
+      width: 56px;
+      height: 56px;
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1.3rem;
+      background: white;
+      box-shadow: var(--shadow-sm);
+    }
+    .category-icon svg {
+      width: 28px;
+      height: 28px;
+      color: var(--accent);
+    }
+    .category-card h3 {
+      font-family: 'DM Serif Display', Georgia, serif;
+      font-size: 1.55rem;
+      color: var(--text);
+      margin-bottom: 0.65rem;
+      font-weight: 400;
+    }
+    .category-card p {
+      color: var(--text-soft);
+      font-size: 0.98rem;
+      line-height: 1.7;
+      margin-bottom: 1.25rem;
+    }
+    .tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 1.2rem;
+    }
+    .tag {
+      background: white;
+      padding: 0.35rem 0.8rem;
+      border-radius: 999px;
+      font-size: 0.8rem;
+      color: var(--stone);
+      border: 1px solid rgba(0,0,0,0.06);
+    }
+
+    .card-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 650;
+      color: var(--forest);
+      font-size: 0.95rem;
+    }
+    .card-cta svg { width: 18px; height: 18px; }
+
+    /* How it works */
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(220px, 1fr));
+      gap: 2.2rem;
+      max-width: 1040px;
+      margin: 0 auto;
+    }
+    @media (max-width: 920px) {
+      .steps { grid-template-columns: 1fr; }
+    }
+    .step {
+      text-align: center;
+      padding: 0.4rem;
+    }
+    .step-number {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      background: var(--forest);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'DM Serif Display', Georgia, serif;
+      font-size: 1.2rem;
+      margin: 0 auto 1.2rem;
+    }
+    .step h3 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 0.4rem;
+    }
+    .step p { color: var(--text-soft); font-size: 0.95rem; }
+
+    /* B2B note */
+    .split {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.6rem;
+      margin-top: 2.2rem;
+    }
+    @media (max-width: 920px) { .split { grid-template-columns: 1fr; } }
+    .note {
+      background: rgba(255,255,255,0.65);
+      border: 1px solid rgba(0,0,0,0.06);
+      border-radius: 20px;
+      padding: 1.4rem;
+      box-shadow: var(--shadow-sm);
+    }
+    .note h3 {
+      font-family: 'DM Serif Display', Georgia, serif;
+      font-size: 1.5rem;
+      font-weight: 400;
+      color: var(--forest);
+      margin-bottom: 0.5rem;
+    }
+    .note p { color: var(--text-soft); }
+
+    /* Footer */
+    footer {
+      padding: 4rem 1.25rem;
+      background: var(--forest);
+      color: white;
+      text-align: center;
+    }
+    footer .footer-logo {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.6rem;
+      margin-bottom: 0.6rem;
+    }
+    footer .footer-logo .logo-text {
+      font-family: 'DM Serif Display', Georgia, serif;
+      font-size: 1.8rem;
+    }
+    footer .footer-tagline {
+      color: rgba(255,255,255,0.65);
+      font-size: 1rem;
+      margin-bottom: 2rem;
+    }
+    footer p {
+      color: rgba(255,255,255,0.45);
+      font-size: 0.9rem;
+    }
+
+    /* Nature decoration */
+    .nature-decoration {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 200px;
+      pointer-events: none;
+      opacity: 0.03;
+      background: url("data:image/svg+xml,%3Csvg viewBox='0 0 1200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 200 Q300 100 600 150 T1200 100 L1200 200 Z' fill='%232D4A3E'/%3E%3C/svg%3E") no-repeat bottom center;
+      background-size: cover;
+    }
+  </style>
+</head>
+<body>
+  <!-- Top navigation -->
+  <nav class="topnav" aria-label="Hovednavigasjon">
+    <div class="topnav-inner">
+      <a class="brand" href="#top" aria-label="Til toppen">
+        <span class="name">Pratiro</span>
+        <span class="pause" aria-hidden="true"><span></span><span></span></span>
+      </a>
+
+      <div class="navlinks" aria-label="Seksjoner">
+        <a href="#kategorier">Arenaer</a>
+        <a href="#slik">Slik fungerer det</a>
+        <a href="#for-jobben">For jobben</a>
+      </div>
+
+      <div class="navactions">
+        <a class="btn" href="#kategorier">Se eksempler</a>
+        <a class="btn primary" href="/app">Kom i gang</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <section class="hero" id="top">
+    <div class="hero-inner">
+      <div>
+        <h1 class="hero-title">Pratiro</h1>
+        <p class="tagline">Prat i ro</p>
+        <p class="hero-description">
+          Øv på samtaler du gruer deg til – eller gleder deg til.
+          Pratiro gir deg en trygg AI-samtalepartner som hjelper deg å finne de rette ordene, i ditt tempo.
+        </p>
+
+        <div class="cta-row">
+          <a class="btn primary" href="/app" aria-label="Start Pratiro">Start øving nå
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M5 12h14" />
+              <path d="M12 5l7 7-7 7" />
+            </svg>
+          </a>
+          <a class="btn" href="#kategorier" aria-label="Se arenaer">Velg arena</a>
+        </div>
+
+        <div class="proof" aria-label="Korte budskap">
+          <span class="pill">Trygt</span>
+          <span class="pill">Praktisk</span>
+          <span class="pill">For familie, skole og arbeidsliv</span>
+          <span class="pill">Laget i Norge</span>
+        </div>
+
+        <div class="scroll-indicator" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 5v14" />
+            <path d="M19 12l-7 7-7-7" />
+          </svg>
+        </div>
+      </div>
+
+      <!-- Desktop preview / mock -->
+      <aside class="preview" aria-label="Produktforhåndsvisning">
+        <div class="preview-top">
+          <div class="mini">
+            <div class="mini-pause" aria-hidden="true"><span></span><span></span></div>
+            <div class="mini-name">Pratiro</div>
+          </div>
+          <div class="meta">Desktop-øving</div>
+        </div>
+        <div class="preview-body">
+          <div class="preview-nav" aria-label="Navigasjon">
+            <div class="pnav active">Øv samtale<br><small>AI-rolle + scenario</small></div>
+            <div class="pnav">Pause<br><small>1–3 minutter</small></div>
+            <div class="pnav">Bibliotek<br><small>temaer og maler</small></div>
+          </div>
+          <div class="preview-main" aria-label="Samtale">
+            <div class="pm-hero">
+              <h3>Scenario: krevende beskjed</h3>
+              <p>Velg tone, mål og nivå. Få forslag mens du øver.</p>
+            </div>
+            <div class="chat">
+              <div class="bubble"><strong>AI:</strong> Hei. Hva ønsker du å øve på?</div>
+              <div class="bubble user"><strong>Du:</strong> Jeg må gi en vanskelig tilbakemelding, men vil være tydelig og respektfull.</div>
+              <div class="bubble"><strong>AI:</strong> Flott. Hva er ett konkret eksempel du vil ta opp?</div>
+            </div>
+            <div class="inputrow">
+              <input type="text" value="Jeg kan starte med: 'Jeg ønsker å være tydelig fordi…'" aria-label="Skriv" />
+              <a class="btn primary" href="/app" style="padding:10px 12px; text-decoration:none;">Send</a>
+            </div>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <!-- Categories -->
+  <section class="section" id="kategorier">
+    <div class="section-inner">
+      <div class="section-header">
+        <h2>Velg din arena</h2>
+        <p>Hver samtale er unik. Velg situasjonen du vil øve på, og få tilpasset veiledning underveis.</p>
+      </div>
+
+      <div class="categories-grid">
+        <!-- Familie -->
+        <a class="category-card" href="/app?arena=familie" aria-label="Velg arena: Familie">
+          <div class="category-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+              <circle cx="9" cy="7" r="4"/>
+              <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+              <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+            </svg>
+          </div>
+          <h3>Familie</h3>
+          <p>Øv på viktige samtaler hjemme. Fra grensesetting til vanskelige følelser og store spørsmål.</p>
+          <div class="tags" aria-label="Eksempler">
+            <span class="tag">Skjermtid</span>
+            <span class="tag">Følelser</span>
+            <span class="tag">Mobbing</span>
+            <span class="tag">Grenser</span>
+          </div>
+          <span class="card-cta">Øv nå
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M5 12h14" /><path d="M12 5l7 7-7 7" />
+            </svg>
+          </span>
+        </a>
+
+        <!-- Arbeidsliv -->
+        <a class="category-card" href="/app?arena=arbeidsliv" aria-label="Velg arena: Arbeidsliv">
+          <div class="category-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/>
+              <line x1="8" y1="21" x2="16" y2="21"/>
+              <line x1="12" y1="17" x2="12" y2="21"/>
+            </svg>
+          </div>
+          <h3>Arbeidsliv</h3>
+          <p>Tren på god samtaleteknikk i jobbsituasjoner: feedback, forventningsavklaring og krevende samtaler.</p>
+          <div class="tags" aria-label="Eksempler">
+            <span class="tag">Feedback</span>
+            <span class="tag">Konflikt</span>
+            <span class="tag">Medarbeider</span>
+            <span class="tag">Sykefravær</span>
+          </div>
+          <span class="card-cta">Øv nå
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M5 12h14" /><path d="M12 5l7 7-7 7" />
+            </svg>
+          </span>
+        </a>
+
+        <!-- Jobbintervju -->
+        <a class="category-card" href="/app?arena=intervju" aria-label="Velg arena: Jobbintervju">
+          <div class="category-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+              <polyline points="22 4 12 14.01 9 11.01"/>
+            </svg>
+          </div>
+          <h3>Jobbintervju</h3>
+          <p>Øv på spørsmål og få konkrete forbedringspunkter. Trygghet, struktur og god formidling.</p>
+          <div class="tags" aria-label="Eksempler">
+            <span class="tag">Fortell om deg selv</span>
+            <span class="tag">Styrker</span>
+            <span class="tag">Svakheter</span>
+            <span class="tag">Lønn</span>
+          </div>
+          <span class="card-cta">Øv nå
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M5 12h14" /><path d="M12 5l7 7-7 7" />
+            </svg>
+          </span>
+        </a>
+
+        <!-- Skole/eksamen -->
+        <a class="category-card" href="/app?arena=eksamen" aria-label="Velg arena: Eksamen">
+          <div class="category-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M22 10v6"/>
+              <path d="M2 10l10-5 10 5-10 5z"/>
+              <path d="M6 12v5c0 2 2 3 6 3s6-1 6-3v-5"/>
+            </svg>
+          </div>
+          <h3>Eksamen</h3>
+          <p>Tren på muntlig med en tålmodig AI. Få oppfølgingsspørsmål og tren på å svare tydelig.</p>
+          <div class="tags" aria-label="Eksempler">
+            <span class="tag">Presentasjon</span>
+            <span class="tag">Oppfølging</span>
+            <span class="tag">Trygghet</span>
+            <span class="tag">Struktur</span>
+          </div>
+          <span class="card-cta">Øv nå
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M5 12h14" /><path d="M12 5l7 7-7 7" />
+            </svg>
+          </span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- How it works -->
+  <section class="section alt" id="slik">
+    <div class="section-inner">
+      <div class="section-header">
+        <h2>Slik fungerer det</h2>
+        <p>En enkel flyt som gjør det lett å komme i gang, og lett å bli bedre over tid.</p>
+      </div>
+
+      <div class="steps">
+        <div class="step">
+          <div class="step-number">1</div>
+          <h3>Velg scenario</h3>
+          <p>Velg arena eller beskriv situasjonen. Du kan også bruke en ferdig mal.</p>
+        </div>
+        <div class="step">
+          <div class="step-number">2</div>
+          <h3>Øv samtalen</h3>
+          <p>AI spiller motpart. Du kan be om forslag, struktur og pauser underveis.</p>
+        </div>
+        <div class="step">
+          <div class="step-number">3</div>
+          <h3>Få innsikt</h3>
+          <p>Oppsummering og konkrete setninger du kan bruke i den ekte samtalen.</p>
+        </div>
+      </div>
+
+      <div class="split" id="for-jobben">
+        <div class="note">
+          <h3>For deg</h3>
+          <p>Gjør det mindre skummelt å ta opp det som er vanskelig – ved å øve i trygge rammer før du møter den andre.</p>
+        </div>
+        <div class="note">
+          <h3>For jobben (B2B)</h3>
+          <p>Perfekt for trening på samtaleteknikk: tilbakemelding, forventningsavklaring, konflikter og utviklingssamtaler.</p>
+        </div>
+      </div>
+
+      <div style="text-align:center; margin-top:2rem;">
+        <a class="btn primary" href="/app">Start en øvelse</a>
+        <a class="btn" href="#kategorier" style="margin-left:10px;">Se arenaer</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-logo">
+      <span class="logo-text">Pratiro</span>
+      <span class="pause" aria-hidden="true" style="display:inline-flex; gap:3px;">
+        <span style="width:6px;height:20px;background:#fff;border-radius:3px;"></span>
+        <span style="width:6px;height:20px;background:#fff;border-radius:3px;"></span>
+      </span>
+    </div>
+    <p class="footer-tagline">Prat i ro – øv på samtaler som betyr noe</p>
+    <p>© 2026 Pratiro. Laget i Norge.</p>
+    <p style="margin-top:10px; opacity:0.9; font-size:12px;">Bygget som «desktop landing v2» basert på din eksisterende landingstruktur og stil. (Kilde: turn3search1)</p>
+  </footer>
+
+  <div class="nature-decoration" aria-hidden="true"></div>
+
+  <script>
+    // Smooth scrolling for internal anchors
+    (function(){
+      const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if(reduce) return;
+      document.querySelectorAll('a[href^="#"]').forEach(a=>{
+        a.addEventListener('click', (e)=>{
+          const id = a.getAttribute('href');
+          if(!id || id === '#') return;
+          const el = document.querySelector(id);
+          if(!el) return;
+          e.preventDefault();
+          el.scrollIntoView({behavior:'smooth', block:'start'});
+          history.pushState(null,'',id);
+        });
+      });
+    })();
+  </script>
+</body>
+</html>

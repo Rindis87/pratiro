@@ -1,0 +1,1573 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pratiro – Designprofil & Brainstorming</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@300;400;500;600&family=Fraunces:opsz,wght@9..144,400;9..144,600&family=Outfit:wght@300;400;500;600&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --forest: #2D4A3E;
+            --forest-light: #3D6B5A;
+            --ocean: #4A6B7C;
+            --ocean-deep: #2C4A5A;
+            --sand: #F5F1EB;
+            --sand-dark: #E8E2D9;
+            --stone: #8B8578;
+            --bark: #5C4D3C;
+            --mist: #F9F8F6;
+            --slate: #3A4A5C;
+            --warm-white: #FDFCFA;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #F5F5F5;
+            color: #2C2C2C;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 4rem;
+            padding: 3rem;
+            background: white;
+            border-radius: 24px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+        }
+
+        header h1 {
+            font-family: 'DM Serif Display', serif;
+            font-size: 2.5rem;
+            color: var(--forest);
+            margin-bottom: 0.5rem;
+        }
+
+        header p {
+            color: var(--stone);
+            font-size: 1.1rem;
+        }
+
+        .section {
+            background: white;
+            border-radius: 24px;
+            padding: 3rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+        }
+
+        .section-title {
+            font-family: 'DM Serif Display', serif;
+            font-size: 1.75rem;
+            color: var(--forest);
+            margin-bottom: 0.5rem;
+        }
+
+        .section-subtitle {
+            color: var(--stone);
+            margin-bottom: 2rem;
+            font-size: 0.95rem;
+        }
+
+        /* Logo Variants Grid */
+        .logo-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .logo-variant {
+            border: 2px solid #EAEAEA;
+            border-radius: 16px;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .logo-variant:hover {
+            border-color: var(--forest);
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.1);
+        }
+
+        .logo-variant.recommended {
+            border-color: var(--forest);
+            background: linear-gradient(135deg, rgba(45,74,62,0.03) 0%, rgba(255,255,255,1) 100%);
+        }
+
+        .logo-variant.recommended::after {
+            content: '★ Anbefalt';
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: var(--forest);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 100px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .variant-label {
+            font-weight: 600;
+            font-size: 0.8rem;
+            color: var(--stone);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 1.5rem;
+        }
+
+        .logo-display {
+            min-height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .logo-display.dark-bg {
+            background: var(--forest);
+            border-radius: 12px;
+            padding: 2rem;
+        }
+
+        .variant-description {
+            font-size: 0.9rem;
+            color: #666;
+            line-height: 1.6;
+        }
+
+        /* Individual logo styles */
+        .logo-1 {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+
+        .logo-1 .text {
+            font-family: 'DM Serif Display', serif;
+            font-size: 3rem;
+            color: var(--forest);
+        }
+
+        .logo-1 .pause {
+            display: flex;
+            gap: 4px;
+            margin-top: 8px;
+        }
+
+        .logo-1 .pause span {
+            width: 8px;
+            height: 32px;
+            background: var(--forest);
+            border-radius: 2px;
+        }
+
+        .logo-2 {
+            display: flex;
+            align-items: flex-end;
+            gap: 0.5rem;
+        }
+
+        .logo-2 .text {
+            font-family: 'DM Serif Display', serif;
+            font-size: 3rem;
+            color: var(--forest);
+            line-height: 1;
+        }
+
+        .logo-2 .pause {
+            display: flex;
+            gap: 3px;
+            margin-bottom: 6px;
+        }
+
+        .logo-2 .pause span {
+            width: 6px;
+            height: 24px;
+            background: var(--forest);
+            border-radius: 2px;
+        }
+
+        .logo-3 {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .logo-3 .pause {
+            display: flex;
+            gap: 6px;
+        }
+
+        .logo-3 .pause span {
+            width: 10px;
+            height: 36px;
+            background: var(--forest);
+            border-radius: 3px;
+        }
+
+        .logo-3 .text {
+            font-family: 'DM Serif Display', serif;
+            font-size: 2rem;
+            color: var(--forest);
+            letter-spacing: 0.15em;
+        }
+
+        .logo-4 {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo-4 .icon-circle {
+            width: 56px;
+            height: 56px;
+            border: 2px solid var(--forest);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+        }
+
+        .logo-4 .icon-circle span {
+            width: 6px;
+            height: 20px;
+            background: var(--forest);
+            border-radius: 2px;
+        }
+
+        .logo-4 .text {
+            font-family: 'DM Serif Display', serif;
+            font-size: 2.5rem;
+            color: var(--forest);
+        }
+
+        .logo-5 {
+            display: flex;
+            align-items: center;
+        }
+
+        .logo-5 .text {
+            font-family: 'Fraunces', serif;
+            font-size: 2.75rem;
+            color: var(--forest);
+            font-weight: 400;
+        }
+
+        .logo-5 .pause-integrated {
+            display: inline-flex;
+            gap: 3px;
+            margin-left: 0.4rem;
+            transform: rotate(-8deg);
+        }
+
+        .logo-5 .pause-integrated span {
+            width: 6px;
+            height: 28px;
+            background: var(--ocean);
+            border-radius: 2px;
+        }
+
+        .logo-6 {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .logo-6 .text {
+            font-family: 'Outfit', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 500;
+            color: var(--forest);
+            letter-spacing: -0.02em;
+        }
+
+        .logo-6 .pause {
+            display: flex;
+            gap: 4px;
+        }
+
+        .logo-6 .pause span {
+            width: 8px;
+            height: 28px;
+            background: var(--forest);
+            border-radius: 4px;
+        }
+
+        .logo-7 .wordmark {
+            font-family: 'DM Serif Display', serif;
+            font-size: 3rem;
+            color: var(--forest);
+            position: relative;
+        }
+
+        .logo-7 .wordmark .pause-inline {
+            display: inline-flex;
+            gap: 2px;
+            position: relative;
+            top: -2px;
+            margin: 0 2px;
+        }
+
+        .logo-7 .wordmark .pause-inline span {
+            width: 4px;
+            height: 18px;
+            background: var(--ocean);
+            border-radius: 1px;
+        }
+
+        .logo-8 {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .logo-8 .icon-square {
+            width: 48px;
+            height: 48px;
+            background: var(--forest);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+        }
+
+        .logo-8 .icon-square span {
+            width: 6px;
+            height: 20px;
+            background: white;
+            border-radius: 2px;
+        }
+
+        .logo-8 .text {
+            font-family: 'DM Serif Display', serif;
+            font-size: 2.5rem;
+            color: var(--forest);
+        }
+
+        /* White versions */
+        .logo-1.white .text,
+        .logo-8.white .text {
+            color: white;
+        }
+
+        .logo-1.white .pause span {
+            background: white;
+        }
+
+        .logo-8.white .icon-square {
+            background: white;
+        }
+
+        .logo-8.white .icon-square span {
+            background: var(--forest);
+        }
+
+        /* Variant I: Sharp, o-sized */
+        .logo-9 {
+            display: flex;
+            align-items: baseline;
+            gap: 0.4rem;
+        }
+
+        .logo-9 .text {
+            font-family: 'DM Serif Display', serif;
+            font-size: 3rem;
+            color: var(--forest);
+            line-height: 1;
+        }
+
+        .logo-9 .pause {
+            display: flex;
+            gap: 3px;
+            margin-bottom: 4px;
+        }
+
+        .logo-9 .pause span {
+            width: 6px;
+            height: 22px;
+            background: var(--forest);
+            border-radius: 0;
+        }
+
+        /* Variant J: Sharp with more gap */
+        .logo-10 {
+            display: flex;
+            align-items: baseline;
+            gap: 0.4rem;
+        }
+
+        .logo-10 .text {
+            font-family: 'DM Serif Display', serif;
+            font-size: 3rem;
+            color: var(--forest);
+            line-height: 1;
+        }
+
+        .logo-10 .pause {
+            display: flex;
+            gap: 6px;
+            margin-bottom: 4px;
+        }
+
+        .logo-10 .pause span {
+            width: 5px;
+            height: 22px;
+            background: var(--forest);
+            border-radius: 0;
+        }
+
+        /* Variant K: Sharp in circle */
+        .logo-11 {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+
+        .logo-11 .text {
+            font-family: 'DM Serif Display', serif;
+            font-size: 3rem;
+            color: var(--forest);
+        }
+
+        .logo-11 .pause-circle-sharp {
+            width: 36px;
+            height: 36px;
+            border: 2px solid var(--forest);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 3px;
+        }
+
+        .logo-11 .pause-circle-sharp span {
+            width: 4px;
+            height: 14px;
+            background: var(--forest);
+            border-radius: 0;
+        }
+
+        /* Variant L: Inter style (matching user's current) */
+        .logo-12 {
+            display: flex;
+            align-items: baseline;
+            gap: 0.35rem;
+        }
+
+        .logo-12 .text {
+            font-family: 'Inter', sans-serif;
+            font-size: 2.75rem;
+            font-weight: 600;
+            color: var(--forest);
+            line-height: 1;
+        }
+
+        .logo-12 .pause {
+            display: flex;
+            gap: 4px;
+            margin-bottom: 3px;
+        }
+
+        .logo-12 .pause span {
+            width: 5px;
+            height: 20px;
+            background: var(--forest);
+            border-radius: 0;
+        }
+
+        /* Color Palette Section */
+        .color-palettes {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+
+        .palette {
+            border: 2px solid #EAEAEA;
+            border-radius: 16px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .palette:hover {
+            border-color: var(--forest);
+        }
+
+        .palette.recommended {
+            border-color: var(--forest);
+        }
+
+        .palette-header {
+            padding: 1.5rem;
+            background: #FAFAFA;
+            border-bottom: 1px solid #EAEAEA;
+        }
+
+        .palette-name {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .palette-desc {
+            font-size: 0.85rem;
+            color: var(--stone);
+        }
+
+        .palette-colors {
+            display: flex;
+            height: 80px;
+        }
+
+        .palette-colors .color {
+            flex: 1;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            padding-bottom: 0.5rem;
+        }
+
+        .palette-colors .color span {
+            font-size: 0.7rem;
+            color: white;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+        }
+
+        .palette-colors .color.light span {
+            color: #333;
+            text-shadow: none;
+        }
+
+        /* Typography Section */
+        .typography-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .font-option {
+            border: 2px solid #EAEAEA;
+            border-radius: 16px;
+            padding: 2rem;
+            transition: all 0.3s ease;
+        }
+
+        .font-option:hover {
+            border-color: var(--forest);
+        }
+
+        .font-option.recommended {
+            border-color: var(--forest);
+            background: linear-gradient(135deg, rgba(45,74,62,0.03) 0%, rgba(255,255,255,1) 100%);
+        }
+
+        .font-label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--stone);
+            margin-bottom: 1rem;
+        }
+
+        .font-sample {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--forest);
+        }
+
+        .font-sample.dm-serif { font-family: 'DM Serif Display', serif; }
+        .font-sample.fraunces { font-family: 'Fraunces', serif; }
+        .font-sample.libre { font-family: 'Libre Baskerville', serif; }
+        .font-sample.outfit { font-family: 'Outfit', sans-serif; font-weight: 500; }
+
+        .font-body {
+            font-size: 0.95rem;
+            color: #666;
+            line-height: 1.7;
+        }
+
+        /* Icons Section */
+        .icons-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .icon-option {
+            border: 2px solid #EAEAEA;
+            border-radius: 16px;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .icon-option:hover {
+            border-color: var(--forest);
+            transform: translateY(-4px);
+        }
+
+        .icon-display {
+            width: 64px;
+            height: 64px;
+            margin: 0 auto 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .icon-name {
+            font-size: 0.85rem;
+            color: var(--stone);
+        }
+
+        /* Pause icon variations */
+        .pause-rounded {
+            display: flex;
+            gap: 6px;
+        }
+        .pause-rounded span {
+            width: 12px;
+            height: 40px;
+            background: var(--forest);
+            border-radius: 6px;
+        }
+
+        .pause-sharp {
+            display: flex;
+            gap: 6px;
+        }
+        .pause-sharp span {
+            width: 12px;
+            height: 40px;
+            background: var(--forest);
+            border-radius: 0;
+        }
+
+        .pause-thin {
+            display: flex;
+            gap: 8px;
+        }
+        .pause-thin span {
+            width: 6px;
+            height: 40px;
+            background: var(--forest);
+            border-radius: 3px;
+        }
+
+        .pause-thick {
+            display: flex;
+            gap: 4px;
+        }
+        .pause-thick span {
+            width: 14px;
+            height: 36px;
+            background: var(--forest);
+            border-radius: 4px;
+        }
+
+        .pause-tapered {
+            display: flex;
+            gap: 5px;
+        }
+        .pause-tapered span {
+            width: 10px;
+            height: 40px;
+            background: var(--forest);
+            border-radius: 5px 5px 3px 3px;
+        }
+
+        .pause-circle {
+            width: 52px;
+            height: 52px;
+            border: 3px solid var(--forest);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+        }
+        .pause-circle span {
+            width: 6px;
+            height: 18px;
+            background: var(--forest);
+            border-radius: 2px;
+        }
+
+        /* Mockup Section */
+        .mockups-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .mockup {
+            border: 2px solid #EAEAEA;
+            border-radius: 16px;
+            overflow: hidden;
+        }
+
+        .mockup-header {
+            background: var(--forest);
+            padding: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .mockup-header .m-text {
+            font-family: 'DM Serif Display', serif;
+            color: white;
+            font-size: 1.25rem;
+        }
+
+        .mockup-header .m-pause {
+            display: flex;
+            gap: 2px;
+        }
+
+        .mockup-header .m-pause span {
+            width: 4px;
+            height: 14px;
+            background: white;
+            border-radius: 1px;
+        }
+
+        .mockup-body {
+            padding: 1.5rem;
+            background: var(--mist);
+            min-height: 120px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .mockup-label {
+            font-size: 0.8rem;
+            color: var(--stone);
+        }
+
+        /* App icon mockup */
+        .app-icons {
+            display: flex;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .app-icon {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .app-icon-square {
+            width: 72px;
+            height: 72px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .app-icon-square span {
+            width: 8px;
+            height: 28px;
+            border-radius: 3px;
+        }
+
+        .app-icon-label {
+            font-size: 0.75rem;
+            color: var(--stone);
+        }
+
+        /* Creative alternatives section */
+        .creative-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .creative-option {
+            border: 2px solid #EAEAEA;
+            border-radius: 16px;
+            padding: 1.5rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            position: relative;
+            background: white;
+        }
+
+        .creative-option:hover {
+            border-color: var(--forest);
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.1);
+        }
+
+        .creative-option.featured {
+            border-color: var(--forest);
+            background: linear-gradient(135deg, rgba(45,74,62,0.05) 0%, rgba(255,255,255,1) 100%);
+        }
+
+        .creative-badge {
+            position: absolute;
+            top: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--forest);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 100px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .creative-display {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .creative-icon {
+            width: 64px;
+            height: 64px;
+        }
+
+        .creative-name {
+            font-weight: 600;
+            font-size: 1rem;
+            color: var(--forest);
+            margin-bottom: 0.5rem;
+        }
+
+        .creative-desc {
+            font-size: 0.8rem;
+            color: var(--stone);
+            line-height: 1.5;
+        }
+
+        .app-icon-square.forest { background: var(--forest); }
+        .app-icon-square.forest span { background: white; }
+
+        .app-icon-square.ocean { background: var(--ocean-deep); }
+        .app-icon-square.ocean span { background: white; }
+
+        .app-icon-square.sand { background: var(--sand); }
+        .app-icon-square.sand span { background: var(--forest); }
+
+        .app-icon-square.gradient { 
+            background: linear-gradient(135deg, var(--forest) 0%, var(--ocean) 100%); 
+        }
+        .app-icon-square.gradient span { background: white; }
+
+        /* Summary */
+        .summary-box {
+            background: linear-gradient(135deg, var(--forest) 0%, var(--forest-light) 100%);
+            color: white;
+            padding: 3rem;
+            border-radius: 24px;
+            margin-top: 2rem;
+        }
+
+        .summary-box h3 {
+            font-family: 'DM Serif Display', serif;
+            font-size: 1.75rem;
+            margin-bottom: 1rem;
+        }
+
+        .summary-box ul {
+            list-style: none;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+        }
+
+        .summary-box li {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+        }
+
+        .summary-box li::before {
+            content: '✓';
+            background: rgba(255,255,255,0.2);
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            font-size: 0.8rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Pratiro – Designprofil</h1>
+            <p>Brainstorming og utforskning av visuell identitet</p>
+        </header>
+
+        <!-- Logo Variants -->
+        <div class="section">
+            <h2 class="section-title">Logo-varianter</h2>
+            <p class="section-subtitle">Ulike måter å kombinere "Pratiro" og pause-symbolet på</p>
+            
+            <div class="logo-grid">
+                <!-- Variant 1: Original centered -->
+                <div class="logo-variant">
+                    <div class="variant-label">Variant A – Sentrert pause</div>
+                    <div class="logo-display">
+                        <div class="logo-1">
+                            <span class="text">Pratiro</span>
+                            <div class="pause">
+                                <span></span>
+                                <span></span>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="variant-description">Pause-symbolet er vertikalt sentrert med teksten. Balansert og moderne.</p>
+                </div>
+
+                <!-- Variant 2: Baseline aligned -->
+                <div class="logo-variant recommended">
+                    <div class="variant-label">Variant B – Bunnlinjert</div>
+                    <div class="logo-display">
+                        <div class="logo-2">
+                            <span class="text">Pratiro</span>
+                            <div class="pause">
+                                <span></span>
+                                <span></span>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="variant-description">Pause-symbolet hviler på samme linje som teksten. Elegant og harmonisk – unngår "Pratiro 2"-problemet.</p>
+                </div>
+
+                <!-- Variant 3: Stacked -->
+                <div class="logo-variant">
+                    <div class="variant-label">Variant C – Stablet</div>
+                    <div class="logo-display">
+                        <div class="logo-3">
+                            <div class="pause">
+                                <span></span>
+                                <span></span>
+                            </div>
+                            <span class="text">PRATIRO</span>
+                        </div>
+                    </div>
+                    <p class="variant-description">Pause-symbolet over teksten. Fungerer godt som app-ikon eller favicon. Mer formelt uttrykk.</p>
+                </div>
+
+                <!-- Variant 4: Circle icon -->
+                <div class="logo-variant">
+                    <div class="variant-label">Variant D – Sirkel-ikon</div>
+                    <div class="logo-display">
+                        <div class="logo-4">
+                            <div class="icon-circle">
+                                <span></span>
+                                <span></span>
+                            </div>
+                            <span class="text">Pratiro</span>
+                        </div>
+                    </div>
+                    <p class="variant-description">Pause i sirkel gir et tydelig ikon som fungerer alene. Klassisk og gjenkjennelig.</p>
+                </div>
+
+                <!-- Variant 5: Playful tilt -->
+                <div class="logo-variant">
+                    <div class="variant-label">Variant E – Leken vinkel</div>
+                    <div class="logo-display">
+                        <div class="logo-5">
+                            <span class="text">Pratiro</span>
+                            <div class="pause-integrated">
+                                <span></span>
+                                <span></span>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="variant-description">Lett vinklet pause-symbol og mykere font. Mer leken og tilgjengelig – passer familiesegmentet.</p>
+                </div>
+
+                <!-- Variant 6: Modern sans -->
+                <div class="logo-variant">
+                    <div class="variant-label">Variant F – Moderne sans-serif</div>
+                    <div class="logo-display">
+                        <div class="logo-6">
+                            <span class="text">Pratiro</span>
+                            <div class="pause">
+                                <span></span>
+                                <span></span>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="variant-description">Ren, moderne sans-serif font. Mer tech/startup-aktig uttrykk. Passer B2B-markedet.</p>
+                </div>
+
+                <!-- Variant 7: Integrated pause -->
+                <div class="logo-variant">
+                    <div class="variant-label">Variant G – Integrert i "i"</div>
+                    <div class="logo-display">
+                        <div class="logo-7">
+                            <span class="wordmark">Prat<span class="pause-inline"><span></span><span></span></span>ro</span>
+                        </div>
+                    </div>
+                    <p class="variant-description">Pause-symbolet erstatter "i"-en. Smart ordspill, men kan være vanskelig å lese.</p>
+                </div>
+
+                <!-- Variant 8: Square icon -->
+                <div class="logo-variant">
+                    <div class="variant-label">Variant H – Kvadrat-ikon</div>
+                    <div class="logo-display">
+                        <div class="logo-8">
+                            <div class="icon-square">
+                                <span></span>
+                                <span></span>
+                            </div>
+                            <span class="text">Pratiro</span>
+                        </div>
+                    </div>
+                    <p class="variant-description">Pause i fylt kvadrat. Moderne app-estetikk, fungerer utmerket som favicon.</p>
+                </div>
+
+                <!-- Variant I: Sharp, o-sized -->
+                <div class="logo-variant recommended">
+                    <div class="variant-label">Variant I – Skarp, o-størrelse</div>
+                    <div class="logo-display">
+                        <div class="logo-9">
+                            <span class="text">Pratiro</span>
+                            <div class="pause">
+                                <span></span>
+                                <span></span>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="variant-description">Skarpe kanter, pause-høyde matcher "o"-en. Rent og profesjonelt – som i din eksisterende profil.</p>
+                </div>
+
+                <!-- Variant J: Sharp with slight gap -->
+                <div class="logo-variant">
+                    <div class="variant-label">Variant J – Skarp, mer luft</div>
+                    <div class="logo-display">
+                        <div class="logo-10">
+                            <span class="text">Pratiro</span>
+                            <div class="pause">
+                                <span></span>
+                                <span></span>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="variant-description">Som variant I, men med litt mer mellomrom mellom strekene. Luftigere uttrykk.</p>
+                </div>
+
+                <!-- Variant K: Sharp in circle -->
+                <div class="logo-variant">
+                    <div class="variant-label">Variant K – Skarp i sirkel</div>
+                    <div class="logo-display">
+                        <div class="logo-11">
+                            <span class="text">Pratiro</span>
+                            <div class="pause-circle-sharp">
+                                <span></span>
+                                <span></span>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="variant-description">Skarpt pause-symbol i sirkel. Gir et tydelig ikon som kan brukes alene.</p>
+                </div>
+
+                <!-- Variant L: Inter font style -->
+                <div class="logo-variant">
+                    <div class="variant-label">Variant L – Inter-stil (din nåværende)</div>
+                    <div class="logo-display">
+                        <div class="logo-12">
+                            <span class="text">Pratiro</span>
+                            <div class="pause">
+                                <span></span>
+                                <span></span>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="variant-description">Inter SemiBold med skarpt pause-symbol. Matcher din eksisterende profil.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dark mode examples -->
+        <div class="section">
+            <h2 class="section-title">Lys og mørk bakgrunn</h2>
+            <p class="section-subtitle">Slik fungerer logoen på ulike bakgrunner</p>
+            
+            <div class="logo-grid">
+                <div class="logo-variant">
+                    <div class="variant-label">Lys bakgrunn</div>
+                    <div class="logo-display">
+                        <div class="logo-1">
+                            <span class="text">Pratiro</span>
+                            <div class="pause">
+                                <span></span>
+                                <span></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="logo-variant">
+                    <div class="variant-label">Mørk bakgrunn</div>
+                    <div class="logo-display dark-bg">
+                        <div class="logo-1 white">
+                            <span class="text">Pratiro</span>
+                            <div class="pause">
+                                <span></span>
+                                <span></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Color Palettes -->
+        <div class="section">
+            <h2 class="section-title">Fargepaletter</h2>
+            <p class="section-subtitle">Tre retninger for fargevalg</p>
+            
+            <div class="color-palettes">
+                <div class="palette recommended">
+                    <div class="palette-header">
+                        <div class="palette-name">Skog & Fjord (Anbefalt)</div>
+                        <div class="palette-desc">Norsk natur – rolig og tillitsvekkende</div>
+                    </div>
+                    <div class="palette-colors">
+                        <div class="color" style="background: #2D4A3E;"><span>#2D4A3E</span></div>
+                        <div class="color" style="background: #3D6B5A;"><span>#3D6B5A</span></div>
+                        <div class="color" style="background: #4A6B7C;"><span>#4A6B7C</span></div>
+                        <div class="color light" style="background: #F5F1EB;"><span>#F5F1EB</span></div>
+                        <div class="color light" style="background: #FDFCFA;"><span>#FDFCFA</span></div>
+                    </div>
+                </div>
+
+                <div class="palette">
+                    <div class="palette-header">
+                        <div class="palette-name">Havdyp</div>
+                        <div class="palette-desc">Dypere blåtoner – mer profesjonelt/corporate</div>
+                    </div>
+                    <div class="palette-colors">
+                        <div class="color" style="background: #1E3A4C;"><span>#1E3A4C</span></div>
+                        <div class="color" style="background: #2C5364;"><span>#2C5364</span></div>
+                        <div class="color" style="background: #4A7C8C;"><span>#4A7C8C</span></div>
+                        <div class="color light" style="background: #E8F0F2;"><span>#E8F0F2</span></div>
+                        <div class="color light" style="background: #F8FAFB;"><span>#F8FAFB</span></div>
+                    </div>
+                </div>
+
+                <div class="palette">
+                    <div class="palette-header">
+                        <div class="palette-name">Varm jord</div>
+                        <div class="palette-desc">Jordtoner – varmere og mer personlig</div>
+                    </div>
+                    <div class="palette-colors">
+                        <div class="color" style="background: #5C4D3C;"><span>#5C4D3C</span></div>
+                        <div class="color" style="background: #7A6B5A;"><span>#7A6B5A</span></div>
+                        <div class="color" style="background: #9C8B7A;"><span>#9C8B7A</span></div>
+                        <div class="color light" style="background: #F5EDE5;"><span>#F5EDE5</span></div>
+                        <div class="color light" style="background: #FFFCF8;"><span>#FFFCF8</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Typography -->
+        <div class="section">
+            <h2 class="section-title">Typografi</h2>
+            <p class="section-subtitle">Font-kombinasjoner for overskrifter</p>
+            
+            <div class="typography-grid">
+                <div class="font-option recommended">
+                    <div class="font-label">DM Serif Display (Anbefalt)</div>
+                    <div class="font-sample dm-serif">Pratiro</div>
+                    <p class="font-body">Elegant og varm serif. Moderne klassiker som utstråler tillit og ro. Fungerer godt digitalt.</p>
+                </div>
+
+                <div class="font-option">
+                    <div class="font-label">Fraunces</div>
+                    <div class="font-sample fraunces">Pratiro</div>
+                    <p class="font-body">Myk og leken serif med optisk variasjon. Mer personlig og tilgjengelig – passer familiesegmentet.</p>
+                </div>
+
+                <div class="font-option">
+                    <div class="font-label">Libre Baskerville</div>
+                    <div class="font-sample libre">Pratiro</div>
+                    <p class="font-body">Klassisk og tidløs. Mer tradisjonell og seriøs – passer profesjonelt marked.</p>
+                </div>
+
+                <div class="font-option">
+                    <div class="font-label">Outfit</div>
+                    <div class="font-sample outfit">Pratiro</div>
+                    <p class="font-body">Moderne geometrisk sans-serif. Tech-forward og minimalistisk – passer startup/B2B.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pause icon variations -->
+        <div class="section">
+            <h2 class="section-title">Pause-ikon varianter</h2>
+            <p class="section-subtitle">Ulike utforminger av selve pause-symbolet</p>
+            
+            <div class="icons-grid">
+                <div class="icon-option">
+                    <div class="icon-display">
+                        <div class="pause-rounded">
+                            <span></span>
+                            <span></span>
+                        </div>
+                    </div>
+                    <div class="icon-name">Avrundet</div>
+                </div>
+
+                <div class="icon-option">
+                    <div class="icon-display">
+                        <div class="pause-sharp">
+                            <span></span>
+                            <span></span>
+                        </div>
+                    </div>
+                    <div class="icon-name">Skarpt</div>
+                </div>
+
+                <div class="icon-option">
+                    <div class="icon-display">
+                        <div class="pause-thin">
+                            <span></span>
+                            <span></span>
+                        </div>
+                    </div>
+                    <div class="icon-name">Tynt</div>
+                </div>
+
+                <div class="icon-option">
+                    <div class="icon-display">
+                        <div class="pause-thick">
+                            <span></span>
+                            <span></span>
+                        </div>
+                    </div>
+                    <div class="icon-name">Tykt</div>
+                </div>
+
+                <div class="icon-option">
+                    <div class="icon-display">
+                        <div class="pause-tapered">
+                            <span></span>
+                            <span></span>
+                        </div>
+                    </div>
+                    <div class="icon-name">Tilspisset</div>
+                </div>
+
+                <div class="icon-option">
+                    <div class="icon-display">
+                        <div class="pause-circle">
+                            <span></span>
+                            <span></span>
+                        </div>
+                    </div>
+                    <div class="icon-name">I sirkel</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- App Icons -->
+        <div class="section">
+            <h2 class="section-title">App-ikon ideer</h2>
+            <p class="section-subtitle">Hvordan pause-symbolet kan fungere som app-ikon</p>
+            
+            <div class="app-icons">
+                <div class="app-icon">
+                    <div class="app-icon-square forest">
+                        <span></span>
+                        <span></span>
+                    </div>
+                    <div class="app-icon-label">Skog</div>
+                </div>
+
+                <div class="app-icon">
+                    <div class="app-icon-square ocean">
+                        <span></span>
+                        <span></span>
+                    </div>
+                    <div class="app-icon-label">Hav</div>
+                </div>
+
+                <div class="app-icon">
+                    <div class="app-icon-square sand">
+                        <span></span>
+                        <span></span>
+                    </div>
+                    <div class="app-icon-label">Sand</div>
+                </div>
+
+                <div class="app-icon">
+                    <div class="app-icon-square gradient">
+                        <span></span>
+                        <span></span>
+                    </div>
+                    <div class="app-icon-label">Gradient</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Creative Icon Alternatives -->
+        <div class="section">
+            <h2 class="section-title">🏆 Kreativ utfordring: Nye ikon-ideer</h2>
+            <p class="section-subtitle">Designerne fikk frie tøyler – her er alternativene til pause-symbolet</p>
+            
+            <div class="creative-grid">
+                <!-- 1: Two speech bubbles -->
+                <div class="creative-option">
+                    <div class="creative-display">
+                        <svg viewBox="0 0 64 64" class="creative-icon">
+                            <path d="M12 8h24c4 0 7 3 7 7v12c0 4-3 7-7 7h-6l-8 8v-8h-10c-4 0-7-3-7-7V15c0-4 3-7 7-7z" fill="none" stroke="#2D4A3E" stroke-width="2.5"/>
+                            <path d="M28 34h24c4 0 7 3 7 7v12c0 4-3 7-7 7h-10v8l-8-8h-6c-4 0-7-3-7-7V41c0-4 3-7 7-7z" fill="#2D4A3E"/>
+                        </svg>
+                    </div>
+                    <div class="creative-name">Dialog</div>
+                    <div class="creative-desc">To snakkebobler i samtale. Universelt symbol for kommunikasjon.</div>
+                </div>
+
+                <!-- 2: Overlapping circles -->
+                <div class="creative-option">
+                    <div class="creative-display">
+                        <svg viewBox="0 0 64 64" class="creative-icon">
+                            <circle cx="24" cy="32" r="18" fill="none" stroke="#2D4A3E" stroke-width="2.5"/>
+                            <circle cx="40" cy="32" r="18" fill="none" stroke="#2D4A3E" stroke-width="2.5"/>
+                            <path d="M32 18.5v27" stroke="#2D4A3E" stroke-width="2" stroke-dasharray="3 3" opacity="0.4"/>
+                        </svg>
+                    </div>
+                    <div class="creative-name">Møtepunkt</div>
+                    <div class="creative-desc">To sirkler som møtes. Venn-diagram for dialog og felles forståelse.</div>
+                </div>
+
+                <!-- 3: Ripple/stone in water -->
+                <div class="creative-option featured">
+                    <div class="creative-display">
+                        <svg viewBox="0 0 64 64" class="creative-icon">
+                            <circle cx="32" cy="32" r="6" fill="#2D4A3E"/>
+                            <circle cx="32" cy="32" r="14" fill="none" stroke="#2D4A3E" stroke-width="2" opacity="0.7"/>
+                            <circle cx="32" cy="32" r="22" fill="none" stroke="#2D4A3E" stroke-width="1.5" opacity="0.4"/>
+                            <circle cx="32" cy="32" r="30" fill="none" stroke="#2D4A3E" stroke-width="1" opacity="0.2"/>
+                        </svg>
+                    </div>
+                    <div class="creative-name">Ringer i vannet</div>
+                    <div class="creative-desc">En stein som skaper ringer. Symboliserer effekten av gode samtaler – de sprer seg utover.</div>
+                    <div class="creative-badge">Designer-favoritt</div>
+                </div>
+
+                <!-- 4: Two leaves -->
+                <div class="creative-option">
+                    <div class="creative-display">
+                        <svg viewBox="0 0 64 64" class="creative-icon">
+                            <path d="M20 44 Q8 32 20 12 Q32 24 20 44Z" fill="none" stroke="#2D4A3E" stroke-width="2.5"/>
+                            <path d="M44 44 Q56 32 44 12 Q32 24 44 44Z" fill="#2D4A3E"/>
+                            <path d="M32 48V24" stroke="#2D4A3E" stroke-width="2"/>
+                        </svg>
+                    </div>
+                    <div class="creative-name">To blader</div>
+                    <div class="creative-desc">Vekst og natur. To blader som deler samme stamme – sammen i dialog.</div>
+                </div>
+
+                <!-- 5: Abstract faces -->
+                <div class="creative-option">
+                    <div class="creative-display">
+                        <svg viewBox="0 0 64 64" class="creative-icon">
+                            <path d="M16 20 Q16 44 32 48" stroke="#2D4A3E" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+                            <path d="M48 20 Q48 44 32 48" stroke="#2D4A3E" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+                            <circle cx="20" cy="24" r="3" fill="#2D4A3E"/>
+                            <circle cx="44" cy="24" r="3" fill="#2D4A3E"/>
+                        </svg>
+                    </div>
+                    <div class="creative-name">Ansikt til ansikt</div>
+                    <div class="creative-desc">Minimalistiske profiler som møtes. Intimt og personlig.</div>
+                </div>
+
+                <!-- 6: Sound wave / voice -->
+                <div class="creative-option">
+                    <div class="creative-display">
+                        <svg viewBox="0 0 64 64" class="creative-icon">
+                            <path d="M12 32h8M24 24v16M32 18v28M40 24v16M52 32h-8" stroke="#2D4A3E" stroke-width="3" stroke-linecap="round"/>
+                        </svg>
+                    </div>
+                    <div class="creative-name">Stemme</div>
+                    <div class="creative-desc">Lydbølge – visualisering av prat. Moderne og tech-forward.</div>
+                </div>
+
+                <!-- 7: Mountain horizon -->
+                <div class="creative-option">
+                    <div class="creative-display">
+                        <svg viewBox="0 0 64 64" class="creative-icon">
+                            <path d="M4 48 L24 20 L36 32 L52 12 L60 48Z" fill="none" stroke="#2D4A3E" stroke-width="2.5" stroke-linejoin="round"/>
+                            <circle cx="48" cy="16" r="6" fill="#2D4A3E" opacity="0.3"/>
+                        </svg>
+                    </div>
+                    <div class="creative-name">Horisont</div>
+                    <div class="creative-desc">Fjell og sol. Norsk natur, perspektiv, ro – og målet i sikte.</div>
+                </div>
+
+                <!-- 8: Ear / listening -->
+                <div class="creative-option">
+                    <div class="creative-display">
+                        <svg viewBox="0 0 64 64" class="creative-icon">
+                            <path d="M40 16 Q52 16 52 32 Q52 52 36 56 Q32 56 32 52 Q32 48 36 46 Q44 42 44 32 Q44 24 36 24" fill="none" stroke="#2D4A3E" stroke-width="2.5" stroke-linecap="round"/>
+                            <path d="M32 28 Q36 28 36 32 Q36 36 32 38" fill="none" stroke="#2D4A3E" stroke-width="2.5" stroke-linecap="round"/>
+                        </svg>
+                    </div>
+                    <div class="creative-name">Lytte</div>
+                    <div class="creative-desc">Et øre. Samtale handler like mye om å lytte som å snakke.</div>
+                </div>
+
+                <!-- 9: Bridge -->
+                <div class="creative-option featured">
+                    <div class="creative-display">
+                        <svg viewBox="0 0 64 64" class="creative-icon">
+                            <circle cx="16" cy="32" r="8" fill="none" stroke="#2D4A3E" stroke-width="2.5"/>
+                            <circle cx="48" cy="32" r="8" fill="#2D4A3E"/>
+                            <path d="M24 32 Q32 24 40 32" stroke="#2D4A3E" stroke-width="2.5" fill="none"/>
+                            <path d="M24 32 Q32 40 40 32" stroke="#2D4A3E" stroke-width="2.5" fill="none"/>
+                        </svg>
+                    </div>
+                    <div class="creative-name">Bro</div>
+                    <div class="creative-desc">To sirkler forbundet med en bro. Samtale bygger broer mellom mennesker.</div>
+                    <div class="creative-badge">Designer-favoritt</div>
+                </div>
+
+                <!-- 10: Tree rings -->
+                <div class="creative-option">
+                    <div class="creative-display">
+                        <svg viewBox="0 0 64 64" class="creative-icon">
+                            <ellipse cx="32" cy="32" rx="28" ry="12" fill="none" stroke="#2D4A3E" stroke-width="1.5" opacity="0.3"/>
+                            <ellipse cx="32" cy="32" rx="20" ry="8" fill="none" stroke="#2D4A3E" stroke-width="2" opacity="0.6"/>
+                            <ellipse cx="32" cy="32" rx="12" ry="5" fill="none" stroke="#2D4A3E" stroke-width="2.5"/>
+                            <circle cx="32" cy="32" r="3" fill="#2D4A3E"/>
+                        </svg>
+                    </div>
+                    <div class="creative-name">Årringer</div>
+                    <div class="creative-desc">Tre-tverrsnitt. Vekst over tid, erfaring, dybde – og norsk skog.</div>
+                </div>
+
+                <!-- 11: Hand holding hand -->
+                <div class="creative-option">
+                    <div class="creative-display">
+                        <svg viewBox="0 0 64 64" class="creative-icon">
+                            <path d="M20 40 Q12 36 12 28 Q12 20 20 20 L28 20 Q32 20 32 24 L32 36" fill="none" stroke="#2D4A3E" stroke-width="2.5" stroke-linecap="round"/>
+                            <path d="M44 24 Q52 28 52 36 Q52 44 44 44 L36 44 Q32 44 32 40 L32 28" fill="#2D4A3E"/>
+                        </svg>
+                    </div>
+                    <div class="creative-name">Støtte</div>
+                    <div class="creative-desc">Abstrakte hender som møtes. Støtte, trygghet, veiledning.</div>
+                </div>
+
+                <!-- 12: Fjord -->
+                <div class="creative-option">
+                    <div class="creative-display">
+                        <svg viewBox="0 0 64 64" class="creative-icon">
+                            <path d="M8 16 L8 48 Q20 44 32 48 Q44 52 56 48 L56 16" fill="none" stroke="#2D4A3E" stroke-width="2.5"/>
+                            <path d="M20 48 L20 24" stroke="#2D4A3E" stroke-width="1.5" opacity="0.3"/>
+                            <path d="M32 48 L32 20" stroke="#2D4A3E" stroke-width="1.5" opacity="0.3"/>
+                            <path d="M44 48 L44 24" stroke="#2D4A3E" stroke-width="1.5" opacity="0.3"/>
+                        </svg>
+                    </div>
+                    <div class="creative-name">Fjord</div>
+                    <div class="creative-desc">Stilisert fjord sett ovenfra. Norsk identitet, dybde, ro.</div>
+                </div>
+            </div>
+
+            <!-- Show favorites with text -->
+            <h3 style="font-family: 'DM Serif Display', serif; font-size: 1.25rem; color: var(--forest); margin: 3rem 0 1.5rem; text-align: center;">Favorittene med Pratiro-tekst</h3>
+            
+            <div class="logo-grid" style="max-width: 900px; margin: 0 auto;">
+                <div class="logo-variant">
+                    <div class="variant-label">Ringer i vannet + tekst</div>
+                    <div class="logo-display">
+                        <div style="display: flex; align-items: center; gap: 0.75rem;">
+                            <svg viewBox="0 0 48 48" style="width: 40px; height: 40px;">
+                                <circle cx="24" cy="24" r="5" fill="#2D4A3E"/>
+                                <circle cx="24" cy="24" r="11" fill="none" stroke="#2D4A3E" stroke-width="1.5" opacity="0.7"/>
+                                <circle cx="24" cy="24" r="17" fill="none" stroke="#2D4A3E" stroke-width="1" opacity="0.4"/>
+                                <circle cx="24" cy="24" r="23" fill="none" stroke="#2D4A3E" stroke-width="0.75" opacity="0.2"/>
+                            </svg>
+                            <span style="font-family: 'DM Serif Display', serif; font-size: 2.5rem; color: #2D4A3E;">Pratiro</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="logo-variant">
+                    <div class="variant-label">Bro + tekst</div>
+                    <div class="logo-display">
+                        <div style="display: flex; align-items: center; gap: 0.75rem;">
+                            <svg viewBox="0 0 56 40" style="width: 48px; height: 34px;">
+                                <circle cx="10" cy="20" r="7" fill="none" stroke="#2D4A3E" stroke-width="2"/>
+                                <circle cx="46" cy="20" r="7" fill="#2D4A3E"/>
+                                <path d="M17 20 Q28 12 39 20" stroke="#2D4A3E" stroke-width="2" fill="none"/>
+                                <path d="M17 20 Q28 28 39 20" stroke="#2D4A3E" stroke-width="2" fill="none"/>
+                            </svg>
+                            <span style="font-family: 'DM Serif Display', serif; font-size: 2.5rem; color: #2D4A3E;">Pratiro</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="logo-variant">
+                    <div class="variant-label">Dialog + tekst</div>
+                    <div class="logo-display">
+                        <div style="display: flex; align-items: center; gap: 0.6rem;">
+                            <svg viewBox="0 0 44 44" style="width: 36px; height: 36px;">
+                                <path d="M6 4h18c2.5 0 4.5 2 4.5 4.5v8c0 2.5-2 4.5-4.5 4.5h-4l-5 5v-5H6c-2.5 0-4.5-2-4.5-4.5v-8C1.5 6 3.5 4 6 4z" fill="none" stroke="#2D4A3E" stroke-width="2"/>
+                                <path d="M20 23h18c2.5 0 4.5 2 4.5 4.5v8c0 2.5-2 4.5-4.5 4.5h-7v5l-5-5h-6c-2.5 0-4.5-2-4.5-4.5v-8c0-2.5 2-4.5 4.5-4.5z" fill="#2D4A3E"/>
+                            </svg>
+                            <span style="font-family: 'DM Serif Display', serif; font-size: 2.5rem; color: #2D4A3E;">Pratiro</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Summary -->
+        <div class="summary-box">
+            <h3>Mine anbefalinger til deg</h3>
+            <ul>
+                <li><strong>Logo:</strong> Variant I eller L – skarpe kanter, o-proporsjoner, matcher din profil</li>
+                <li><strong>Farger:</strong> Skog & Fjord – norsk, tillitsvekkende, rolig</li>
+                <li><strong>Font:</strong> DM Serif Display eller Inter SemiBold (som du har)</li>
+                <li><strong>Pause-stil:</strong> Skarpe kanter for profesjonelt uttrykk</li>
+                <li><strong>App-ikon:</strong> Skoggrønn med hvit pause – enkel og gjenkjennelig</li>
+                <li><strong>Fleksibilitet:</strong> Ha både "tekst + ikon" og "bare ikon" versjoner</li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>

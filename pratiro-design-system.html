@@ -1,0 +1,1218 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pratiro – Design System & Referanse for Claude Code</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /*
+        ============================================================
+        PRATIRO DESIGN SYSTEM
+        For bruk med Claude Code
+        ============================================================
+        
+        MERKEVARE-ESSENS:
+        - Navn: Pratiro (fra "Prat i ro")
+        - Konsept: Øv på viktige samtaler i trygge rammer
+        - Målgrupper: Foreldre, ledere/ansatte, jobbsøkere, studenter
+        - Tone: Rolig, profesjonell, skandinavisk, naturlig
+        
+        DESIGN-PRINSIPPER:
+        1. Ro og trygghet - mye whitespace, myke farger
+        2. Skandinavisk minimalisme - rent, funksjonelt
+        3. Natur-inspirert - skog, hav, fjell
+        4. Tilgjengelig - god kontrast, tydelig hierarki
+        
+        UX-PRINSIPPER:
+        1. Minst mulig prompting - brukeren skal ikke måtte skrive mye
+        2. Standard valg - forhåndsdefinerte scenarioer og arenaer
+        3. Ett klikk til handling - "Start samtale" direkte fra kategori
+        4. Logisk flyt - Forklaring (Slik fungerer det) → Valg (Velg arena)
+        
+        ============================================================
+        */
+
+        /* ==================== CSS VARIABLER ==================== */
+        :root {
+            /* Primærfarger */
+            --forest: #2D4A3E;           /* Hovedfarge - skoggrønn */
+            --forest-light: #3D6B5A;     /* Hover-state */
+            --forest-dark: #1E3329;      /* Mørkere variant */
+            
+            /* Sekundærfarger */
+            --ocean: #4A6B7C;            /* Hav-blå, sekundær aksent */
+            --ocean-light: #6B8FA3;
+            --ocean-deep: #2C4A5A;
+            
+            /* Nøytrale */
+            --sand: #F5F1EB;             /* Varm bakgrunn */
+            --sand-dark: #E8E2D9;
+            --mist: #F9F8F6;             /* Lyseste bakgrunn */
+            --stone: #7D786D;            /* Dempet tekst */
+            --bark: #5C4D3C;             /* Jordtone-aksent */
+            
+            /* Tekst */
+            --text: #252825;             /* Hovedtekst */
+            --text-soft: #4F5752;        /* Sekundærtekst */
+            
+            /* UI */
+            --white: #FFFFFF;
+            --border: rgba(0, 0, 0, 0.06);
+            --border-strong: rgba(0, 0, 0, 0.12);
+            --focus: rgba(74, 107, 124, 0.30);
+            
+            /* Border radius */
+            --radius-xs: 8px;
+            --radius-sm: 12px;
+            --radius-md: 16px;
+            --radius-lg: 22px;
+            --radius-xl: 28px;
+            --radius-full: 999px;
+            
+            /* Shadows */
+            --shadow-sm: 0 6px 18px rgba(0, 0, 0, 0.06);
+            --shadow-md: 0 16px 50px rgba(0, 0, 0, 0.10);
+            --shadow-lg: 0 20px 60px rgba(0, 0, 0, 0.12);
+            --shadow-button: 0 10px 28px rgba(45, 74, 62, 0.22);
+            
+            /* Spacing */
+            --space-xs: 0.25rem;
+            --space-sm: 0.5rem;
+            --space-md: 1rem;
+            --space-lg: 1.5rem;
+            --space-xl: 2rem;
+            --space-2xl: 3rem;
+            --space-3xl: 5rem;
+            
+            /* Layout */
+            --max-width: 1200px;
+            --content-width: 760px;
+        }
+
+        /* ==================== BASE STYLES ==================== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: var(--mist);
+            color: var(--text);
+            line-height: 1.6;
+            font-size: 16px;
+        }
+
+        /* ==================== TYPOGRAPHY ==================== */
+        /*
+        Font-stack:
+        - Overskrifter: DM Serif Display (elegant, varm serif)
+        - Brødtekst: Inter (lesbar, moderne sans-serif)
+        */
+
+        h1, h2, h3, h4 {
+            font-family: 'DM Serif Display', Georgia, serif;
+            font-weight: 400;
+            color: var(--forest);
+            letter-spacing: -0.02em;
+        }
+
+        h1 {
+            font-size: clamp(2.8rem, 6vw, 4.6rem);
+            line-height: 1.1;
+        }
+
+        h2 {
+            font-size: clamp(2rem, 4vw, 2.8rem);
+            line-height: 1.2;
+        }
+
+        h3 {
+            font-size: 1.55rem;
+            line-height: 1.3;
+        }
+
+        p {
+            color: var(--text-soft);
+            font-size: 1.08rem;
+            font-weight: 350;
+            max-width: 65ch;
+        }
+
+        .tagline {
+            font-size: 1.05rem;
+            color: var(--stone);
+            font-weight: 500;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+        }
+
+        /* ==================== ACCESSIBILITY ==================== */
+        :focus-visible {
+            outline: 3px solid var(--focus);
+            outline-offset: 3px;
+            border-radius: 10px;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation: none !important;
+                transition: none !important;
+            }
+        }
+
+        /* ==================== DOKUMENTASJON STYLES ==================== */
+        .doc-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .doc-header {
+            text-align: center;
+            padding: 3rem 2rem;
+            background: linear-gradient(135deg, var(--forest) 0%, var(--ocean) 100%);
+            color: white;
+            border-radius: var(--radius-xl);
+            margin-bottom: 2rem;
+        }
+
+        .doc-header h1 {
+            color: white;
+            margin-bottom: 0.5rem;
+        }
+
+        .doc-header p {
+            color: rgba(255,255,255,0.85);
+            max-width: none;
+        }
+
+        .doc-section {
+            background: white;
+            border-radius: var(--radius-xl);
+            padding: 2.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .doc-section h2 {
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--sand);
+        }
+
+        .doc-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .doc-note {
+            background: var(--sand);
+            padding: 1rem 1.25rem;
+            border-radius: var(--radius-md);
+            font-size: 0.9rem;
+            color: var(--text-soft);
+            margin-top: 1rem;
+        }
+
+        .doc-note strong {
+            color: var(--forest);
+        }
+
+        /* ==================== LOGO ==================== */
+        /*
+        Logo-varianter:
+        1. Full logo: "Pratiro" + pause-symbol (med gap 1.1rem)
+        2. Corner logo: Mindre versjon, fixed i top-left
+        3. Ikon: Kun pause-symbol (for favicon, app)
+        
+        Pause-symbolet skal:
+        - Ha SKARPE hjørner (rx="0")
+        - Bruke --forest-light farge (ikke --forest)
+        - Ha drop-shadow for dybde
+        - Være tydelig separert fra teksten (1.1rem gap)
+        */
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.7rem;
+        }
+
+        .logo-text {
+            font-family: 'DM Serif Display', Georgia, serif;
+            font-size: 1.35rem;
+            color: var(--forest);
+            letter-spacing: -0.01em;
+        }
+
+        .logo-pause {
+            display: inline-flex;
+            gap: 4px;
+            color: var(--forest-light);
+            filter: drop-shadow(0 4px 8px rgba(61, 107, 90, 0.16));
+        }
+
+        .logo-pause span {
+            width: 5px;
+            height: 16px;
+            background: currentColor;
+            border-radius: 0; /* SKARPE hjørner */
+        }
+
+        /* Hvit versjon for mørk bakgrunn */
+        .logo.white .logo-text {
+            color: white;
+        }
+
+        .logo.white .logo-pause {
+            color: white;
+            filter: none;
+        }
+
+        /* Corner logo - fixed i top-left */
+        .corner-logo {
+            position: fixed;
+            top: 18px;
+            left: 18px;
+            z-index: 20;
+            display: inline-flex;
+            align-items: baseline;
+            gap: 0.55rem;
+            text-decoration: none;
+        }
+
+        .corner-logo-text {
+            font-family: 'DM Serif Display', Georgia, serif;
+            color: var(--forest);
+            font-size: 1.25rem;
+            letter-spacing: -0.01em;
+        }
+
+        .corner-pause-svg {
+            width: 1.1rem;
+            height: 1.1rem;
+            color: var(--forest-light);
+            transform: translateY(2px);
+        }
+
+        /* Logo showcase */
+        .logo-showcase {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 3rem;
+            align-items: center;
+            padding: 2rem;
+            background: var(--mist);
+            border-radius: var(--radius-lg);
+        }
+
+        .logo-showcase .dark-bg {
+            background: var(--forest);
+            padding: 1.5rem 2rem;
+            border-radius: var(--radius-md);
+        }
+
+        .logo-large {
+            display: flex;
+            align-items: center;
+            gap: 1.1rem; /* Viktig: nok avstand */
+        }
+
+        .logo-large .logo-text {
+            font-size: 3rem;
+        }
+
+        .logo-large .logo-pause {
+            display: flex;
+            gap: 5px;
+            color: var(--forest-light);
+            filter: drop-shadow(0 8px 16px rgba(61, 107, 90, 0.16));
+        }
+
+        .logo-large .logo-pause span {
+            width: 9px;
+            height: 30px;
+            background: currentColor;
+            border-radius: 0; /* SKARPE hjørner */
+        }
+
+        /* ==================== FARGEPALETT ==================== */
+        .color-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 1rem;
+        }
+
+        .color-swatch {
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            border: 1px solid var(--border);
+        }
+
+        .color-swatch .color {
+            height: 80px;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            padding-bottom: 0.5rem;
+        }
+
+        .color-swatch .color span {
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: white;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+        }
+
+        .color-swatch .color.light span {
+            color: var(--text);
+            text-shadow: none;
+        }
+
+        .color-swatch .info {
+            padding: 0.75rem;
+            background: white;
+        }
+
+        .color-swatch .info .name {
+            font-weight: 600;
+            font-size: 0.85rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .color-swatch .info .use {
+            font-size: 0.75rem;
+            color: var(--stone);
+        }
+
+        /* ==================== KNAPPER ==================== */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 12px 20px;
+            border-radius: var(--radius-full);
+            border: 1px solid var(--border-strong);
+            background: white;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+            color: var(--forest);
+            box-shadow: var(--shadow-sm);
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .btn.primary {
+            background: var(--forest);
+            color: white;
+            border-color: rgba(255,255,255,0.22);
+            box-shadow: var(--shadow-button);
+        }
+
+        .btn.primary:hover {
+            background: var(--forest-light);
+        }
+
+        .btn.secondary {
+            background: transparent;
+            border-color: var(--forest);
+            box-shadow: none;
+        }
+
+        .btn.secondary:hover {
+            background: rgba(45, 74, 62, 0.06);
+        }
+
+        .btn.small {
+            padding: 8px 14px;
+            font-size: 0.85rem;
+        }
+
+        .btn.large {
+            padding: 16px 28px;
+            font-size: 1.05rem;
+        }
+
+        .button-row {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        /* ==================== KORT ==================== */
+        .card {
+            background: var(--mist);
+            border-radius: var(--radius-lg);
+            padding: 2rem;
+            border: 1px solid var(--border);
+            transition: transform 0.25s ease, box-shadow 0.25s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--forest);
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.25s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-6px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .card-icon {
+            width: 56px;
+            height: 56px;
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.25rem;
+            background: white;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .card-icon svg {
+            width: 28px;
+            height: 28px;
+            color: var(--forest);
+        }
+
+        .card h3 {
+            margin-bottom: 0.5rem;
+        }
+
+        .card p {
+            font-size: 0.95rem;
+            margin-bottom: 1rem;
+        }
+
+        /* Tags */
+        .tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .tag {
+            padding: 0.375rem 0.875rem;
+            border-radius: var(--radius-full);
+            background: white;
+            font-size: 0.8rem;
+            color: var(--stone);
+            border: 1px solid var(--border);
+        }
+
+        /* Card action button */
+        .card-action {
+            margin-top: auto;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.65rem;
+            padding: 0.65rem 1rem;
+            border-radius: var(--radius-full);
+            background: white;
+            border: 1px solid var(--border-strong);
+            color: var(--forest);
+            font-weight: 600;
+            font-size: 0.9rem;
+            width: fit-content;
+            box-shadow: var(--shadow-sm);
+            transition: all 0.2s ease;
+        }
+
+        .card:hover .card-action {
+            border-color: rgba(45, 74, 62, 0.22);
+            box-shadow: 0 12px 26px rgba(45, 74, 62, 0.12);
+        }
+
+        .card-action .arrow {
+            font-weight: 800;
+        }
+
+        /* ==================== NAVIGASJON ==================== */
+        .topnav {
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            border-bottom: 1px solid var(--border);
+            background: rgba(249, 248, 246, 0.75);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+
+        .topnav-inner {
+            max-width: var(--max-width);
+            margin: 0 auto;
+            padding: 12px 18px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .navlinks {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex: 1;
+            justify-content: center;
+        }
+
+        .navlinks a {
+            text-decoration: none;
+            font-size: 0.95rem;
+            color: var(--text-soft);
+            padding: 8px 12px;
+            border-radius: var(--radius-full);
+            transition: background 0.2s ease, color 0.2s ease;
+        }
+
+        .navlinks a:hover {
+            background: rgba(45, 74, 62, 0.06);
+            color: var(--forest);
+        }
+
+        /* ==================== HERO SECTION ==================== */
+        .hero {
+            padding: 4rem 1.5rem 3rem;
+            background: linear-gradient(180deg, var(--mist) 0%, var(--sand) 55%, var(--sand-dark) 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background:
+                radial-gradient(ellipse at 20% 80%, rgba(45, 74, 62, 0.06) 0%, transparent 55%),
+                radial-gradient(ellipse at 80% 20%, rgba(74, 107, 124, 0.06) 0%, transparent 55%);
+            pointer-events: none;
+        }
+
+        .hero-inner {
+            position: relative;
+            max-width: var(--max-width);
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1.1fr 0.9fr;
+            gap: 2.5rem;
+            align-items: center;
+        }
+
+        @media (max-width: 980px) {
+            .hero-inner {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* ==================== PRODUKT-PREVIEW ==================== */
+        /*
+        Preview-boksen viser et mockup av appen.
+        Brukes i hero for å demonstrere produktet.
+        */
+
+        .preview {
+            background: rgba(255, 255, 255, 0.75);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-md);
+            overflow: hidden;
+        }
+
+        .preview-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            padding: 12px 16px;
+            background: linear-gradient(135deg, rgba(45, 74, 62, 0.96) 0%, rgba(74, 107, 124, 0.78) 100%);
+            color: white;
+        }
+
+        .preview-body {
+            display: grid;
+            grid-template-columns: 180px 1fr;
+            min-height: 300px;
+            background: #f7f9f8;
+        }
+
+        .preview-nav {
+            border-right: 1px solid var(--border);
+            padding: 12px;
+            background: linear-gradient(180deg, rgba(245, 241, 235, 0.55) 0%, var(--mist) 100%);
+            display: grid;
+            gap: 8px;
+            align-content: start;
+        }
+
+        .preview-nav-item {
+            padding: 10px;
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--border);
+            background: white;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .preview-nav-item.active {
+            border-color: rgba(45, 74, 62, 0.22);
+            background: rgba(45, 74, 62, 0.08);
+            color: var(--forest);
+        }
+
+        .preview-main {
+            padding: 16px;
+        }
+
+        /* Chat bubbles */
+        .chat {
+            display: grid;
+            gap: 8px;
+        }
+
+        .bubble {
+            max-width: 85%;
+            padding: 10px 12px;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border);
+            background: white;
+            font-size: 0.9rem;
+        }
+
+        .bubble.user {
+            margin-left: auto;
+            background: rgba(45, 74, 62, 0.08);
+            border-color: rgba(45, 74, 62, 0.14);
+        }
+
+        /* ==================== SEKSJONER ==================== */
+        .section {
+            padding: var(--space-3xl) var(--space-lg);
+            background: white;
+        }
+
+        .section.alt {
+            background: var(--sand);
+        }
+
+        .section-inner {
+            max-width: var(--max-width);
+            margin: 0 auto;
+        }
+
+        .section-header {
+            text-align: center;
+            max-width: var(--content-width);
+            margin: 0 auto var(--space-2xl);
+        }
+
+        .section-header h2 {
+            margin-bottom: 0.75rem;
+        }
+
+        /* ==================== STEPS (Slik fungerer det) ==================== */
+        .steps {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 2.5rem;
+        }
+
+        .step {
+            flex: 1;
+            min-width: 220px;
+            max-width: 300px;
+            text-align: center;
+        }
+
+        .step-number {
+            width: 52px;
+            height: 52px;
+            border-radius: 50%;
+            background: var(--forest);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'DM Serif Display', Georgia, serif;
+            font-size: 1.35rem;
+            margin: 0 auto 1.25rem;
+        }
+
+        .step h3 {
+            font-size: 1.15rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .step p {
+            font-size: 0.95rem;
+            margin: 0 auto;
+        }
+
+        /* ==================== FOOTER ==================== */
+        footer {
+            padding: 3rem 2rem;
+            background: var(--forest);
+            color: white;
+            text-align: center;
+        }
+
+        footer .footer-logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        footer .logo-text {
+            font-family: 'DM Serif Display', Georgia, serif;
+            font-size: 1.5rem;
+        }
+
+        footer .tagline {
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 1.5rem;
+        }
+
+        footer p {
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.875rem;
+            max-width: none;
+        }
+
+        /* ==================== FORM INPUTS ==================== */
+        input, textarea {
+            width: 100%;
+            padding: 12px 14px;
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--border-strong);
+            font-size: 0.95rem;
+            font-family: inherit;
+            background: white;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: var(--forest);
+            box-shadow: 0 0 0 3px var(--focus);
+        }
+
+        /* ==================== UTILITIES ==================== */
+        .text-center { text-align: center; }
+        .text-forest { color: var(--forest); }
+        .text-soft { color: var(--text-soft); }
+        .bg-sand { background: var(--sand); }
+        .bg-mist { background: var(--mist); }
+        .mt-1 { margin-top: var(--space-md); }
+        .mt-2 { margin-top: var(--space-xl); }
+        .mb-1 { margin-bottom: var(--space-md); }
+        .mb-2 { margin-bottom: var(--space-xl); }
+
+        /* ==================== ANIMASJONER ==================== */
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(10px); }
+        }
+
+        .animate-float {
+            animation: float 3s ease-in-out infinite;
+        }
+
+        /* ==================== RESPONSIVE ==================== */
+        @media (max-width: 860px) {
+            .navlinks { display: none; }
+        }
+
+        @media (max-width: 640px) {
+            .doc-section { padding: 1.5rem; }
+            .preview-body { grid-template-columns: 1fr; }
+            .preview-nav { display: none; }
+        }
+    </style>
+</head>
+<body>
+    <div class="doc-container">
+        <!-- Header -->
+        <header class="doc-header">
+            <h1>Pratiro Design System</h1>
+            <p>Komplett referanse for Claude Code – farger, typografi, komponenter og mønstre</p>
+        </header>
+
+        <!-- Brand Summary -->
+        <section class="doc-section">
+            <h2>📋 Merkevare-oppsummering</h2>
+            <div class="doc-grid">
+                <div>
+                    <h3 style="font-size: 1.1rem; margin-bottom: 0.5rem;">Konsept</h3>
+                    <p style="font-size: 0.9rem;">Pratiro = "Prat i ro". Øv på viktige samtaler i trygge rammer med AI som samtalepartner.</p>
+                </div>
+                <div>
+                    <h3 style="font-size: 1.1rem; margin-bottom: 0.5rem;">Målgrupper</h3>
+                    <p style="font-size: 0.9rem;">1. Foreldre (barn-samtaler)<br>2. Ledere/ansatte (jobb)<br>3. Jobbsøkere (intervju)<br>4. Studenter (eksamen)</p>
+                </div>
+                <div>
+                    <h3 style="font-size: 1.1rem; margin-bottom: 0.5rem;">Tone of voice</h3>
+                    <p style="font-size: 0.9rem;">Rolig, trygg, profesjonell, varm, skandinavisk, uten å være klinisk eller kald.</p>
+                </div>
+                <div>
+                    <h3 style="font-size: 1.1rem; margin-bottom: 0.5rem;">UX-prinsipper</h3>
+                    <p style="font-size: 0.9rem;"><strong>Minst mulig prompting</strong> – brukeren skal ikke måtte skrive mye. Standard valg og forhåndsdefinerte scenarioer.</p>
+                </div>
+            </div>
+            <div class="doc-note" style="margin-top: 1.5rem;">
+                <strong>Viktig side-struktur:</strong> Landingssiden følger logisk flyt: Hero → "Slik fungerer det" (forklaring) → "Velg din arena" (handling). Brukeren forstår konseptet FØR de velger.
+            </div>
+        </section>
+
+        <!-- Logo -->
+        <section class="doc-section">
+            <h2>🎯 Logo</h2>
+            <div class="logo-showcase">
+                <div>
+                    <p style="font-size: 0.8rem; color: var(--stone); margin-bottom: 0.5rem;">Standard (hero)</p>
+                    <div class="logo-large">
+                        <span class="logo-text">Pratiro</span>
+                        <svg class="logo-pause" viewBox="0 0 32 32" style="width: 40px; height: 40px; color: var(--forest-light); filter: drop-shadow(0 8px 16px rgba(61, 107, 90, 0.16));">
+                            <rect x="6" y="4" width="7" height="24" rx="0" fill="currentColor"/>
+                            <rect x="19" y="4" width="7" height="24" rx="0" fill="currentColor"/>
+                        </svg>
+                    </div>
+                </div>
+                <div>
+                    <p style="font-size: 0.8rem; color: var(--stone); margin-bottom: 0.5rem;">Corner logo</p>
+                    <div style="display: flex; align-items: baseline; gap: 0.55rem;">
+                        <span style="font-family: 'DM Serif Display', serif; color: var(--forest); font-size: 1.25rem;">Pratiro</span>
+                        <svg viewBox="0 0 32 32" style="width: 1.1rem; height: 1.1rem; color: var(--forest-light); transform: translateY(2px);">
+                            <rect x="6" y="4" width="7" height="24" rx="0" fill="currentColor"/>
+                            <rect x="19" y="4" width="7" height="24" rx="0" fill="currentColor"/>
+                        </svg>
+                    </div>
+                </div>
+                <div class="dark-bg">
+                    <p style="font-size: 0.8rem; color: rgba(255,255,255,0.7); margin-bottom: 0.5rem;">Footer / mørk bakgrunn</p>
+                    <div style="display: flex; align-items: center; gap: 0.7rem;">
+                        <span style="font-family: 'DM Serif Display', serif; color: white; font-size: 1.75rem;">Pratiro</span>
+                        <svg viewBox="0 0 32 32" style="width: 1.4rem; height: 1.4rem; color: white;">
+                            <rect x="6" y="4" width="7" height="24" rx="0" fill="currentColor"/>
+                            <rect x="19" y="4" width="7" height="24" rx="0" fill="currentColor"/>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+            <div class="doc-note">
+                <strong>Logo-regler:</strong> Pause-symbolet har SKARPE hjørner (rx="0"), bruker --forest-light farge (ikke --forest), og har drop-shadow for dybde. Gap mellom tekst og pause er 1.1rem. Corner logo er alltid synlig oppe til venstre.
+            </div>
+        </section>
+
+        <!-- Colors -->
+        <section class="doc-section">
+            <h2>🎨 Fargepalett</h2>
+            <div class="color-grid">
+                <div class="color-swatch">
+                    <div class="color" style="background: #2D4A3E;"><span>#2D4A3E</span></div>
+                    <div class="info">
+                        <div class="name">Forest (Primær)</div>
+                        <div class="use">Knapper, overskrifter, logo</div>
+                    </div>
+                </div>
+                <div class="color-swatch">
+                    <div class="color" style="background: #3D6B5A;"><span>#3D6B5A</span></div>
+                    <div class="info">
+                        <div class="name">Forest Light</div>
+                        <div class="use">Hover-states</div>
+                    </div>
+                </div>
+                <div class="color-swatch">
+                    <div class="color" style="background: #4A6B7C;"><span>#4A6B7C</span></div>
+                    <div class="info">
+                        <div class="name">Ocean</div>
+                        <div class="use">Sekundær aksent</div>
+                    </div>
+                </div>
+                <div class="color-swatch">
+                    <div class="color" style="background: #5C4D3C;"><span>#5C4D3C</span></div>
+                    <div class="info">
+                        <div class="name">Bark</div>
+                        <div class="use">Jordtone-aksent</div>
+                    </div>
+                </div>
+                <div class="color-swatch">
+                    <div class="color light" style="background: #F5F1EB;"><span>#F5F1EB</span></div>
+                    <div class="info">
+                        <div class="name">Sand</div>
+                        <div class="use">Varm bakgrunn</div>
+                    </div>
+                </div>
+                <div class="color-swatch">
+                    <div class="color light" style="background: #F9F8F6;"><span>#F9F8F6</span></div>
+                    <div class="info">
+                        <div class="name">Mist</div>
+                        <div class="use">Lyseste bakgrunn</div>
+                    </div>
+                </div>
+                <div class="color-swatch">
+                    <div class="color" style="background: #252825;"><span>#252825</span></div>
+                    <div class="info">
+                        <div class="name">Text</div>
+                        <div class="use">Hovedtekst</div>
+                    </div>
+                </div>
+                <div class="color-swatch">
+                    <div class="color" style="background: #4F5752;"><span>#4F5752</span></div>
+                    <div class="info">
+                        <div class="name">Text Soft</div>
+                        <div class="use">Sekundærtekst</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Typography -->
+        <section class="doc-section">
+            <h2>✍️ Typografi</h2>
+            <div class="doc-grid">
+                <div>
+                    <p style="font-size: 0.8rem; color: var(--stone); margin-bottom: 0.5rem;">Overskrifter</p>
+                    <p style="font-family: 'DM Serif Display', serif; font-size: 2rem; color: var(--forest);">DM Serif Display</p>
+                    <p style="font-size: 0.85rem; margin-top: 0.5rem;">Elegant, varm serif. Brukes til H1, H2, H3, logo.</p>
+                </div>
+                <div>
+                    <p style="font-size: 0.8rem; color: var(--stone); margin-bottom: 0.5rem;">Brødtekst</p>
+                    <p style="font-family: 'Inter', sans-serif; font-size: 1.5rem; color: var(--text);">Inter</p>
+                    <p style="font-size: 0.85rem; margin-top: 0.5rem;">Lesbar, moderne sans-serif. Vekter: 300-700.</p>
+                </div>
+            </div>
+            <div style="margin-top: 2rem;">
+                <h1 style="margin-bottom: 0.5rem;">Heading 1 – Hovedoverskrift</h1>
+                <h2 style="margin-bottom: 0.5rem;">Heading 2 – Seksjonsoverskrift</h2>
+                <h3 style="margin-bottom: 0.5rem;">Heading 3 – Kort-tittel</h3>
+                <p>Brødtekst – Dette er standard avsnittsstil. God lesbarhet med komfortabel linjehøyde og optimal linjelengde.</p>
+            </div>
+        </section>
+
+        <!-- Buttons -->
+        <section class="doc-section">
+            <h2>🔘 Knapper</h2>
+            <div class="button-row" style="margin-bottom: 2rem;">
+                <button class="btn primary large">Primær stor</button>
+                <button class="btn primary">Primær</button>
+                <button class="btn primary small">Primær liten</button>
+            </div>
+            <div class="button-row" style="margin-bottom: 2rem;">
+                <button class="btn large">Sekundær stor</button>
+                <button class="btn">Sekundær</button>
+                <button class="btn small">Sekundær liten</button>
+            </div>
+            <div class="button-row">
+                <button class="btn secondary">Outline</button>
+            </div>
+            <div class="doc-note">
+                <strong>Knapp-hierarki:</strong> Primær (forest) for hovedhandlinger, sekundær (hvit) for andre valg, outline for tertiære.
+            </div>
+        </section>
+
+        <!-- Cards -->
+        <section class="doc-section">
+            <h2>🃏 Kort</h2>
+            <div class="doc-grid" style="grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));">
+                <a href="#" class="card" style="text-decoration: none; display: flex; flex-direction: column; min-height: 320px;">
+                    <div class="card-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                            <circle cx="9" cy="7" r="4"/>
+                        </svg>
+                    </div>
+                    <h3>Familie</h3>
+                    <p>Øv på vanskelige, men viktige samtaler med barna dine.</p>
+                    <div class="tags">
+                        <span class="tag">Skjermtid</span>
+                        <span class="tag">Følelser</span>
+                        <span class="tag">Grenser</span>
+                    </div>
+                    <div class="card-action">
+                        <span>Start samtale</span>
+                        <span class="arrow">→</span>
+                    </div>
+                </a>
+                <a href="#" class="card" style="text-decoration: none; display: flex; flex-direction: column; min-height: 320px;">
+                    <div class="card-icon" style="color: var(--ocean);">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                            <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/>
+                            <line x1="8" y1="21" x2="16" y2="21"/>
+                            <line x1="12" y1="17" x2="12" y2="21"/>
+                        </svg>
+                    </div>
+                    <h3>Arbeidsliv</h3>
+                    <p>Bli tryggere i krevende samtaler på arbeidsplassen.</p>
+                    <div class="tags">
+                        <span class="tag">Feedback</span>
+                        <span class="tag">Konflikt</span>
+                    </div>
+                    <div class="card-action">
+                        <span>Start samtale</span>
+                        <span class="arrow">→</span>
+                    </div>
+                </a>
+            </div>
+            <div class="doc-note">
+                <strong>Kort-struktur:</strong> Ikon → Tittel → Beskrivelse → Tags → "Start samtale"-knapp. Kort er klikkbare lenker som fører direkte til samtale med valgt arena.
+            </div>
+        </section>
+
+        <!-- Preview Component -->
+        <section class="doc-section">
+            <h2>💻 Produkt-preview</h2>
+            <p style="margin-bottom: 1.5rem;">Mockup av appen, brukes i hero-seksjonen.</p>
+            <div class="preview" style="max-width: 700px;">
+                <div class="preview-top">
+                    <div class="logo white">
+                        <span class="logo-text">Pratiro</span>
+                        <div class="logo-pause">
+                            <span></span>
+                            <span></span>
+                        </div>
+                    </div>
+                    <span style="font-size: 0.85rem; opacity: 0.9;">Desktop-øving</span>
+                </div>
+                <div class="preview-body">
+                    <div class="preview-nav">
+                        <div class="preview-nav-item active">Øv samtale</div>
+                        <div class="preview-nav-item">Pause</div>
+                        <div class="preview-nav-item">Bibliotek</div>
+                    </div>
+                    <div class="preview-main">
+                        <div class="chat">
+                            <div class="bubble"><strong>AI:</strong> Hei! Hva ønsker du å øve på i dag?</div>
+                            <div class="bubble user"><strong>Du:</strong> Jeg vil øve på å gi tilbakemelding.</div>
+                            <div class="bubble"><strong>AI:</strong> Flott! Kan du beskrive situasjonen?</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Steps -->
+        <section class="doc-section">
+            <h2>📍 Steg-komponent</h2>
+            <p style="margin-bottom: 2rem;">Brukes i "Slik fungerer det"-seksjonen.</p>
+            <div class="steps">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <h3>Velg scenario</h3>
+                    <p>Beskriv situasjonen du vil øve på.</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <h3>Øv samtalen</h3>
+                    <p>AI spiller motpart og gir tips underveis.</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <h3>Få innsikt</h3>
+                    <p>Oppsummering og konkrete forbedringer.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Spacing & Radius -->
+        <section class="doc-section">
+            <h2>📐 Spacing & Border Radius</h2>
+            <div class="doc-grid">
+                <div>
+                    <h3 style="font-size: 1rem; margin-bottom: 1rem;">Spacing</h3>
+                    <div style="font-size: 0.85rem; font-family: monospace;">
+                        <p>--space-xs: 0.25rem (4px)</p>
+                        <p>--space-sm: 0.5rem (8px)</p>
+                        <p>--space-md: 1rem (16px)</p>
+                        <p>--space-lg: 1.5rem (24px)</p>
+                        <p>--space-xl: 2rem (32px)</p>
+                        <p>--space-2xl: 3rem (48px)</p>
+                        <p>--space-3xl: 5rem (80px)</p>
+                    </div>
+                </div>
+                <div>
+                    <h3 style="font-size: 1rem; margin-bottom: 1rem;">Border Radius</h3>
+                    <div style="font-size: 0.85rem; font-family: monospace;">
+                        <p>--radius-xs: 8px</p>
+                        <p>--radius-sm: 12px</p>
+                        <p>--radius-md: 16px</p>
+                        <p>--radius-lg: 22px</p>
+                        <p>--radius-xl: 28px</p>
+                        <p>--radius-full: 999px (pills)</p>
+                    </div>
+                </div>
+                <div>
+                    <h3 style="font-size: 1rem; margin-bottom: 1rem;">Shadows</h3>
+                    <div style="font-size: 0.85rem; font-family: monospace;">
+                        <p>--shadow-sm: subtle</p>
+                        <p>--shadow-md: cards, preview</p>
+                        <p>--shadow-lg: hover states</p>
+                        <p>--shadow-button: primary btn</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Code Reference -->
+        <section class="doc-section">
+            <h2>👨‍💻 For Claude Code</h2>
+            <div class="doc-note" style="background: var(--forest); color: white; padding: 1.5rem;">
+                <strong style="color: white;">Viktige prinsipper:</strong><br><br>
+                1. <strong>UX: Minst mulig prompting</strong> – brukeren skal velge fra ferdige alternativer, ikke skrive lange beskrivelser<br><br>
+                2. <strong>Sidestruktur</strong> – "Slik fungerer det" kommer FØR "Velg arena" (forklaring → handling)<br><br>
+                3. <strong>Logo: SVG med rx="0"</strong> – skarpe hjørner, --forest-light farge, drop-shadow<br><br>
+                4. <strong>Kort = lenker</strong> – kategori-kort er klikkbare og fører direkte til /app?arena=X<br><br>
+                5. <strong>Corner logo</strong> – alltid synlig oppe til venstre (position: fixed)<br><br>
+                6. <strong>CSS-variabler</strong> – bruk dem! Alt er definert i :root<br><br>
+                7. <strong>Accessibility</strong> – :focus-visible, aria-labels, prefers-reduced-motion
+            </div>
+            <div class="doc-note" style="margin-top: 1rem;">
+                <strong>Fil-referanse:</strong> Se <code>Pratiro-landing-minimal-v7-final.html</code> for komplett implementasjon av landingssiden.
+            </div>
+        </section>
+
+        <!-- Footer Example -->
+        <footer style="border-radius: var(--radius-xl); margin-top: 2rem;">
+            <div class="footer-logo">
+                <span class="logo-text">Pratiro</span>
+                <div class="logo-pause" style="display: inline-flex; gap: 3px;">
+                    <span style="width: 6px; height: 20px; background: white; border-radius: 2px;"></span>
+                    <span style="width: 6px; height: 20px; background: white; border-radius: 2px;"></span>
+                </div>
+            </div>
+            <p class="tagline">Prat i ro – øv på samtaler som betyr noe</p>
+            <p>© 2026 Pratiro. Laget i Norge.</p>
+        </footer>
+    </div>
+</body>
+</html>
