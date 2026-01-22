@@ -104,13 +104,23 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 /* Scroll indicator animation */
-@keyframes float {
+@keyframes scroll-float {
   0%, 100% { transform: translateX(-50%) translateY(0); }
   50% { transform: translateX(-50%) translateY(10px); }
 }
 
 .scroll-float {
-  animation: float 3s ease-in-out infinite;
+  animation: scroll-float 3s ease-in-out infinite;
+}
+
+/* App preview float animation */
+@keyframes app-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+.animate-float {
+  animation: app-float 6s ease-in-out infinite;
 }
 
 /* Reduced motion preference */
