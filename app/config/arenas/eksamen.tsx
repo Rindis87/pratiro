@@ -187,9 +187,11 @@ IKKE GJØR DETTE:
 ${topic ? `Tema: ${topic}` : ''}
 Tilnærming: ${scenario}
 
-Introduser eksamenssituasjonen kort og still det første spørsmålet. Vær vennlig men profesjonell.
+Finn på et vanlig norsk navn til deg selv (f.eks. Hansen, Olsen, Berg). Ønsk eleven velkommen, presenter deg kort med etternavn, og forklar hvordan eksamen vil foregå før du stiller det første spørsmålet.
 
-Svar på norsk.`;
+Eksempel på god åpning: "Hei og velkommen! Jeg er Hansen, og jeg skal være sensor i dag. Du får god tid til å tenke, og jeg kommer til å stille noen oppfølgingsspørsmål underveis. La oss begynne..."
+
+Svar på norsk. Vær vennlig men profesjonell. Ikke bruk placeholder-tekst.`;
   },
 
   getContinuePrompt: (config: Record<string, unknown>, history: string): string => {

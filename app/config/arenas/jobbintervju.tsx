@@ -157,9 +157,13 @@ IKKE GJØR DETTE:
 
 Intervjutype: ${scenario}
 
-Ønsk kandidaten velkommen og introduser deg kort ("Hei, jeg heter [navn] og er [rolle]. Hyggelig at du kunne komme til intervju for stillingen innen ${jobArea}."). Still deretter det første spørsmålet.
+Finn på et vanlig norsk navn til deg selv (f.eks. Kari, Erik, Mona, Lars) og en passende rolle basert på stillingen (f.eks. HR-leder, avdelingsleder, fagansvarlig).
 
-Svar på norsk. Hold det naturlig og profesjonelt.`;
+Ønsk kandidaten velkommen, introduser deg med navn og rolle, og still det første spørsmålet.
+
+Eksempel på god åpning: "Hei, velkommen! Jeg heter Kari Johansen og er HR-leder her. Fint du kunne komme. Skal vi sette i gang?"
+
+Svar på norsk. Hold det naturlig og profesjonelt. Ikke bruk placeholder-tekst som [navn] eller [rolle].`;
   },
 
   getContinuePrompt: (config: Record<string, unknown>, history: string): string => {
