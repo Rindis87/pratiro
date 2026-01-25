@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { Logo, PauseIcon } from './components/ui/Logo';
 import { arenaList } from './config/arenas';
 import { ArenaId } from './config/types';
+import { validateAccessCode } from './actions';
 
 export default function LandingPage() {
   const router = useRouter();
@@ -20,12 +21,20 @@ export default function LandingPage() {
     setAccessCode('');
   };
 
-  const handleLogin = () => {
-    if (accessCode === 'pratiro2024') {
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleLogin = async () => {
+    setIsLoading(true);
+    setError('');
+
+    const isValid = await validateAccessCode(accessCode);
+
+    if (isValid) {
       sessionStorage.setItem('pratiro_access', 'true');
       router.push(`/simulator?arena=${selectedArena}`);
     } else {
       setError('Feil tilgangskode. Prøv igjen.');
+      setIsLoading(false);
     }
   };
 
@@ -447,10 +456,12 @@ export default function LandingPage() {
 
               <button
                 onClick={handleLogin}
+                disabled={isLoading}
                 className="w-full bg-[#2D4A3E] hover:bg-[#3D6B5A] text-white
-                         font-medium py-3 rounded-xl transition-colors"
+                         font-medium py-3 rounded-xl transition-colors
+                         disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                Start øvingen
+                {isLoading ? 'Sjekker...' : 'Start øvingen'}
               </button>
 
               <button

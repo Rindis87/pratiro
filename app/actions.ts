@@ -3,6 +3,15 @@
 // Denne filen kjører KUN på serveren. Ingen nøkler lekker ut herfra.
 
 const API_KEY = process.env.GEMINI_API_KEY;
+const ACCESS_CODE = process.env.ACCESS_CODE;
+
+export async function validateAccessCode(code: string): Promise<boolean> {
+  if (!ACCESS_CODE) {
+    console.error('ACCESS_CODE miljøvariabel mangler');
+    return false;
+  }
+  return code === ACCESS_CODE;
+}
 
 export async function chatWithGemini(prompt: string, systemInstruction: string) {
   if (!API_KEY) {
