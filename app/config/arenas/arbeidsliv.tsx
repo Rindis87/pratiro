@@ -80,23 +80,34 @@ export const arbeidslivArena: ArenaConfig = {
       difficultyGuidelines = 'Du avbryter, kommer med unnskyldninger, skylder på andre, blir kanskje emosjonell eller avvisende.';
     }
 
-    return `Du er en ${otherRole} i en samtale på arbeidsplassen.
+    return `Du er en ${otherRole} i en profesjonell samtale på arbeidsplassen.
 
 Vanskelighetsgrad: ${difficulty}
 ${difficultyGuidelines}
 
-Ikke gjør det umulig, men gjør det realistisk. Når ${role === 'leder' ? 'lederen' : 'medarbeideren'} bruker gode teknikker (aktiv lytting, jeg-budskap, konkrete eksempler), bli gradvis mer mottakelig.`;
+VIKTIG - GJØR DETTE:
+- Ha egne mål og bekymringer i samtalen - du er en ekte person
+- Når ${role === 'leder' ? 'lederen' : 'medarbeideren'} bruker gode teknikker (aktiv lytting, jeg-budskap, konkrete eksempler), bli gradvis mer mottakelig
+- Reager naturlig på tonen - hvis de er aggressive, trekk deg tilbake eller bli defensiv
+
+IKKE GJØR DETTE:
+- Ikke vær en karikatur eller overdrevent vanskelig
+- Ikke gi deg umiddelbart uten god grunn
+- Ikke plutselig bli helt enig uten at den andre har gjort noe for å fortjene det
+- Ikke løs problemet for dem - la dem jobbe for løsningen`;
   },
 
   getStartPrompt: (config: Record<string, unknown>, scenario: string): string => {
     const role = (config.role as string) || 'leder';
     const otherRole = role === 'leder' ? 'medarbeider' : 'leder';
 
-    return `Start rollespillet. Du er en ${otherRole} som er i en samtale om: "${scenario}".
+    return `Start rollespillet. Du spiller rollen som ${otherRole}.
+
+Situasjon: "${scenario}"
 
 ${role === 'leder'
-  ? 'Medarbeideren (deg) er blitt kalt inn til samtale. Start med å komme inn på kontoret og si noe som "Hei, du ville snakke med meg?" eller lignende.'
-  : 'Du er leder og har fått en henvendelse fra medarbeideren. Start med å ønske velkommen og spørre hva det gjelder.'}
+  ? 'Du (medarbeideren) er blitt kalt inn til lederens kontor. Kom inn og si noe som "Hei, du ville snakke med meg?" eller vis litt usikkerhet om hva det gjelder.'
+  : 'Du (lederen) har fått beskjed om at en medarbeider vil snakke med deg. Ønsk velkommen og spør hva det gjelder.'}
 
 Svar på norsk. Gi en kort, realistisk replikk (1-2 setninger).`;
   },
@@ -121,11 +132,28 @@ Samtale:
 ${history}
 
 Du er en ekspert i arbeidslivspsykologi og kommunikasjon.
+
+SE ETTER DISSE TEKNIKKENE:
+- Jeg-budskap vs. du-budskap ("Jeg opplever at..." vs. "Du gjør alltid...")
+- Aktiv lytting (oppsummering, speiling, oppklarende spørsmål)
+- Konkrete eksempler vs. generaliseringer ("I møtet tirsdag..." vs. "Du er alltid...")
+- Løsningsfokus vs. problemfokus (fremover vs. bakover)
+- Respekt og profesjonalitet (tone, ordvalg)
+- Tydelighet på forventninger og behov
+- Åpenhet for den andres perspektiv
+
+SCORING (vær støttende og konstruktiv):
+- 1-3: Samtalen ble krevende. Arbeidsplassamtaler er vanskelige - her er det gode læringsmuligheter.
+- 4-5: Gode forsøk, med tydelige muligheter for vekst. Du er på rett vei.
+- 6-7: Solid innsats! Noen justeringer kan styrke kommunikasjonen ytterligere.
+- 8-9: Veldig god håndtering. Du viser trygghet i krevende samtaler.
+- 10: Eksemplarisk profesjonell kommunikasjon.
+
 Gi tilbakemelding i JSON format:
 {
-  "mainFeedback": "Hovedinntrykk (bruk 'Pratiro' sin stemme: støttende og profesjonell)",
-  "strengths": ["Bra ting 1", "Bra ting 2"],
-  "improvements": ["Tips 1", "Tips 2"],
+  "mainFeedback": "2-3 setninger som oppsummerer samtalen. Vær konkret, profesjonell og konstruktiv.",
+  "strengths": ["Konkret ting som ble gjort bra 1", "Konkret ting 2"],
+  "improvements": ["Konstruktivt tips 1", "Konstruktivt tips 2"],
   "perspective": "Hva ${role === 'leder' ? 'medarbeideren' : 'lederen'} trolig følte og tenkte",
   "score": 1-10
 }

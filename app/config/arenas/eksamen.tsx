@@ -133,12 +133,25 @@ ${topic ? `Tema for eksamen: ${topic}` : ''}
 Tilpass språk og spørsmål til ${level}:
 ${levelGuidelines[level]}
 
-Når eleven svarer:
-- Still oppfølgingsspørsmål for å teste dybdeforståelse
-- Be om konkrete eksempler
-- Utfordre svarene forsiktig ("Stemmer det alltid?", "Finnes det unntak?")
+FAGLIG UTFORDRING:
+- Test dybdeforståelse: "Kan du forklare hvorfor det er slik?"
+- Utfordre svarene: "Stemmer det alltid?", "Hva med...?", "Finnes det unntak?"
+- Be om eksempler: "Kan du gi et konkret eksempel på det?"
+- Koble til annet stoff: "Hvordan henger dette sammen med...?"
+- Hvis svaret er upresist eller feil, led eleven på rett spor uten å gi fasit
 
-Ikke gi fasitsvar underveis. Vær faglig, men vennlig og oppmuntrende.`;
+VIKTIG - GJØR DETTE:
+- Vær faglig presis og korrekt
+- Hold svarene korte (1-2 setninger + nytt spørsmål)
+- Anerkjenn riktige elementer kort før du går videre
+- Vær vennlig men profesjonell
+
+IKKE GJØR DETTE:
+- Ikke gi fasitsvar underveis
+- Ikke godta faglig feil informasjon uten å utfordre det
+- Ikke vær overdrevent positiv til svake svar
+- Ikke still ledende spørsmål som avslører svaret
+- Ikke skriv lange svar - vær kortfattet som en ekte sensor`;
   },
 
   getStartPrompt: (config: Record<string, unknown>, scenario: string): string => {
@@ -185,12 +198,11 @@ Svar på norsk.`;
     return `Her er eksamenssamtalen så langt:
 ${history}
 
-Eleven ga akkurat det siste svaret. Som sensor, vurder svaret og:
-- Anerkjenn det som var bra (kort)
-- Still et oppfølgingsspørsmål eller gå videre til nytt tema
-- Tilpass nivået til ${level}
+Eleven ga akkurat det siste svaret. Som sensor:
+- Gi en kort kommentar (maks 1 setning) hvis svaret var bra, eller utfordre hvis det var upresist
+- Still neste spørsmål
 
-Ikke gi fasitsvar. Hold deg i rollen som sensor. Svar på norsk. Vær kortfattet.`;
+Hold svarene korte (1-2 setninger totalt). Ikke gi fasitsvar. Svar på norsk.`;
   },
 
   getAnalysisPrompt: (config: Record<string, unknown>, history: string, scenario: string): string => {
@@ -224,11 +236,19 @@ Eksaminasjon:
 ${history}
 
 Du er en erfaren sensor og pedagog.
+
+SCORING (vær støttende og konstruktiv):
+- 1-3: Eksamen var krevende. Muntlig eksamen er vanskelig - her er det gode muligheter for læring.
+- 4-5: Grunnleggende forståelse, med tydelig potensial for utvikling. Du er på rett spor.
+- 6-7: God faglig innsats! Noen områder kan styrkes for å heve prestasjonen.
+- 8-9: Veldig god faglig forståelse og formidling. Imponerende innsats.
+- 10: Eksemplarisk prestasjon - dyp forståelse og fremragende formidling.
+
 Gi tilbakemelding i JSON format:
 {
-  "mainFeedback": "Hovedinntrykk av elevens faglige prestasjon",
-  "strengths": ["Hva eleven viste god forståelse for 1", "Hva eleven viste god forståelse for 2"],
-  "improvements": ["Hva eleven bør jobbe mer med 1", "Konkret læringstips 2"],
+  "mainFeedback": "2-3 setninger som oppsummerer eksaminasjonen. Vær konkret, oppmuntrende og konstruktiv.",
+  "strengths": ["Hva eleven viste god forståelse for 1", "Hva eleven gjorde bra 2"],
+  "improvements": ["Konstruktivt læringstips 1", "Konkret forbedringsområde 2"],
   "perspective": "Hva sensor tenkte om elevens faglige nivå og formidlingsevne",
   "score": 1-10
 }

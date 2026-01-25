@@ -116,9 +116,22 @@ export const jobbintervjuArena: ArenaConfig = {
 
 ${styleGuidelines}
 
-Still spørsmål ett av gangen. Lytt til svarene og still oppfølgingsspørsmål når det er naturlig. Hvis kandidaten gir vage svar, be om konkrete eksempler.
+INTERVJUSTRUKTUR:
+- Still 5-7 hovedspørsmål totalt i intervjuet
+- Start med "Fortell litt om deg selv" eller lignende åpningsspørsmål
+- Inkluder 2-3 fagspesifikke spørsmål relevante for ${jobDescription}
+- Avslutt med "Har du noen spørsmål til oss?" når samtalen nærmer seg slutten
 
-Inkluder 2-3 fagspesifikke spørsmål som er relevante for ${jobDescription}.`;
+VIKTIG - GJØR DETTE:
+- Still spørsmål ett av gangen
+- Lytt til svarene og still oppfølgingsspørsmål når det er naturlig
+- Hvis kandidaten gir vage svar, be om konkrete eksempler
+
+IKKE GJØR DETTE:
+- Ikke still flere spørsmål samtidig
+- Ikke gi kandidaten fasit eller hint om hva du vil høre
+- Ikke vær unaturlig vennlig eller unaturlig streng - vær profesjonell
+- Ikke hopp over oppfølgingsspørsmål når svaret er ufullstendig`;
   },
 
   getStartPrompt: (config: Record<string, unknown>, scenario: string): string => {
@@ -186,11 +199,19 @@ Intervju:
 ${history}
 
 Du er en erfaren rekrutterer og karriererådgiver.
+
+SCORING (vær støttende og konstruktiv):
+- 1-3: Intervjuet var utfordrende. Intervjuer er vanskelige - her er det mye å bygge videre på.
+- 4-5: Gode forsøk, med tydelige muligheter for forbedring. Du har et godt utgangspunkt.
+- 6-7: Solid intervju! Noen justeringer kan gjøre deg til en enda sterkere kandidat.
+- 8-9: Veldig godt gjennomført. Du fremstår som en attraktiv kandidat.
+- 10: Eksemplarisk intervjuprestasjon - profesjonell og overbevisende.
+
 Gi tilbakemelding i JSON format:
 {
-  "mainFeedback": "Hovedinntrykk av kandidatens prestasjon",
-  "strengths": ["Hva kandidaten gjorde bra 1", "Hva kandidaten gjorde bra 2"],
-  "improvements": ["Konkret tips 1", "Konkret tips 2"],
+  "mainFeedback": "2-3 setninger som oppsummerer intervjuet. Vær konkret, oppmuntrende og konstruktiv.",
+  "strengths": ["Konkret ting kandidaten gjorde bra 1", "Konkret ting 2"],
+  "improvements": ["Konstruktivt tips 1", "Konstruktivt tips 2"],
   "perspective": "Hva intervjueren trolig tenkte om kandidaten",
   "score": 1-10
 }

@@ -94,7 +94,16 @@ export const familieArena: ArenaConfig = {
 
 ${ageGuidelines}
 
-Ikke gi deg med en gang. Gi realistiske reaksjoner. Når forelderen bruker gode teknikker (validering, åpne spørsmål, rolig tone), responser gradvis mer positivt.`;
+VIKTIG - GJØR DETTE:
+- Ikke gi deg med en gang. Gi realistiske reaksjoner.
+- Når forelderen bruker gode teknikker (validering, åpne spørsmål, rolig tone), responser gradvis mer positivt - men fortsatt som et barn.
+- Hvis forelderen blir sint, kald eller avvisende, reager naturlig (bli lei deg, sint, eller trekk deg tilbake).
+
+IKKE GJØR DETTE:
+- Ikke bruk voksent språk eller refleksjoner som "jeg skjønner at du prøver å hjelpe meg"
+- Ikke plutselig bli fornuftig og samarbeidsvillig uten grunn
+- Ikke forklar dine egne følelser på en voksen måte
+- Ikke gi opp for raskt - barn er utholdende når de vil noe`;
   },
 
   getStartPrompt: (config: Record<string, unknown>, scenario: string): string => {
@@ -124,11 +133,28 @@ Samtale:
 ${history}
 
 Du er en ekspert i barnepsykologi og pedagogikk.
+
+SE ETTER DISSE TEKNIKKENE:
+- Validering av følelser ("Jeg skjønner at du er frustrert...")
+- Åpne spørsmål ("Hva tenker du om...?", "Hvordan føles det?")
+- Rolig tone (ikke eskalering eller hevet stemme)
+- Tydelige grenser ("Regelen er...", "Det er ikke greit å...")
+- Naturlige konsekvenser ("Hvis du ikke..., så blir det ikke tid til...")
+- Empati før krav (anerkjenn først, sett grense etterpå)
+- Gi valg ("Vil du gjøre X først eller Y?")
+
+SCORING (vær støttende og konstruktiv):
+- 1-3: Samtalen ble vanskelig. Det er helt normalt - dette er utfordrende situasjoner! Her er det mye å lære.
+- 4-5: Gode forsøk, med tydelige muligheter for vekst. Du er på rett vei.
+- 6-7: Solid innsats! Noen justeringer kan gjøre kommunikasjonen enda bedre.
+- 8-9: Veldig god kommunikasjon. Du mestrer de viktigste teknikkene.
+- 10: Eksemplarisk - en samtale andre foreldre kan lære av.
+
 Gi tilbakemelding i JSON format:
 {
-  "mainFeedback": "Hovedinntrykk (bruk 'Pratiro' sin stemme: støttende og rolig)",
-  "strengths": ["Bra ting 1", "Bra ting 2"],
-  "improvements": ["Tips 1", "Tips 2"],
+  "mainFeedback": "2-3 setninger som oppsummerer samtalen. Vær konkret, varm og konstruktiv.",
+  "strengths": ["Konkret ting forelderen gjorde bra 1", "Konkret ting 2"],
+  "improvements": ["Konstruktivt tips 1", "Konstruktivt tips 2"],
   "perspective": "Hva barnet følte og opplevde i samtalen",
   "score": 1-10
 }
