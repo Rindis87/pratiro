@@ -8,8 +8,14 @@ interface ChatStepProps {
   isTyping: boolean;
   getChatLabel: (role: 'user' | 'ai') => string;
   getTips: () => string;
-  onSendMessage: (text: string) => void;
+  onSendMessage: (text: string) => Promise<{ success: boolean; error?: string }>;
   onRunAnalysis: () => void;
+  maxMessageLength: number;
+  maxMessages: number;
+  messageCount: number;
+  isAtMessageLimit: boolean;
+  limitWarning: string | null;
+  onClearWarning: () => void;
 }
 
 // Icons
@@ -49,19 +55,30 @@ export default function ChatStep({
   getTips,
   onSendMessage,
   onRunAnalysis,
+  maxMessageLength,
+  maxMessages,
+  messageCount,
+  isAtMessageLimit,
+  limitWarning,
+  onClearWarning,
 }: ChatStepProps) {
   const [input, setInput] = useState('');
   const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  const charsRemaining = maxMessageLength - input.length;
+  const isOverLimit = input.length > maxMessageLength;
 
   // Auto-scroll to bottom
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages, isTyping]);
 
-  const handleSend = () => {
-    if (!input.trim() || isTyping) return;
-    onSendMessage(input);
+  const handleSend = async () => {
+    if (!input.trim() || isTyping || isOverLimit || isAtMessageLimit) return;
+    onClearWarning();
+    const text = input;
     setInput('');
+    await onSendMessage(text);
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -76,11 +93,24 @@ export default function ChatStep({
   return (
     <div className="flex flex-col h-[600px] bg-[#F9F8F6]">
       {/* Tips bar */}
-      <div className="bg-[#2D4A3E]/5 px-4 py-2 text-xs text-[#2D4A3E] flex justify-center text-center border-b border-[#2D4A3E]/10">
+      <div className="bg-[#2D4A3E]/5 px-4 py-2 text-xs text-[#2D4A3E] flex justify-between items-center border-b border-[#2D4A3E]/10">
         <span>
-          <b>Pratiro-tips:</b> {getTips()}
+          <b>Tips:</b> {getTips()}
+        </span>
+        <span className={`${messageCount >= maxMessages - 5 ? 'text-amber-600 font-medium' : 'text-gray-500'}`}>
+          {messageCount}/{maxMessages} meldinger
         </span>
       </div>
+
+      {/* Warning banner */}
+      {limitWarning && (
+        <div className="bg-amber-50 border-b border-amber-200 px-4 py-2 text-sm text-amber-800 flex justify-between items-center">
+          <span>{limitWarning}</span>
+          <button onClick={onClearWarning} className="text-amber-600 hover:text-amber-800 font-medium">
+            ✕
+          </button>
+        </div>
+      )}
 
       {/* Chat Area */}
       <div className="flex-1 overflow-y-auto p-4 space-y-6">
@@ -144,21 +174,35 @@ export default function ChatStep({
 
       {/* Input Area */}
       <div className="p-4 bg-white border-t border-gray-200 flex flex-col gap-3">
+        {/* Character counter */}
+        <div className="flex justify-between items-center text-xs">
+          <span className={`${isOverLimit ? 'text-red-500 font-medium' : charsRemaining <= 100 ? 'text-amber-600' : 'text-gray-400'}`}>
+            {isOverLimit ? `${Math.abs(charsRemaining)} tegn for mye` : `${charsRemaining} tegn igjen`}
+          </span>
+          {isAtMessageLimit && (
+            <span className="text-amber-600 font-medium">Maks meldinger nådd - avslutt for veiledning</span>
+          )}
+        </div>
+
         <div className="flex gap-2">
           <input
             type="text"
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={handleKeyDown}
-            placeholder="Skriv svaret ditt..."
-            className="flex-1 bg-[#F9F8F6] border border-gray-300 rounded-xl px-4 py-3
+            placeholder={isAtMessageLimit ? "Maks meldinger nådd" : "Skriv svaret ditt..."}
+            disabled={isAtMessageLimit}
+            maxLength={maxMessageLength + 50}
+            className={`flex-1 bg-[#F9F8F6] border rounded-xl px-4 py-3
                      focus:outline-none focus:ring-2 focus:ring-[#2D4A3E]
-                     text-[#2C2C2C] placeholder-gray-400"
+                     text-[#2C2C2C] placeholder-gray-400
+                     disabled:opacity-50 disabled:cursor-not-allowed
+                     ${isOverLimit ? 'border-red-400 focus:ring-red-400' : 'border-gray-300'}`}
             autoFocus
           />
           <button
             onClick={handleSend}
-            disabled={!input.trim() || isTyping}
+            disabled={!input.trim() || isTyping || isOverLimit || isAtMessageLimit}
             className="bg-[#2D4A3E] hover:bg-[#3D6B5A] text-white p-3 rounded-xl
                      transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >

@@ -106,6 +106,12 @@ function SimulatorContent() {
             getTips={simulator.getTips}
             onSendMessage={simulator.sendMessage}
             onRunAnalysis={simulator.runAnalysis}
+            maxMessageLength={simulator.maxMessageLength}
+            maxMessages={simulator.maxMessages}
+            messageCount={simulator.messageCount}
+            isAtMessageLimit={simulator.isAtMessageLimit}
+            limitWarning={simulator.limitWarning}
+            onClearWarning={simulator.clearLimitWarning}
           />
         )}
 

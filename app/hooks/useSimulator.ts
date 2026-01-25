@@ -1,9 +1,25 @@
 'use client';
 
-import { useState, useCallback, useMemo } from 'react';
+import { useState, useCallback, useMemo, useEffect } from 'react';
 import { ArenaId, Message, Analysis, ArenaConfig } from '../config/types';
 import { getArena } from '../config/arenas';
 import { chatWithGemini } from '../actions';
+
+// === SIKKERHETSKONFIGURASJON ===
+const MAX_MESSAGES_PER_CONVERSATION = 50;
+const MAX_MESSAGE_LENGTH = 1000;
+
+// Generer en unik klient-ID for rate limiting
+function getClientId(): string {
+  if (typeof window === 'undefined') return 'server';
+
+  let clientId = sessionStorage.getItem('pratiro_client_id');
+  if (!clientId) {
+    clientId = `client_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    sessionStorage.setItem('pratiro_client_id', clientId);
+  }
+  return clientId;
+}
 
 interface UseSimulatorReturn {
   // State
@@ -16,6 +32,7 @@ interface UseSimulatorReturn {
   isLoading: boolean;
   isTyping: boolean;
   isAnalyzing: boolean;
+  limitWarning: string | null;
 
   // Arena
   arena: ArenaConfig;
@@ -29,13 +46,20 @@ interface UseSimulatorReturn {
 
   // Simulation actions
   startSimulation: () => Promise<void>;
-  sendMessage: (text: string) => Promise<void>;
+  sendMessage: (text: string) => Promise<{ success: boolean; error?: string }>;
   runAnalysis: () => Promise<void>;
   reset: () => void;
+  clearLimitWarning: () => void;
 
   // Helpers
   getChatLabel: (role: 'user' | 'ai') => string;
   getTips: () => string;
+
+  // Limits
+  maxMessageLength: number;
+  maxMessages: number;
+  messageCount: number;
+  isAtMessageLimit: boolean;
 }
 
 export function useSimulator(arenaId: ArenaId): UseSimulatorReturn {
@@ -60,6 +84,20 @@ export function useSimulator(arenaId: ArenaId): UseSimulatorReturn {
   const [isLoading, setIsLoading] = useState(false);
   const [isTyping, setIsTyping] = useState(false);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [limitWarning, setLimitWarning] = useState<string | null>(null);
+  const [clientId, setClientId] = useState<string>('');
+
+  // Hent clientId på klientsiden
+  useEffect(() => {
+    setClientId(getClientId());
+  }, []);
+
+  // Beregn antall bruker-meldinger (ekskluderer system og AI)
+  const messageCount = useMemo(() =>
+    messages.filter(m => m.role === 'user').length,
+    [messages]
+  );
+  const isAtMessageLimit = messageCount >= MAX_MESSAGES_PER_CONVERSATION;
 
   // Computed
   const scenarios = useMemo(() => arena.getScenarios(config), [arena, config]);
@@ -108,6 +146,7 @@ export function useSimulator(arenaId: ArenaId): UseSimulatorReturn {
     if (!finalScenario || isLoading) return;
 
     setIsLoading(true);
+    setLimitWarning(null);
     setStep(2);
     setMessages([
       { role: 'system', content: `Simulering startet: ${finalScenario}` },
@@ -118,33 +157,49 @@ export function useSimulator(arenaId: ArenaId): UseSimulatorReturn {
       const rolePrompt = arena.getRolePrompt(config);
       const startPrompt = arena.getStartPrompt(config, finalScenario);
 
-      const result = await chatWithGemini(startPrompt, rolePrompt);
+      const result = await chatWithGemini(startPrompt, rolePrompt, clientId);
 
       if (result.error) {
-        const errorMsg =
-          result.error === 'RATE_LIMIT'
-            ? 'Pratiro trenger en liten tenkepause. Vent 1 minutt og prøv igjen.'
-            : 'Beklager, noe gikk galt. Prøv igjen.';
-        setMessages((prev) => [...prev, { role: 'ai', content: errorMsg }]);
-      } else {
-        setMessages((prev) => [...prev, { role: 'ai', content: result.text }]);
+        setLimitWarning(result.error);
+        setMessages((prev) => [...prev, { role: 'ai' as const, content: 'La oss prøve igjen om litt.' }]);
+      } else if (result.text) {
+        const aiResponse = result.text;
+        setMessages((prev) => [...prev, { role: 'ai' as const, content: aiResponse }]);
       }
     } catch {
       setMessages((prev) => [
         ...prev,
-        { role: 'ai', content: 'Beklager, noe gikk galt. Prøv igjen.' },
+        { role: 'ai' as const, content: 'Beklager, noe gikk galt. Prøv igjen.' },
       ]);
     }
 
     setIsTyping(false);
     setIsLoading(false);
-  }, [arena, config, customScenario, scenario, isLoading]);
+  }, [arena, config, customScenario, scenario, isLoading, clientId]);
 
   // Send message
   const sendMessage = useCallback(
-    async (text: string) => {
-      if (!text.trim() || isTyping) return;
+    async (text: string): Promise<{ success: boolean; error?: string }> => {
+      // Valider input
+      if (!text.trim() || isTyping) {
+        return { success: false, error: 'Kan ikke sende tom melding.' };
+      }
 
+      // Sjekk meldingslengde
+      if (text.length > MAX_MESSAGE_LENGTH) {
+        const error = `Meldingen er for lang. Maks ${MAX_MESSAGE_LENGTH} tegn.`;
+        setLimitWarning(error);
+        return { success: false, error };
+      }
+
+      // Sjekk maks antall meldinger
+      if (isAtMessageLimit) {
+        const error = `Du har nådd maks ${MAX_MESSAGES_PER_CONVERSATION} meldinger. Avslutt samtalen for å få veiledning.`;
+        setLimitWarning(error);
+        return { success: false, error };
+      }
+
+      setLimitWarning(null);
       const userMsg: Message = { role: 'user', content: text };
       setMessages((prev) => [...prev, userMsg]);
       setIsTyping(true);
@@ -156,32 +211,41 @@ export function useSimulator(arenaId: ArenaId): UseSimulatorReturn {
         const rolePrompt = arena.getRolePrompt(config);
         const continuePrompt = arena.getContinuePrompt(config, historyText);
 
-        const result = await chatWithGemini(continuePrompt, rolePrompt);
+        const result = await chatWithGemini(continuePrompt, rolePrompt, clientId);
 
         if (result.error) {
-          const errorMsg =
-            result.error === 'RATE_LIMIT'
-              ? 'Vent 1 minutt...'
-              : 'Feil. Prøv igjen.';
-          setMessages((prev) => [...prev, { role: 'ai', content: errorMsg }]);
-        } else {
-          setMessages((prev) => [...prev, { role: 'ai', content: result.text }]);
+          setLimitWarning(result.error);
+          setMessages((prev) => [...prev, { role: 'ai' as const, content: 'La oss ta en liten pause.' }]);
+          setIsTyping(false);
+          return { success: false, error: result.error };
+        } else if (result.text) {
+          const aiResponse = result.text;
+          setMessages((prev) => [...prev, { role: 'ai' as const, content: aiResponse }]);
         }
       } catch {
         setMessages((prev) => [
           ...prev,
-          { role: 'ai', content: 'Feil. Prøv igjen.' },
+          { role: 'ai' as const, content: 'Feil. Prøv igjen.' },
         ]);
+        setIsTyping(false);
+        return { success: false, error: 'Nettverksfeil' };
       }
 
       setIsTyping(false);
+      return { success: true };
     },
-    [arena, config, messages, isTyping, buildHistoryText]
+    [arena, config, messages, isTyping, buildHistoryText, clientId, isAtMessageLimit]
   );
+
+  // Clear limit warning
+  const clearLimitWarning = useCallback(() => {
+    setLimitWarning(null);
+  }, []);
 
   // Run analysis
   const runAnalysis = useCallback(async () => {
     setIsAnalyzing(true);
+    setLimitWarning(null);
     setStep(3);
 
     try {
@@ -195,7 +259,7 @@ export function useSimulator(arenaId: ArenaId): UseSimulatorReturn {
       );
       const systemPrompt = arena.getAnalysisSystemPrompt();
 
-      const result = await chatWithGemini(analysisPrompt, systemPrompt);
+      const result = await chatWithGemini(analysisPrompt, systemPrompt, clientId);
 
       if (result.error) {
         setAnalysis({
@@ -205,7 +269,7 @@ export function useSimulator(arenaId: ArenaId): UseSimulatorReturn {
           perspective: '',
           score: 0,
         });
-      } else {
+      } else if (result.text) {
         try {
           // Clean the response and parse JSON
           const cleanedText = result.text
@@ -251,6 +315,7 @@ export function useSimulator(arenaId: ArenaId): UseSimulatorReturn {
     setStep(1);
     setScenario('');
     setCustomScenario('');
+    setLimitWarning(null);
   }, []);
 
   return {
@@ -264,6 +329,7 @@ export function useSimulator(arenaId: ArenaId): UseSimulatorReturn {
     isLoading,
     isTyping,
     isAnalyzing,
+    limitWarning,
 
     // Arena
     arena,
@@ -280,9 +346,16 @@ export function useSimulator(arenaId: ArenaId): UseSimulatorReturn {
     sendMessage,
     runAnalysis,
     reset,
+    clearLimitWarning,
 
     // Helpers
     getChatLabel,
     getTips,
+
+    // Limits
+    maxMessageLength: MAX_MESSAGE_LENGTH,
+    maxMessages: MAX_MESSAGES_PER_CONVERSATION,
+    messageCount,
+    isAtMessageLimit,
   };
 }
