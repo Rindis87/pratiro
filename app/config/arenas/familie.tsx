@@ -116,10 +116,18 @@ IKKE GJØR DETTE:
   getContinuePrompt: (config: Record<string, unknown>, history: string): string => {
     const age = Number(config.age) || 8;
 
-    return `Her er samtalen så langt:
+    return `SAMTALEHISTORIKK:
 ${history}
 
-Forelderen sa akkurat det siste over. Svar som barnet (${age} år). Hold deg i karakter. Vær kort (1-3 setninger). Svar på norsk.`;
+Forelderen sa akkurat det siste. Svar som barnet (${age} år).
+
+REAGER PÅ DET SOM BLE SAGT:
+- Hvis forelderen validerte følelsene dine, vis at det hadde effekt (litt mildere tone)
+- Hvis forelderen ble sint eller streng, reager naturlig (bli lei deg, sint, eller stille)
+- Hvis forelderen stilte et spørsmål, svar på det (men kan fortsatt være vanskelig)
+- Ikke ignorer argumentene deres - reager på dem
+
+Hold deg i karakter. Vær kort (1-3 setninger). Svar på norsk.`;
   },
 
   getAnalysisPrompt: (config: Record<string, unknown>, history: string, scenario: string): string => {

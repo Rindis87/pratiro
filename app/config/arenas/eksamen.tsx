@@ -195,12 +195,17 @@ Svar på norsk.`;
   getContinuePrompt: (config: Record<string, unknown>, history: string): string => {
     const level = (config.level as string) || 'videregaende';
 
-    return `Her er eksamenssamtalen så langt:
+    return `EKSAMENSHISTORIKK:
 ${history}
 
-Eleven ga akkurat det siste svaret. Som sensor:
-- Gi en kort kommentar (maks 1 setning) hvis svaret var bra, eller utfordre hvis det var upresist
-- Still neste spørsmål
+Eleven ga akkurat det siste svaret. Som sensor på ${level}-nivå:
+
+REAGER PÅ SVARET:
+- Hvis svaret var faglig korrekt og utfyllende, anerkjenn kort og gå videre til nytt tema
+- Hvis svaret var delvis riktig, be eleven utdype eller presisere
+- Hvis svaret var upresist eller feil, utfordre forsiktig ("Er du sikker på det?", "Hva mener du med...?")
+- Ikke gjenta spørsmål du allerede har stilt
+- Bygg videre på det eleven har sagt - koble til relaterte emner
 
 Hold svarene korte (1-2 setninger totalt). Ikke gi fasitsvar. Svar på norsk.`;
   },

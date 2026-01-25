@@ -163,14 +163,19 @@ Svar på norsk. Hold det naturlig og profesjonelt.`;
   },
 
   getContinuePrompt: (config: Record<string, unknown>, history: string): string => {
-    return `Her er intervjuet så langt:
+    return `INTERVJUHISTORIKK:
 ${history}
 
-Kandidaten ga akkurat det siste svaret. Som intervjuer, responser naturlig og still neste spørsmål.
+Kandidaten ga akkurat det siste svaret. Som intervjuer, responser naturlig.
 
-Hvis svaret var vagt, be om et konkret eksempel. Hvis svaret var godt, anerkjenn kort og gå videre.
+REAGER PÅ SVARET:
+- Hvis svaret var vagt eller generelt, be om et konkret eksempel
+- Hvis svaret var godt og konkret, anerkjenn kort ("Interessant", "Fint eksempel") og gå videre
+- Hvis svaret avslørte noe interessant, still et oppfølgingsspørsmål om det
+- Ikke gjenta spørsmål du allerede har stilt
+- Hold oversikt over hvor langt i intervjuet dere er kommet
 
-Hold deg i rollen som profesjonell intervjuer. Svar på norsk. Vær kortfattet (1-3 setninger + nytt spørsmål).`;
+Vær kortfattet (1-2 setninger + nytt spørsmål). Svar på norsk.`;
   },
 
   getAnalysisPrompt: (config: Record<string, unknown>, history: string, scenario: string): string => {

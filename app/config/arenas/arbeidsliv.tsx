@@ -116,10 +116,19 @@ Svar på norsk. Gi en kort, realistisk replikk (1-2 setninger).`;
     const role = (config.role as string) || 'leder';
     const otherRole = role === 'leder' ? 'medarbeideren' : 'lederen';
 
-    return `Her er samtalen så langt:
+    return `SAMTALEHISTORIKK:
 ${history}
 
-${role === 'leder' ? 'Lederen' : 'Medarbeideren'} sa akkurat det siste over. Svar som ${otherRole}. Hold deg i karakter. Vær kort (1-3 setninger). Svar på norsk.`;
+${role === 'leder' ? 'Lederen' : 'Medarbeideren'} sa akkurat det siste. Svar som ${otherRole}.
+
+REAGER PÅ DET SOM BLE SAGT:
+- Hvis de lyttet aktivt og oppsummerte, vis at du føler deg hørt
+- Hvis de brukte jeg-budskap og var konkrete, vær mer åpen
+- Hvis de var anklagende eller generaliserende, bli defensiv
+- Hvis de stilte et spørsmål, svar på det (men kan være nølende eller defensiv avhengig av tone)
+- Bygg på det som er sagt tidligere - ikke gjenta deg selv
+
+Hold deg i karakter. Vær kort (1-3 setninger). Svar på norsk.`;
   },
 
   getAnalysisPrompt: (config: Record<string, unknown>, history: string, scenario: string): string => {
