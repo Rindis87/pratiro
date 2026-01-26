@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { DM_Sans, DM_Serif_Display } from "next/font/google";
+import { DM_Sans, DM_Serif_Display, Outfit, Inter } from "next/font/google";
 import "./globals.css";
 
 const dmSans = DM_Sans({
@@ -14,6 +14,18 @@ const dmSerif = DM_Serif_Display({
   weight: '400'
 });
 
+const outfit = Outfit({
+  subsets: ["latin"],
+  variable: '--font-outfit',
+  weight: ['300', '400', '500', '600', '700', '800']
+});
+
+const inter = Inter({
+  subsets: ["latin"],
+  variable: '--font-inter',
+  weight: ['300', '400', '500', '600']
+});
+
 export const metadata: Metadata = {
   title: "Pratiro",
   description: "Øv på livets viktige samtaler – trygt og i ditt eget tempo",
@@ -26,7 +38,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="no">
-      <body className={`${dmSans.variable} ${dmSerif.variable} font-sans antialiased bg-mist`}>
+      <body className={`${dmSans.variable} ${dmSerif.variable} ${outfit.variable} ${inter.variable} font-sans antialiased`}>
         {children}
       </body>
     </html>

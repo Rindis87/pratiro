@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pratiro - Mestring gjennom dialog</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        /* BRAND VARIABLES */
+        :root {
+            --color-bg: #0f172a;
+            --color-primary: #10b981;
+        }
+        
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background-color: var(--color-bg);
+            color: #f8fafc;
+        }
+        
+        .font-brand { font-family: 'Outfit', sans-serif; }
+        
+        /* Glassmorphism Logic */
+        .glass {
+            background: rgba(30, 41, 59, 0.6);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        
+        .glass-card {
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+
+        /* Animations */
+        @keyframes float {
+            0% { transform: translateY(0px) rotate(1deg); }
+            50% { transform: translateY(-10px) rotate(0deg); }
+            100% { transform: translateY(0px) rotate(1deg); }
+        }
+        .animate-float {
+            animation: float 6s ease-in-out infinite;
+        }
+
+        /* Smooth Scroll */
+        html { scroll-behavior: smooth; }
+    </style>
+</head>
+<body class="antialiased selection:bg-emerald-500 selection:text-white">
+
+    <!-- --- BACKGROUND LAYER --- -->
+    <div class="fixed inset-0 z-0 pointer-events-none">
+        <!-- Scandi Nature Image -->
+        <!-- Justert opacity for bedre synlighet -->
+        <img src="https://images.unsplash.com/photo-1500382017468-9049fed747ef?q=80&w=2832&auto=format&fit=crop" 
+             class="w-full h-full object-cover opacity-70" 
+             alt="Rolig skandinavisk natur">
+        
+        <!-- Adjusted Gradient Overlay: 
+             Laget mye lettere (mer gjennomsiktig) for å slippe naturen gjennom, 
+             men beholder mørke bak teksten til venstre. 
+        -->
+        <div class="absolute inset-0 bg-gradient-to-r from-slate-900/90 via-slate-900/60 to-transparent"></div>
+        <div class="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/20 to-transparent"></div>
+    </div>
+
+
+    <!-- --- NAVBAR --- -->
+    <nav class="fixed top-0 left-0 right-0 z-50 border-b border-white/5 bg-slate-900/60 backdrop-blur-md">
+        <div class="max-w-7xl mx-auto px-6 h-20 flex justify-between items-center">
+            
+            <!-- LOGO VARIANT: Taleboblen (Speech Bubble) - Adjusted Size -->
+            <!-- Krympet ikon fra w-9 til w-8 og justert padding for bedre balanse mot tekst -->
+            <a href="#" class="flex items-center gap-2.5 group">
+                <div class="w-8 h-7 bg-emerald-500 rounded-tl-lg rounded-tr-lg rounded-br-lg flex items-center justify-center gap-0.5 shadow-lg shadow-emerald-500/20 group-hover:bg-emerald-400 transition-colors">
+                    <div class="w-1 h-3.5 bg-white rounded-full"></div>
+                    <div class="w-1 h-3.5 bg-white rounded-full"></div>
+                </div>
+                <span class="text-xl font-brand font-bold text-white tracking-tight group-hover:text-emerald-50 transition-colors">Pratiro</span>
+            </a>
+            
+            <!-- Desktop Menu -->
+            <div class="hidden md:flex items-center gap-8 text-sm font-medium text-slate-200">
+                <a href="#features" class="hover:text-white transition-colors drop-shadow-md">Løsninger</a>
+                <a href="#company" class="hover:text-white transition-colors drop-shadow-md">Bedrift</a>
+                <a href="#student" class="group flex items-center gap-2 hover:text-blue-300 transition-colors drop-shadow-md">
+                    Student 
+                    <span class="text-[10px] font-bold bg-blue-500/20 text-blue-200 border border-blue-500/30 px-2 py-0.5 rounded-full uppercase tracking-wider group-hover:bg-blue-500 group-hover:text-white transition-all">Nyhet</span>
+                </a>
+            </div>
+
+            <!-- Login / CTA -->
+            <div class="hidden md:flex items-center gap-4">
+                <a href="#" class="text-sm font-medium text-slate-200 hover:text-white transition-colors drop-shadow-md">Logg inn</a>
+                <a href="#" class="px-5 py-2 rounded-full bg-emerald-600 hover:bg-emerald-500 text-white text-sm font-bold shadow-lg shadow-emerald-900/50 transition-all hover:-translate-y-0.5 border border-emerald-500/50">
+                    Start gratis
+                </a>
+            </div>
+        </div>
+    </nav>
+
+
+    <!-- --- HERO SECTION --- -->
+    <header class="relative z-10 pt-32 pb-20 lg:pt-48 lg:pb-32 px-6">
+        <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+            
+            <!-- Left: Content -->
+            <div class="space-y-8 max-w-2xl">
+                <!-- Tagline -->
+                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-950/40 border border-emerald-500/30 text-emerald-300 text-xs font-bold uppercase tracking-wider backdrop-blur-md shadow-sm">
+                    <span class="relative flex h-2 w-2">
+                      <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                      <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                    </span>
+                    AI-drevet simulering
+                </div>
+                
+                <!-- Headline (Outfit) -->
+                <h1 class="text-5xl md:text-6xl lg:text-7xl font-brand font-bold text-white leading-[1.1] tracking-tight drop-shadow-lg">
+                    Vanskelige samtaler. <br/>
+                    <span class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-teal-200 filter drop-shadow-sm">Enkle å øve på.</span>
+                </h1>
+                
+                <!-- Subtext (Inter) -->
+                <p class="text-lg text-slate-100 leading-relaxed max-w-lg font-light drop-shadow-md font-medium">
+                    Pratiro gir deg et trygt rom for å mestre krevende dialoger. 
+                    Enten du er leder, ansatt eller student – øv i ro, prester når det gjelder.
+                </p>
+                
+                <!-- Buttons -->
+                <div class="flex flex-col sm:flex-row gap-4 pt-2">
+                    <button class="px-8 py-4 rounded-full bg-emerald-600 hover:bg-emerald-500 text-white font-brand font-bold text-lg transition-all shadow-[0_0_40px_-10px_rgba(16,185,129,0.5)] hover:shadow-[0_0_60px_-10px_rgba(16,185,129,0.6)] hover:-translate-y-1 border-t border-white/20">
+                        Prøv simulatoren
+                    </button>
+                    <button class="px-8 py-4 rounded-full glass text-white font-brand font-semibold text-lg hover:bg-white/10 transition-all flex items-center justify-center gap-2 group border border-white/20 shadow-lg">
+                        <div class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center group-hover:scale-110 transition-transform">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 fill-white" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                        </div>
+                        Se demofilm
+                    </button>
+                </div>
+                
+                <!-- Social Proof -->
+                <div class="pt-8 border-t border-white/10">
+                    <p class="text-slate-300 text-xs uppercase tracking-widest mb-4 font-semibold shadow-black drop-shadow-md">Brukt av HR-ledere i</p>
+                    <div class="flex gap-8 opacity-70 grayscale mix-blend-screen">
+                        <!-- Mock Logos -->
+                        <div class="h-8 w-24 bg-white/20 rounded shadow-sm"></div>
+                        <div class="h-8 w-24 bg-white/20 rounded shadow-sm"></div>
+                        <div class="h-8 w-24 bg-white/20 rounded hidden sm:block shadow-sm"></div>
+                    </div>
+                </div>
+            </div>
+
+
+            <!-- Right: Interactive Component (Glass Card) -->
+            <div class="hidden lg:block relative perspective-1000">
+                <!-- Ambient Glows -->
+                <div class="absolute -top-20 -right-20 w-96 h-96 bg-emerald-500/20 rounded-full blur-[100px] animate-pulse"></div>
+                <div class="absolute -bottom-20 -left-20 w-80 h-80 bg-blue-500/10 rounded-full blur-[80px]"></div>
+                
+                <!-- The Main Card -->
+                <div class="glass-card rounded-[2rem] p-8 relative animate-float transform rotate-y-12 border border-white/10">
+                    
+                    <!-- Card Header -->
+                    <div class="flex justify-between items-center mb-8 pb-6 border-b border-white/5">
+                        <div class="flex items-center gap-4">
+                            <!-- Small Brand Logo (Mini Speech Bubble) -->
+                            <div class="w-12 h-12 rounded-2xl bg-slate-800 flex items-center justify-center text-emerald-400 border border-white/10 shadow-inner">
+                                <div class="w-6 h-5 bg-emerald-500 rounded-tl-md rounded-tr-md rounded-br-md flex items-center justify-center gap-0.5">
+                                    <div class="w-0.5 h-3 bg-white rounded-full"></div>
+                                    <div class="w-0.5 h-3 bg-white rounded-full"></div>
+                                </div>
+                            </div>
+                            <div>
+                                <h3 class="text-white font-brand font-bold text-lg">Lønnssamtalen</h3>
+                                <p class="text-emerald-400 text-xs font-mono uppercase tracking-wide">Nivå: Krevende</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-1">
+                            <div class="w-3 h-3 rounded-full bg-red-500/20 border border-red-500/50"></div>
+                            <div class="w-3 h-3 rounded-full bg-yellow-500/20 border border-yellow-500/50"></div>
+                            <div class="w-3 h-3 rounded-full bg-green-500/20 border border-green-500/50"></div>
+                        </div>
+                    </div>
+
+                    <!-- Chat UI -->
+                    <div class="space-y-6 mb-8">
+                        <!-- AI Bubble -->
+                        <div class="flex gap-4">
+                            <div class="w-10 h-10 rounded-full bg-gradient-to-br from-indigo-500 to-blue-600 flex items-center justify-center text-xs text-white font-bold shadow-lg shadow-indigo-500/30 border border-white/10">AI</div>
+                            <div class="bg-slate-800/80 p-4 rounded-2xl rounded-tl-none text-sm text-slate-200 border border-white/5 leading-relaxed shadow-lg w-4/5 backdrop-blur-md">
+                                Jeg forstår at du ønsker en lønnsjustering. Hvilke konkrete resultater har du oppnådd dette kvartalet som støtter kravet ditt?
+                            </div>
+                        </div>
+                        
+                        <!-- User Bubble -->
+                        <div class="flex gap-4 flex-row-reverse">
+                            <div class="w-10 h-10 rounded-full bg-slate-700 flex items-center justify-center text-xs text-white font-bold border border-white/10 shadow-md">EG</div>
+                            <div class="bg-emerald-600 p-4 rounded-2xl rounded-tr-none text-sm text-white shadow-lg shadow-emerald-900/20 w-4/5 border border-emerald-500/50">
+                                Jeg har ledet prosjektet "Alpha" som økte salget med 20% i Q4, samtidig som jeg reduserte kostnadene med...
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Feedback Overlay -->
+                    <div class="bg-slate-900/90 backdrop-blur rounded-xl p-4 border border-emerald-500/30 flex items-center justify-between shadow-xl">
+                        <div class="flex items-center gap-4">
+                            <div class="relative w-12 h-12">
+                                <svg class="w-full h-full transform -rotate-90">
+                                    <circle cx="24" cy="24" r="20" stroke="#1e293b" stroke-width="4" fill="transparent"/>
+                                    <circle cx="24" cy="24" r="20" stroke="#10b981" stroke-width="4" fill="transparent" stroke-dasharray="125" stroke-dashoffset="20" stroke-linecap="round"/>
+                                </svg>
+                                <div class="absolute inset-0 flex items-center justify-center text-[10px] font-bold text-white">85%</div>
+                            </div>
+                            <div>
+                                <p class="text-emerald-400 text-xs font-bold uppercase tracking-wider">Sanntidsanalyse</p>
+                                <p class="text-white text-sm">Sterk argumentasjon!</p>
+                            </div>
+                        </div>
+                        <div class="w-8 h-8 rounded-full bg-emerald-500/20 flex items-center justify-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- --- FEATURE STRIP (Visualizing the sub-brands) --- -->
+    <section class="relative z-10 py-24 bg-slate-900/80 border-t border-white/5 backdrop-blur-sm">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                
+                <!-- Feature 1: Corporate (Emerald) -->
+                <div class="p-8 rounded-2xl bg-white/5 border border-white/5 hover:bg-white/10 transition-colors group shadow-lg">
+                    <div class="w-14 h-14 bg-emerald-500/20 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform shadow-inner border border-emerald-500/10">
+                        <svg class="w-7 h-7 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
+                    </div>
+                    <h3 class="text-xl font-brand font-bold text-white mb-2">For Bedrifter</h3>
+                    <p class="text-slate-400 text-sm leading-relaxed">Styrk lederskap og HR-prosesser. Øv på medarbeidersamtaler og konflikthåndtering i et trygt miljø.</p>
+                </div>
+
+                <!-- Feature 2: Student (Blue) -->
+                <div class="p-8 rounded-2xl bg-white/5 border border-white/5 hover:bg-white/10 transition-colors group relative overflow-hidden shadow-lg">
+                    <div class="absolute top-0 right-0 w-24 h-24 bg-blue-500/10 rounded-full blur-2xl group-hover:bg-blue-500/20 transition-colors"></div>
+                    <div class="w-14 h-14 bg-blue-500/20 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform shadow-inner border border-blue-500/10">
+                        <svg class="w-7 h-7 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" /></svg>
+                    </div>
+                    <h3 class="text-xl font-brand font-bold text-white mb-2">Pratiro Student</h3>
+                    <p class="text-slate-400 text-sm leading-relaxed">Forbered deg til muntlig eksamen. Simuler sensorspørsmål og få umiddelbar feedback på svarene dine.</p>
+                </div>
+
+                <!-- Feature 3: GloseFlow (Neon) -->
+                <div class="p-8 rounded-2xl bg-slate-800 border border-purple-500/20 hover:border-purple-500/40 transition-colors group relative overflow-hidden shadow-lg">
+                    <div class="absolute inset-0 bg-gradient-to-br from-purple-500/5 to-pink-500/5 group-hover:opacity-100 transition-opacity"></div>
+                    <div class="w-14 h-14 bg-purple-500/20 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform relative z-10 shadow-inner border border-purple-500/10">
+                        <svg class="w-7 h-7 text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
+                    </div>
+                    <h3 class="text-xl font-brand font-bold text-white mb-2 relative z-10">GloseFlow <span class="text-[10px] uppercase bg-purple-500 text-white px-1.5 py-0.5 rounded ml-2 align-middle">Beta</span></h3>
+                    <p class="text-slate-400 text-sm leading-relaxed relative z-10">Gjør pugging til et spill. "Gamified" læring der du fanger gloser i fart for å bygge poeng.</p>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+</body>
+</html>
