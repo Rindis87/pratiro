@@ -44,7 +44,7 @@ const SendIcon = () => (
 
 const AnalysisIcon = () => (
   <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+    <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
   </svg>
 );
 
@@ -91,24 +91,24 @@ export default function ChatStep({
   const filteredMessages = messages.filter((m) => m.role !== 'system');
 
   return (
-    <div className="flex flex-col h-[calc(100dvh-12rem)] min-h-[400px] max-h-[700px] md:h-[600px] bg-[#F9F8F6]">
+    <div className="flex flex-col h-[calc(100dvh-12rem)] min-h-[400px] max-h-[700px] md:h-[600px] bg-slate-900">
       {/* Tips bar */}
-      <div className="bg-[#2D4A3E]/5 px-4 py-2 text-sm text-[#2D4A3E] flex justify-between items-center border-b border-[#2D4A3E]/10 gap-2">
+      <div className="bg-emerald-500/10 px-4 py-2 text-sm text-emerald-300 flex justify-between items-center border-b border-emerald-500/20 gap-2">
         <span className="flex-1">
           <b>Tips:</b> {getTips()}
         </span>
-        <span className={`shrink-0 ${messageCount >= maxMessages - 5 ? 'text-amber-600 font-medium' : 'text-gray-500'}`}>
+        <span className={`shrink-0 ${messageCount >= maxMessages - 5 ? 'text-amber-400 font-medium' : 'text-slate-400'}`}>
           {messageCount}/{maxMessages}
         </span>
       </div>
 
       {/* Warning banner */}
       {limitWarning && (
-        <div className="bg-amber-50 border-b border-amber-200 px-4 py-2 text-sm text-amber-800 flex justify-between items-center gap-2">
+        <div className="bg-amber-500/10 border-b border-amber-500/30 px-4 py-2 text-sm text-amber-300 flex justify-between items-center gap-2">
           <span className="flex-1">{limitWarning}</span>
           <button
             onClick={onClearWarning}
-            className="w-11 h-11 min-w-[44px] min-h-[44px] flex items-center justify-center text-amber-600 hover:text-amber-800 hover:bg-amber-100 rounded-lg transition-colors font-medium text-lg"
+            className="w-11 h-11 min-w-[44px] min-h-[44px] flex items-center justify-center text-amber-400 hover:text-amber-300 hover:bg-amber-500/20 rounded-lg transition-colors font-medium text-lg"
             aria-label="Lukk advarsel"
           >
             ✕
@@ -132,8 +132,8 @@ export default function ChatStep({
               <div
                 className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 shadow-sm ${
                   msg.role === 'user'
-                    ? 'bg-[#2D4A3E] text-white'
-                    : 'bg-white text-[#3D6B5A] border border-[#3D6B5A]/20'
+                    ? 'bg-emerald-600 text-white'
+                    : 'bg-slate-800 text-emerald-400 border border-white/10'
                 }`}
               >
                 {msg.role === 'user' ? <UserIcon /> : <AIIcon />}
@@ -143,7 +143,7 @@ export default function ChatStep({
               <div className="flex flex-col gap-1">
                 <span
                   className={`text-sm font-medium ${
-                    msg.role === 'user' ? 'text-right text-gray-500' : 'text-gray-500'
+                    msg.role === 'user' ? 'text-right text-slate-400' : 'text-slate-400'
                   }`}
                 >
                   {getChatLabel(msg.role as 'user' | 'ai')}
@@ -151,8 +151,8 @@ export default function ChatStep({
                 <div
                   className={`p-4 shadow-sm text-[15px] leading-relaxed ${
                     msg.role === 'user'
-                      ? 'bg-[#2D4A3E] text-white rounded-l-2xl rounded-tr-2xl'
-                      : 'bg-white text-[#2C2C2C] border border-gray-200 rounded-r-2xl rounded-bl-2xl'
+                      ? 'bg-emerald-600 text-white rounded-l-2xl rounded-tr-2xl'
+                      : 'bg-slate-800 text-slate-100 border border-white/10 rounded-r-2xl rounded-bl-2xl'
                   }`}
                 >
                   {msg.content}
@@ -165,10 +165,10 @@ export default function ChatStep({
         {/* Typing indicator */}
         {isTyping && (
           <div className="flex justify-start ml-14">
-            <div className="bg-gray-200 px-4 py-2 rounded-full flex gap-1 animate-pulse">
-              <span className="w-1.5 h-1.5 bg-gray-400 rounded-full"></span>
-              <span className="w-1.5 h-1.5 bg-gray-400 rounded-full"></span>
-              <span className="w-1.5 h-1.5 bg-gray-400 rounded-full"></span>
+            <div className="bg-slate-800 px-4 py-2 rounded-full flex gap-1 animate-pulse border border-white/10">
+              <span className="w-1.5 h-1.5 bg-slate-500 rounded-full"></span>
+              <span className="w-1.5 h-1.5 bg-slate-500 rounded-full"></span>
+              <span className="w-1.5 h-1.5 bg-slate-500 rounded-full"></span>
             </div>
           </div>
         )}
@@ -177,14 +177,14 @@ export default function ChatStep({
       </div>
 
       {/* Input Area */}
-      <div className="p-4 bg-white border-t border-gray-200 flex flex-col gap-3">
+      <div className="p-4 bg-slate-800/50 border-t border-white/10 flex flex-col gap-3">
         {/* Character counter */}
         <div className="flex justify-between items-center text-sm">
-          <span className={`${isOverLimit ? 'text-red-500 font-medium' : charsRemaining <= 100 ? 'text-amber-600' : 'text-gray-400'}`}>
+          <span className={`${isOverLimit ? 'text-red-400 font-medium' : charsRemaining <= 100 ? 'text-amber-400' : 'text-slate-500'}`}>
             {isOverLimit ? `${Math.abs(charsRemaining)} tegn for mye` : `${charsRemaining} tegn igjen`}
           </span>
           {isAtMessageLimit && (
-            <span className="text-amber-600 font-medium text-right">Maks nådd - avslutt for veiledning</span>
+            <span className="text-amber-400 font-medium text-right">Maks nådd - avslutt for veiledning</span>
           )}
         </div>
 
@@ -197,17 +197,17 @@ export default function ChatStep({
             placeholder={isAtMessageLimit ? "Maks meldinger nådd" : "Skriv svaret ditt..."}
             disabled={isAtMessageLimit}
             maxLength={maxMessageLength + 50}
-            className={`flex-1 bg-[#F9F8F6] border rounded-xl px-4 py-3
-                     focus:outline-none focus:ring-2 focus:ring-[#2D4A3E]
-                     text-[#2C2C2C] placeholder-gray-400
+            className={`flex-1 bg-slate-900 border rounded-xl px-4 py-3
+                     focus:outline-none focus:ring-2 focus:ring-emerald-500
+                     text-white placeholder-slate-500
                      disabled:opacity-50 disabled:cursor-not-allowed
-                     ${isOverLimit ? 'border-red-400 focus:ring-red-400' : 'border-gray-300'}`}
+                     ${isOverLimit ? 'border-red-500 focus:ring-red-500' : 'border-white/10'}`}
             autoFocus
           />
           <button
             onClick={handleSend}
             disabled={!input.trim() || isTyping || isOverLimit || isAtMessageLimit}
-            className="bg-[#2D4A3E] hover:bg-[#3D6B5A] text-white p-3 rounded-xl
+            className="bg-emerald-600 hover:bg-emerald-500 text-white p-3 rounded-xl
                      transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <SendIcon />
@@ -217,9 +217,9 @@ export default function ChatStep({
         {/* Analysis button */}
         <button
           onClick={onRunAnalysis}
-          className="w-full bg-[#2D4A3E]/5 hover:bg-[#2D4A3E]/10 text-[#2D4A3E]
+          className="w-full bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400
                    font-medium py-3 rounded-xl flex items-center justify-center gap-2
-                   transition-colors mt-2 border border-[#2D4A3E]/10"
+                   transition-colors mt-2 border border-emerald-500/30"
         >
           <AnalysisIcon />
           Avslutt og få veiledning

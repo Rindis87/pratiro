@@ -140,7 +140,7 @@ export default function LandingPage() {
               Arenaer
             </button>
             <button onClick={() => scrollTo('om')} className="hover:text-white transition-colors">
-              Om oss
+              Om Pratiro
             </button>
           </div>
 
@@ -198,15 +198,15 @@ export default function LandingPage() {
             </div>
           </div>
 
-          {/* Right: App Preview - matches real simulator */}
+          {/* Right: App Preview - Arbeidsliv simulator with dark theme */}
           <div className="hidden lg:block relative">
             {/* Ambient glows */}
             <div className="absolute -top-20 -right-20 w-96 h-96 bg-emerald-500/15 rounded-full blur-[100px] animate-pulse"></div>
             <div className="absolute -bottom-20 -left-20 w-80 h-80 bg-teal-500/10 rounded-full blur-[80px]"></div>
 
-            {/* Simulator Preview Card */}
-            <div className="bg-white rounded-[24px] shadow-2xl overflow-hidden animate-float border border-slate-200/50">
-              {/* Header - like real simulator */}
+            {/* Simulator Preview Card - Dark theme like real simulator */}
+            <div className="glass-card rounded-[24px] overflow-hidden animate-float">
+              {/* Header */}
               <div className="bg-emerald-600 px-5 py-4 flex items-center gap-3">
                 <div className="w-8 h-7 bg-white/20 rounded-tl-md rounded-tr-md rounded-br-md flex items-center justify-center gap-0.5">
                   <div className="w-0.5 h-3 bg-white rounded-full"></div>
@@ -214,34 +214,34 @@ export default function LandingPage() {
                 </div>
                 <div>
                   <span className="text-white font-brand font-semibold">Pratiro</span>
-                  <p className="text-white/70 text-[10px] font-medium uppercase tracking-wider">Familie & Barn</p>
+                  <p className="text-white/70 text-[10px] font-medium uppercase tracking-wider">Arbeidsliv</p>
                 </div>
               </div>
 
               {/* Tips bar */}
-              <div className="bg-emerald-50 px-4 py-2 text-xs text-emerald-800 flex justify-between items-center border-b border-emerald-100">
-                <span><b>Tips:</b> Prøv å anerkjenne barnets følelser først</span>
-                <span className="text-emerald-600 font-medium">3/50</span>
+              <div className="bg-emerald-500/10 px-4 py-2 text-xs text-emerald-300 flex justify-between items-center border-b border-emerald-500/20">
+                <span><b>Tips:</b> Bruk jeg-budskap og konkrete eksempler</span>
+                <span className="text-slate-400 font-medium">2/50</span>
               </div>
 
               {/* Chat Area */}
-              <div className="bg-slate-50 p-4 space-y-4 min-h-[240px]">
-                {/* AI Message (Child) */}
+              <div className="bg-slate-900 p-4 space-y-4 min-h-[240px]">
+                {/* AI Message (Medarbeider) */}
                 <div className="flex gap-3">
-                  <div className="w-9 h-9 rounded-full bg-white border border-emerald-200 flex items-center justify-center shrink-0 shadow-sm">
-                    <svg className="w-5 h-5 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                  <div className="w-9 h-9 rounded-full bg-slate-800 border border-white/10 flex items-center justify-center shrink-0 shadow-sm">
+                    <svg className="w-5 h-5 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
                       <path strokeLinecap="round" strokeLinejoin="round" d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
                     </svg>
                   </div>
                   <div className="flex flex-col gap-1">
-                    <span className="text-xs font-medium text-slate-500">Emma (8 år)</span>
-                    <div className="bg-white p-3 rounded-2xl rounded-tl-sm text-sm text-slate-700 border border-slate-200 shadow-sm">
-                      Nei! Jeg vil ikke legge vekk iPaden! Alle de andre får spille så lenge de vil!
+                    <span className="text-xs font-medium text-slate-400">Medarbeider</span>
+                    <div className="bg-slate-800 p-3 rounded-2xl rounded-tl-sm text-sm text-slate-100 border border-white/10 shadow-sm">
+                      Hei, du ville snakke med meg? Jeg var ikke helt sikker på hva det gjaldt.
                     </div>
                   </div>
                 </div>
 
-                {/* User Message (Parent) */}
+                {/* User Message (Leder) */}
                 <div className="flex gap-3 flex-row-reverse">
                   <div className="w-9 h-9 rounded-full bg-emerald-600 flex items-center justify-center shrink-0 shadow-sm">
                     <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
@@ -250,33 +250,33 @@ export default function LandingPage() {
                     </svg>
                   </div>
                   <div className="flex flex-col gap-1 items-end">
-                    <span className="text-xs font-medium text-slate-500">Deg</span>
+                    <span className="text-xs font-medium text-slate-400">Deg</span>
                     <div className="bg-emerald-600 p-3 rounded-2xl rounded-tr-sm text-sm text-white shadow-sm">
-                      Jeg skjønner at du synes det er kjedelig å stoppe...
+                      Ja, jeg ønsket å snakke om prosjektet. Jeg har lagt merke til noen utfordringer...
                     </div>
                   </div>
                 </div>
 
                 {/* AI Response */}
                 <div className="flex gap-3">
-                  <div className="w-9 h-9 rounded-full bg-white border border-emerald-200 flex items-center justify-center shrink-0 shadow-sm">
-                    <svg className="w-5 h-5 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                  <div className="w-9 h-9 rounded-full bg-slate-800 border border-white/10 flex items-center justify-center shrink-0 shadow-sm">
+                    <svg className="w-5 h-5 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
                       <path strokeLinecap="round" strokeLinejoin="round" d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
                     </svg>
                   </div>
                   <div className="flex flex-col gap-1">
-                    <span className="text-xs font-medium text-slate-500">Emma (8 år)</span>
-                    <div className="bg-white p-3 rounded-2xl rounded-tl-sm text-sm text-slate-700 border border-slate-200 shadow-sm">
-                      Men det er så urettferdig! Hvorfor må jeg alltid slutte først?
+                    <span className="text-xs font-medium text-slate-400">Medarbeider</span>
+                    <div className="bg-slate-800 p-3 rounded-2xl rounded-tl-sm text-sm text-slate-100 border border-white/10 shadow-sm">
+                      Åh... Er det noe jeg har gjort feil? Jeg har jobbet veldig hardt.
                     </div>
                   </div>
                 </div>
               </div>
 
               {/* Input Area */}
-              <div className="bg-white p-4 border-t border-slate-200">
+              <div className="bg-slate-800/50 p-4 border-t border-white/10">
                 <div className="flex gap-2 mb-3">
-                  <div className="flex-1 bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm text-slate-400">
+                  <div className="flex-1 bg-slate-900 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-slate-500">
                     Skriv svaret ditt...
                   </div>
                   <div className="bg-emerald-600 p-2.5 rounded-xl">
@@ -286,7 +286,7 @@ export default function LandingPage() {
                     </svg>
                   </div>
                 </div>
-                <button className="w-full bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-medium py-2.5 rounded-xl flex items-center justify-center gap-2 text-sm border border-emerald-200 transition-colors">
+                <button className="w-full bg-emerald-500/10 text-emerald-400 font-medium py-2.5 rounded-xl flex items-center justify-center gap-2 text-sm border border-emerald-500/30 transition-colors">
                   <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>

@@ -94,7 +94,8 @@ IKKE GJØR DETTE:
 - Ikke vær en karikatur eller overdrevent vanskelig
 - Ikke gi deg umiddelbart uten god grunn
 - Ikke plutselig bli helt enig uten at den andre har gjort noe for å fortjene det
-- Ikke løs problemet for dem - la dem jobbe for løsningen`;
+- Ikke løs problemet for dem - la dem jobbe for løsningen
+- ALDRI bruk plassholdere som [navn], [lederens navn] osv. - snakk naturlig uten å navngi noen`;
   },
 
   getStartPrompt: (config: Record<string, unknown>, scenario: string): string => {

@@ -32,13 +32,10 @@ export default function ConfigStep({
   const canStart = (scenario || customScenario) && !isLoading;
 
   return (
-    <div className="p-6 md:p-10 flex-1 flex flex-col gap-8 bg-white">
+    <div className="p-6 md:p-10 flex-1 flex flex-col gap-8 bg-slate-900">
       {/* Header */}
       <div className="text-center mb-4">
-        <h2
-          className="text-3xl text-[#2C2C2C] font-normal mb-2"
-          style={{ fontFamily: 'var(--font-dm-serif), Georgia, serif' }}
-        >
+        <h2 className="text-3xl font-brand font-bold text-white mb-2">
           {arena.id === 'familie'
             ? 'Hvem skal vi øve med?'
             : arena.id === 'arbeidsliv'
@@ -47,13 +44,13 @@ export default function ConfigStep({
             ? 'Forbered intervjuet'
             : 'Forbered eksamen'}
         </h2>
-        <p className="text-[#5A5A5A] max-w-md mx-auto">
+        <p className="text-slate-400 max-w-md mx-auto">
           {arena.tagline}
         </p>
       </div>
 
       {/* Config Fields */}
-      <div className="bg-[#F9F8F6] p-6 rounded-2xl border border-gray-100">
+      <div className="bg-slate-800/50 p-6 rounded-2xl border border-white/10">
         <div className="grid md:grid-cols-2 gap-6">
           {arena.configFields.map((field) => (
             <ConfigFieldComponent
@@ -68,7 +65,7 @@ export default function ConfigStep({
 
       {/* Scenarios */}
       <div className="space-y-4">
-        <label className="block text-sm font-semibold text-[#2C2C2C] uppercase tracking-wide">
+        <label className="block text-sm font-semibold text-slate-300 uppercase tracking-wide">
           Velg en situasjon
         </label>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -93,9 +90,9 @@ export default function ConfigStep({
             value={customScenario}
             onChange={(e) => setCustomScenario(e.target.value)}
             placeholder="...eller beskriv din egen situasjon her"
-            className="w-full px-4 py-3 bg-white border border-gray-300 rounded-xl
-                     focus:ring-2 focus:ring-[#2D4A3E] focus:border-transparent
-                     outline-none text-sm text-[#2C2C2C] placeholder-gray-400"
+            className="w-full px-4 py-3 bg-slate-800/50 border border-white/10 rounded-xl
+                     focus:ring-2 focus:ring-emerald-500 focus:border-transparent
+                     outline-none text-sm text-white placeholder-slate-500"
           />
         </div>
       </div>
@@ -126,9 +123,9 @@ function ConfigFieldComponent({ field, value, onChange }: ConfigFieldComponentPr
     case 'slider':
       return (
         <div className="space-y-3">
-          <label className="block text-sm font-semibold text-[#2C2C2C] uppercase tracking-wide">
+          <label className="block text-sm font-semibold text-slate-300 uppercase tracking-wide">
             {field.label}:{' '}
-            <span className="text-[#2D4A3E] text-xl ml-2 normal-case">
+            <span className="text-emerald-400 text-xl ml-2 normal-case">
               {value as number} {field.id === 'age' ? 'år' : ''}
             </span>
           </label>
@@ -139,9 +136,9 @@ function ConfigFieldComponent({ field, value, onChange }: ConfigFieldComponentPr
             step={field.step || 1}
             value={value as number}
             onChange={(e) => onChange(Number(e.target.value))}
-            className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-[#2D4A3E]"
+            className="w-full h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-emerald-500"
           />
-          <div className="flex justify-between text-xs text-gray-400 font-medium">
+          <div className="flex justify-between text-xs text-slate-500 font-medium">
             <span>{field.min}</span>
             <span>{field.max}</span>
           </div>
@@ -151,7 +148,7 @@ function ConfigFieldComponent({ field, value, onChange }: ConfigFieldComponentPr
     case 'buttons':
       return (
         <div className="space-y-3">
-          <label className="block text-sm font-semibold text-[#2C2C2C] uppercase tracking-wide">
+          <label className="block text-sm font-semibold text-slate-300 uppercase tracking-wide">
             {field.label}
           </label>
           <div className="flex gap-2 flex-wrap">
@@ -161,8 +158,8 @@ function ConfigFieldComponent({ field, value, onChange }: ConfigFieldComponentPr
                 onClick={() => onChange(option.value)}
                 className={`flex-1 min-w-[100px] py-3 rounded-xl font-medium transition-all ${
                   value === option.value
-                    ? 'bg-[#2D4A3E] text-white shadow-md'
-                    : 'bg-white text-[#2C2C2C] border border-gray-200 hover:border-[#3D6B5A]'
+                    ? 'bg-emerald-600 text-white shadow-md border border-emerald-500'
+                    : 'bg-slate-800 text-white border border-white/10 hover:border-emerald-500/50'
                 }`}
               >
                 {option.label}
@@ -175,15 +172,15 @@ function ConfigFieldComponent({ field, value, onChange }: ConfigFieldComponentPr
     case 'dropdown':
       return (
         <div className="space-y-3">
-          <label className="block text-sm font-semibold text-[#2C2C2C] uppercase tracking-wide">
+          <label className="block text-sm font-semibold text-slate-300 uppercase tracking-wide">
             {field.label}
           </label>
           <select
             value={value as string}
             onChange={(e) => onChange(e.target.value)}
-            className="w-full px-4 py-3 bg-white border border-gray-300 rounded-xl
-                     focus:ring-2 focus:ring-[#2D4A3E] focus:border-transparent
-                     outline-none text-sm text-[#2C2C2C] cursor-pointer"
+            className="w-full px-4 py-3 bg-slate-800 border border-white/10 rounded-xl
+                     focus:ring-2 focus:ring-emerald-500 focus:border-transparent
+                     outline-none text-sm text-white cursor-pointer"
           >
             {field.options?.map((option) => (
               <option key={option.value} value={option.value}>
@@ -197,7 +194,7 @@ function ConfigFieldComponent({ field, value, onChange }: ConfigFieldComponentPr
     case 'text':
       return (
         <div className="space-y-3">
-          <label className="block text-sm font-semibold text-[#2C2C2C] uppercase tracking-wide">
+          <label className="block text-sm font-semibold text-slate-300 uppercase tracking-wide">
             {field.label}
           </label>
           <input
@@ -205,9 +202,9 @@ function ConfigFieldComponent({ field, value, onChange }: ConfigFieldComponentPr
             value={(value as string) || ''}
             onChange={(e) => onChange(e.target.value)}
             placeholder={field.placeholder}
-            className="w-full px-4 py-3 bg-white border border-gray-300 rounded-xl
-                     focus:ring-2 focus:ring-[#2D4A3E] focus:border-transparent
-                     outline-none text-sm text-[#2C2C2C] placeholder-gray-400"
+            className="w-full px-4 py-3 bg-slate-800/50 border border-white/10 rounded-xl
+                     focus:ring-2 focus:ring-emerald-500 focus:border-transparent
+                     outline-none text-sm text-white placeholder-slate-500"
           />
         </div>
       );

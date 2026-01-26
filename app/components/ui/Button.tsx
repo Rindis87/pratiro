@@ -11,26 +11,27 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 
 const variantStyles = {
   primary: `
-    bg-[#2D4A3E] hover:bg-[#3D6B5A] text-white
-    shadow-lg shadow-[#2D4A3E]/20
-    hover:shadow-xl hover:shadow-[#2D4A3E]/30
-    disabled:bg-[#2D4A3E]/50
+    bg-emerald-600 hover:bg-emerald-500 text-white
+    shadow-lg shadow-emerald-900/30
+    hover:shadow-xl hover:shadow-emerald-900/40
+    disabled:bg-emerald-600/50
+    border border-emerald-500/50
   `,
   secondary: `
-    bg-white hover:bg-gray-50 text-[#2D4A3E]
-    border border-[#2D4A3E]/20
-    hover:border-[#2D4A3E]/40
+    bg-slate-800 hover:bg-slate-700 text-white
+    border border-white/10
+    hover:border-white/20
     shadow-sm
-    disabled:bg-gray-100
+    disabled:bg-slate-800/50
   `,
   outline: `
-    bg-transparent hover:bg-[#2D4A3E]/5 text-[#2D4A3E]
-    border-2 border-[#2D4A3E]
-    disabled:border-[#2D4A3E]/30 disabled:text-[#2D4A3E]/30
+    bg-transparent hover:bg-emerald-500/10 text-emerald-400
+    border-2 border-emerald-500
+    disabled:border-emerald-500/30 disabled:text-emerald-500/30
   `,
   ghost: `
-    bg-transparent hover:bg-[#2D4A3E]/10 text-[#2D4A3E]
-    disabled:text-[#2D4A3E]/30
+    bg-transparent hover:bg-white/10 text-white
+    disabled:text-white/30
   `,
 };
 
@@ -55,7 +56,7 @@ export function Button({
     <button
       className={`
         inline-flex items-center justify-center
-        font-medium
+        font-bold font-brand
         transition-all duration-200
         disabled:cursor-not-allowed disabled:opacity-60
         ${variantStyles[variant]}

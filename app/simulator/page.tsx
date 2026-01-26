@@ -9,7 +9,6 @@ import { ArenaId } from '../config/types';
 import ConfigStep from '../components/ConfigStep';
 import ChatStep from '../components/ChatStep';
 import AnalysisStep from '../components/AnalysisStep';
-import { PauseIcon } from '../components/ui/Logo';
 
 // Icons
 const RefreshIcon = () => (
@@ -18,6 +17,14 @@ const RefreshIcon = () => (
     <polyline points="1 20 1 14 7 14" />
     <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15" />
   </svg>
+);
+
+// Speech Bubble Logo
+const SpeechBubbleLogo = () => (
+  <div className="w-8 h-7 bg-white/20 rounded-tl-lg rounded-tr-lg rounded-br-lg flex items-center justify-center gap-0.5 hover:bg-white/30 transition-colors">
+    <div className="w-1 h-3.5 bg-white rounded-full"></div>
+    <div className="w-1 h-3.5 bg-white rounded-full"></div>
+  </div>
 );
 
 function SimulatorContent() {
@@ -43,27 +50,24 @@ function SimulatorContent() {
 
   // Loading state while checking auth
   if (!isAuthorized) {
-    return <div className="min-h-screen bg-[#F9F8F6]" />;
+    return <div className="min-h-screen bg-slate-900" />;
   }
 
   return (
-    <main className="min-h-screen flex items-center justify-center p-4 bg-[#F9F8F6]">
-      <div className="w-full max-w-4xl bg-white rounded-3xl shadow-xl overflow-hidden min-h-[min(600px,calc(100dvh-2rem))] md:min-h-[600px] flex flex-col relative border border-gray-100">
+    <main className="min-h-screen flex items-center justify-center p-4 bg-slate-900">
+      <div className="w-full max-w-4xl glass-card rounded-3xl overflow-hidden min-h-[min(600px,calc(100dvh-2rem))] md:min-h-[600px] flex flex-col relative">
 
         {/* Header */}
-        <div className="bg-[#2D4A3E] p-6 flex justify-between items-center text-white">
+        <div className="bg-emerald-600 p-6 flex justify-between items-center text-white">
           <div className="flex items-center gap-3">
             <Link
               href="/"
-              className="bg-white/20 p-2 rounded-xl text-white hover:bg-white/30 transition"
+              className="block"
             >
-              <PauseIcon className="w-6 h-6" />
+              <SpeechBubbleLogo />
             </Link>
             <div>
-              <h1
-                className="text-2xl md:text-3xl font-normal tracking-tight"
-                style={{ fontFamily: 'var(--font-dm-serif), Georgia, serif' }}
-              >
+              <h1 className="text-2xl md:text-3xl font-brand font-bold tracking-tight">
                 Pratiro
               </h1>
               <p className="text-white/70 text-xs font-medium uppercase tracking-wider">
@@ -75,7 +79,7 @@ function SimulatorContent() {
           {simulator.step > 1 && (
             <button
               onClick={simulator.reset}
-              className="flex items-center gap-2 text-sm bg-white/20 hover:bg-white/30 px-3 py-1.5 rounded-lg transition"
+              className="flex items-center gap-2 text-sm bg-white/20 hover:bg-white/30 px-3 py-1.5 rounded-lg transition font-medium"
             >
               <RefreshIcon /> Start på nytt
             </button>
@@ -131,7 +135,7 @@ function SimulatorContent() {
 // Wrap with Suspense for useSearchParams
 export default function SimulatorPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen bg-[#F9F8F6]" />}>
+    <Suspense fallback={<div className="min-h-screen bg-slate-900" />}>
       <SimulatorContent />
     </Suspense>
   );

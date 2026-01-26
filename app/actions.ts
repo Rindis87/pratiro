@@ -9,7 +9,7 @@ const ACCESS_CODE = process.env.ACCESS_CODE;
 const RATE_LIMIT_WINDOW_MS = 60 * 1000; // 1 minutt
 const MAX_REQUESTS_PER_WINDOW = 10; // Maks 10 forespørsler per minutt
 const MAX_INPUT_LENGTH = 1000; // Maks 1000 tegn per melding
-const MAX_OUTPUT_TOKENS = 500; // Begrens AI-respons lengde
+const MAX_OUTPUT_TOKENS = 1000; // AI-respons lengde (økt for å unngå avkuttede setninger)
 
 // In-memory rate limiting (per server instance)
 // I produksjon bør dette erstattes med Redis eller lignende
@@ -116,19 +116,53 @@ export async function chatWithGemini(
     );
 
     if (!response.ok) {
+      const errorBody = await response.text();
+      console.error('Gemini API Error:', response.status, errorBody);
+
       if (response.status === 429) {
         return {
           error: 'Pratiro trenger en liten tenkepause. Vent litt og prøv igjen.',
           errorCode: 'RATE_LIMIT'
         };
       }
+      if (response.status === 404) {
+        return { error: 'AI-modellen er ikke tilgjengelig. Prøv igjen senere.', errorCode: 'API_ERROR' };
+      }
       return { error: `API error: ${response.status}`, errorCode: 'API_ERROR' };
     }
 
     const data = await response.json();
-    const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
+
+    // Sjekk om responsen ble blokkert av sikkerhetsfiltre
+    const candidate = data.candidates?.[0];
+    if (!candidate) {
+      console.error('Gemini: No candidates in response', JSON.stringify(data));
+      return { error: 'AI kunne ikke generere et svar. Prøv igjen.', errorCode: 'NO_RESPONSE' };
+    }
+
+    // Sjekk finishReason
+    if (candidate.finishReason && candidate.finishReason !== 'STOP') {
+      console.error('Gemini: Unexpected finishReason', candidate.finishReason);
+      if (candidate.finishReason === 'SAFETY') {
+        return { error: 'AI kunne ikke svare på grunn av innholdsfiltre. Prøv en annen tilnærming.', errorCode: 'NO_RESPONSE' };
+      }
+      if (candidate.finishReason === 'MAX_TOKENS') {
+        // Fortsatt returner teksten hvis vi har noe
+        const partialText = candidate.content?.parts?.[0]?.text;
+        if (partialText) {
+          return {
+            text: partialText,
+            remainingRequests: rateCheck.remainingRequests,
+            resetInSeconds: rateCheck.resetInSeconds
+          };
+        }
+      }
+    }
+
+    const text = candidate.content?.parts?.[0]?.text;
 
     if (!text) {
+      console.error('Gemini: No text in response', JSON.stringify(data));
       return { error: 'Ingen respons fra AI.', errorCode: 'NO_RESPONSE' };
     }
 

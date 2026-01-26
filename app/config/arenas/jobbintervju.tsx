@@ -131,7 +131,8 @@ IKKE GJØR DETTE:
 - Ikke still flere spørsmål samtidig
 - Ikke gi kandidaten fasit eller hint om hva du vil høre
 - Ikke vær unaturlig vennlig eller unaturlig streng - vær profesjonell
-- Ikke hopp over oppfølgingsspørsmål når svaret er ufullstendig`;
+- Ikke hopp over oppfølgingsspørsmål når svaret er ufullstendig
+- ALDRI bruk plassholdere som [navn], [rolle], [stilling] osv. - bruk konkrete norske navn og titler`;
   },
 
   getStartPrompt: (config: Record<string, unknown>, scenario: string): string => {
