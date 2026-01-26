@@ -342,13 +342,13 @@ export default function LandingPage() {
                   {arena.tags.map((tag) => (
                     <span
                       key={tag}
-                      className="bg-[#F9F8F6] px-3 py-1 rounded-full text-xs text-[#4F5752]"
+                      className="bg-[#F9F8F6] px-3 py-1.5 rounded-full text-sm text-[#4F5752]"
                     >
                       {tag}
                     </span>
                   ))}
                 </div>
-                <span className="inline-flex items-center gap-2 px-4 py-2 bg-[#2D4A3E] text-white rounded-full text-sm font-medium
+                <span className="inline-flex items-center justify-center gap-2 px-5 py-3 min-h-[44px] bg-[#2D4A3E] text-white rounded-full text-sm font-medium
                                hover:bg-[#3D6B5A] transition-colors">
                   Start samtale
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
@@ -399,10 +399,10 @@ export default function LandingPage() {
             Prat i ro – øv på samtaler som betyr noe.
           </p>
 
-          <div className="flex justify-center gap-8 mb-8 text-sm text-white/80">
-            <a href="#" className="hover:text-white transition-colors">Personvern</a>
-            <a href="#" className="hover:text-white transition-colors">Vilkår</a>
-            <a href="#" className="hover:text-white transition-colors">Kontakt oss</a>
+          <div className="flex flex-wrap justify-center gap-6 md:gap-8 mb-8 text-sm text-white/80">
+            <a href="#" className="hover:text-white transition-colors py-2">Personvern</a>
+            <a href="#" className="hover:text-white transition-colors py-2">Vilkår</a>
+            <a href="#" className="hover:text-white transition-colors py-2">Kontakt oss</a>
           </div>
 
           <p className="text-white/50 text-sm">

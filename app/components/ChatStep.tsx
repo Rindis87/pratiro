@@ -91,22 +91,26 @@ export default function ChatStep({
   const filteredMessages = messages.filter((m) => m.role !== 'system');
 
   return (
-    <div className="flex flex-col h-[600px] bg-[#F9F8F6]">
+    <div className="flex flex-col h-[calc(100dvh-12rem)] min-h-[400px] max-h-[700px] md:h-[600px] bg-[#F9F8F6]">
       {/* Tips bar */}
-      <div className="bg-[#2D4A3E]/5 px-4 py-2 text-xs text-[#2D4A3E] flex justify-between items-center border-b border-[#2D4A3E]/10">
-        <span>
+      <div className="bg-[#2D4A3E]/5 px-4 py-2 text-sm text-[#2D4A3E] flex justify-between items-center border-b border-[#2D4A3E]/10 gap-2">
+        <span className="flex-1">
           <b>Tips:</b> {getTips()}
         </span>
-        <span className={`${messageCount >= maxMessages - 5 ? 'text-amber-600 font-medium' : 'text-gray-500'}`}>
-          {messageCount}/{maxMessages} meldinger
+        <span className={`shrink-0 ${messageCount >= maxMessages - 5 ? 'text-amber-600 font-medium' : 'text-gray-500'}`}>
+          {messageCount}/{maxMessages}
         </span>
       </div>
 
       {/* Warning banner */}
       {limitWarning && (
-        <div className="bg-amber-50 border-b border-amber-200 px-4 py-2 text-sm text-amber-800 flex justify-between items-center">
-          <span>{limitWarning}</span>
-          <button onClick={onClearWarning} className="text-amber-600 hover:text-amber-800 font-medium">
+        <div className="bg-amber-50 border-b border-amber-200 px-4 py-2 text-sm text-amber-800 flex justify-between items-center gap-2">
+          <span className="flex-1">{limitWarning}</span>
+          <button
+            onClick={onClearWarning}
+            className="w-11 h-11 min-w-[44px] min-h-[44px] flex items-center justify-center text-amber-600 hover:text-amber-800 hover:bg-amber-100 rounded-lg transition-colors font-medium text-lg"
+            aria-label="Lukk advarsel"
+          >
             ✕
           </button>
         </div>
@@ -138,7 +142,7 @@ export default function ChatStep({
               {/* Message bubble */}
               <div className="flex flex-col gap-1">
                 <span
-                  className={`text-xs font-medium ${
+                  className={`text-sm font-medium ${
                     msg.role === 'user' ? 'text-right text-gray-500' : 'text-gray-500'
                   }`}
                 >
@@ -175,12 +179,12 @@ export default function ChatStep({
       {/* Input Area */}
       <div className="p-4 bg-white border-t border-gray-200 flex flex-col gap-3">
         {/* Character counter */}
-        <div className="flex justify-between items-center text-xs">
+        <div className="flex justify-between items-center text-sm">
           <span className={`${isOverLimit ? 'text-red-500 font-medium' : charsRemaining <= 100 ? 'text-amber-600' : 'text-gray-400'}`}>
             {isOverLimit ? `${Math.abs(charsRemaining)} tegn for mye` : `${charsRemaining} tegn igjen`}
           </span>
           {isAtMessageLimit && (
-            <span className="text-amber-600 font-medium">Maks meldinger nådd - avslutt for veiledning</span>
+            <span className="text-amber-600 font-medium text-right">Maks nådd - avslutt for veiledning</span>
           )}
         </div>
 

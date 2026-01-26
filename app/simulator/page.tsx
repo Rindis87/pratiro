@@ -48,7 +48,7 @@ function SimulatorContent() {
 
   return (
     <main className="min-h-screen flex items-center justify-center p-4 bg-[#F9F8F6]">
-      <div className="w-full max-w-4xl bg-white rounded-3xl shadow-xl overflow-hidden min-h-[600px] flex flex-col relative border border-gray-100">
+      <div className="w-full max-w-4xl bg-white rounded-3xl shadow-xl overflow-hidden min-h-[min(600px,calc(100dvh-2rem))] md:min-h-[600px] flex flex-col relative border border-gray-100">
 
         {/* Header */}
         <div className="bg-[#2D4A3E] p-6 flex justify-between items-center text-white">
