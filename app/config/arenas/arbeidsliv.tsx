@@ -159,15 +159,15 @@ SCORING (vær støttende og konstruktiv):
 - 8-9: Veldig god håndtering. Du viser trygghet i krevende samtaler.
 - 10: Eksemplarisk profesjonell kommunikasjon.
 
-Gi tilbakemelding i JSON format:
+Gi tilbakemelding i JSON format. VIKTIG: Hold alle felter korte og konsise.
 {
-  "mainFeedback": "2-3 setninger som oppsummerer samtalen. Vær konkret, profesjonell og konstruktiv.",
-  "strengths": ["Konkret ting som ble gjort bra 1", "Konkret ting 2"],
-  "improvements": ["Konstruktivt tips 1", "Konstruktivt tips 2"],
-  "perspective": "Hva ${role === 'leder' ? 'medarbeideren' : 'lederen'} trolig følte og tenkte",
+  "mainFeedback": "1-2 korte setninger som oppsummerer samtalen.",
+  "strengths": ["Kort punkt 1", "Kort punkt 2"],
+  "improvements": ["Kort tips 1", "Kort tips 2"],
+  "perspective": "1-2 setninger om ${role === 'leder' ? 'medarbeiderens' : 'lederens'} opplevelse.",
   "score": 1-10
 }
-Svar på norsk. Kun JSON, ingen annen tekst.`;
+Maks 2 punkter per liste. Svar på norsk. Kun JSON, ingen annen tekst.`;
   },
 
   getAnalysisSystemPrompt: (): string => {

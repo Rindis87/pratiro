@@ -161,15 +161,15 @@ SCORING (vær støttende og konstruktiv):
 - 8-9: Veldig god kommunikasjon. Du mestrer de viktigste teknikkene.
 - 10: Eksemplarisk - en samtale andre foreldre kan lære av.
 
-Gi tilbakemelding i JSON format:
+Gi tilbakemelding i JSON format. VIKTIG: Hold alle felter korte og konsise.
 {
-  "mainFeedback": "2-3 setninger som oppsummerer samtalen. Vær konkret, varm og konstruktiv.",
-  "strengths": ["Konkret ting forelderen gjorde bra 1", "Konkret ting 2"],
-  "improvements": ["Konstruktivt tips 1", "Konstruktivt tips 2"],
-  "perspective": "Hva barnet følte og opplevde i samtalen",
+  "mainFeedback": "1-2 korte setninger som oppsummerer samtalen.",
+  "strengths": ["Kort punkt 1", "Kort punkt 2"],
+  "improvements": ["Kort tips 1", "Kort tips 2"],
+  "perspective": "1-2 setninger om barnets opplevelse.",
   "score": 1-10
 }
-Svar på norsk. Kun JSON, ingen annen tekst.`;
+Maks 2 punkter per liste. Svar på norsk. Kun JSON, ingen annen tekst.`;
   },
 
   getAnalysisSystemPrompt: (): string => {

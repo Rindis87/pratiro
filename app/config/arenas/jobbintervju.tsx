@@ -217,15 +217,15 @@ SCORING (vær støttende og konstruktiv):
 - 8-9: Veldig godt gjennomført. Du fremstår som en attraktiv kandidat.
 - 10: Eksemplarisk intervjuprestasjon - profesjonell og overbevisende.
 
-Gi tilbakemelding i JSON format:
+Gi tilbakemelding i JSON format. VIKTIG: Hold alle felter korte og konsise.
 {
-  "mainFeedback": "2-3 setninger som oppsummerer intervjuet. Vær konkret, oppmuntrende og konstruktiv.",
-  "strengths": ["Konkret ting kandidaten gjorde bra 1", "Konkret ting 2"],
-  "improvements": ["Konstruktivt tips 1", "Konstruktivt tips 2"],
-  "perspective": "Hva intervjueren trolig tenkte om kandidaten",
+  "mainFeedback": "1-2 korte setninger som oppsummerer intervjuet.",
+  "strengths": ["Kort punkt 1", "Kort punkt 2"],
+  "improvements": ["Kort tips 1", "Kort tips 2"],
+  "perspective": "1-2 setninger om intervjuerens inntrykk.",
   "score": 1-10
 }
-Svar på norsk. Kun JSON, ingen annen tekst.`;
+Maks 2 punkter per liste. Svar på norsk. Kun JSON, ingen annen tekst.`;
   },
 
   getAnalysisSystemPrompt: (): string => {

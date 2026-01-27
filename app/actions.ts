@@ -9,8 +9,8 @@ const ACCESS_CODE = process.env.ACCESS_CODE;
 const RATE_LIMIT_WINDOW_MS = 60 * 1000; // 1 minutt
 const MAX_REQUESTS_PER_WINDOW = 10; // Maks 10 forespørsler per minutt
 const MAX_INPUT_LENGTH = 1000; // Maks 1000 tegn per melding
-const MAX_OUTPUT_TOKENS_CHAT = 1000; // AI-respons lengde for chat
-const MAX_OUTPUT_TOKENS_ANALYSIS = 3000; // Høyere grense for analyse-JSON
+const MAX_OUTPUT_TOKENS_CHAT = 1500; // AI-respons lengde for chat
+const MAX_OUTPUT_TOKENS_ANALYSIS = 6000; // Komplett JSON-analyse med margin
 
 // In-memory rate limiting (per server instance)
 // I produksjon bør dette erstattes med Redis eller lignende

@@ -251,15 +251,15 @@ SCORING (vær støttende og konstruktiv):
 - 8-9: Veldig god faglig forståelse og formidling. Imponerende innsats.
 - 10: Eksemplarisk prestasjon - dyp forståelse og fremragende formidling.
 
-Gi tilbakemelding i JSON format:
+Gi tilbakemelding i JSON format. VIKTIG: Hold alle felter korte og konsise.
 {
-  "mainFeedback": "2-3 setninger som oppsummerer eksaminasjonen. Vær konkret, oppmuntrende og konstruktiv.",
-  "strengths": ["Hva eleven viste god forståelse for 1", "Hva eleven gjorde bra 2"],
-  "improvements": ["Konstruktivt læringstips 1", "Konkret forbedringsområde 2"],
-  "perspective": "Hva sensor tenkte om elevens faglige nivå og formidlingsevne",
+  "mainFeedback": "1-2 korte setninger som oppsummerer eksaminasjonen.",
+  "strengths": ["Kort punkt 1", "Kort punkt 2"],
+  "improvements": ["Kort tips 1", "Kort tips 2"],
+  "perspective": "1-2 setninger om sensors vurdering.",
   "score": 1-10
 }
-Svar på norsk. Kun JSON, ingen annen tekst.`;
+Maks 2 punkter per liste. Svar på norsk. Kun JSON, ingen annen tekst.`;
   },
 
   getAnalysisSystemPrompt: (): string => {
