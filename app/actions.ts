@@ -9,7 +9,8 @@ const ACCESS_CODE = process.env.ACCESS_CODE;
 const RATE_LIMIT_WINDOW_MS = 60 * 1000; // 1 minutt
 const MAX_REQUESTS_PER_WINDOW = 10; // Maks 10 forespørsler per minutt
 const MAX_INPUT_LENGTH = 1000; // Maks 1000 tegn per melding
-const MAX_OUTPUT_TOKENS = 1000; // AI-respons lengde (økt for å unngå avkuttede setninger)
+const MAX_OUTPUT_TOKENS_CHAT = 1000; // AI-respons lengde for chat
+const MAX_OUTPUT_TOKENS_ANALYSIS = 3000; // Høyere grense for analyse-JSON
 
 // In-memory rate limiting (per server instance)
 // I produksjon bør dette erstattes med Redis eller lignende
@@ -67,10 +68,14 @@ export type ChatResult = {
 export async function chatWithGemini(
   prompt: string,
   systemInstruction: string,
-  clientId?: string
+  clientId?: string,
+  isAnalysis?: boolean
 ): Promise<ChatResult> {
   // Bruk clientId eller fallback til 'anonymous'
   const identifier = clientId || 'anonymous';
+
+  // Bruk høyere token-grense for analyse
+  const maxOutputTokens = isAnalysis ? MAX_OUTPUT_TOKENS_ANALYSIS : MAX_OUTPUT_TOKENS_CHAT;
 
   // 1. Sjekk rate limit
   const rateCheck = checkRateLimit(identifier);
@@ -93,10 +98,12 @@ export async function chatWithGemini(
 
   // 3. Sjekk API-nøkkel
   if (!API_KEY) {
+    console.error('[Gemini] API_KEY is missing!');
     return { error: 'API-nøkkel mangler på serveren.', errorCode: 'API_ERROR' };
   }
 
   try {
+
     const response = await fetch(
       `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${API_KEY}`,
       {
@@ -108,7 +115,7 @@ export async function chatWithGemini(
           contents: [{ parts: [{ text: prompt }] }],
           systemInstruction: { parts: [{ text: systemInstruction }] },
           generationConfig: {
-            maxOutputTokens: MAX_OUTPUT_TOKENS,
+            maxOutputTokens: maxOutputTokens,
             temperature: 0.8,
           },
         }),

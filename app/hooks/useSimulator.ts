@@ -85,12 +85,20 @@ export function useSimulator(arenaId: ArenaId): UseSimulatorReturn {
   const [isTyping, setIsTyping] = useState(false);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [limitWarning, setLimitWarning] = useState<string | null>(null);
-  const [clientId, setClientId] = useState<string>('');
+  const [clientId, setClientId] = useState<string>(() => {
+    // Initialiser synkront hvis vi er på klientsiden
+    if (typeof window !== 'undefined') {
+      return getClientId();
+    }
+    return '';
+  });
 
-  // Hent clientId på klientsiden
+  // Backup: Sett clientId hvis den ikke ble satt ved initialisering
   useEffect(() => {
-    setClientId(getClientId());
-  }, []);
+    if (!clientId) {
+      setClientId(getClientId());
+    }
+  }, [clientId]);
 
   // Beregn antall bruker-meldinger (ekskluderer system og AI)
   const messageCount = useMemo(() =>
@@ -259,9 +267,11 @@ export function useSimulator(arenaId: ArenaId): UseSimulatorReturn {
       );
       const systemPrompt = arena.getAnalysisSystemPrompt();
 
-      const result = await chatWithGemini(analysisPrompt, systemPrompt, clientId);
+      // isAnalysis=true gir høyere token-grense for JSON-respons
+      const result = await chatWithGemini(analysisPrompt, systemPrompt, clientId, true);
 
       if (result.error) {
+        console.error('Analysis API error:', result.error, result.errorCode);
         setAnalysis({
           mainFeedback: 'Feil ved analyse. Prøv igjen.',
           strengths: [],
@@ -272,10 +282,17 @@ export function useSimulator(arenaId: ArenaId): UseSimulatorReturn {
       } else if (result.text) {
         try {
           // Clean the response and parse JSON
-          const cleanedText = result.text
+          let cleanedText = result.text
             .replace(/```json/g, '')
             .replace(/```/g, '')
             .trim();
+
+          // Prøv å finne JSON-objekt hvis det er ekstra tekst rundt
+          const jsonMatch = cleanedText.match(/\{[\s\S]*\}/);
+          if (jsonMatch) {
+            cleanedText = jsonMatch[0];
+          }
+
           const parsed = JSON.parse(cleanedText);
 
           setAnalysis({
@@ -285,7 +302,9 @@ export function useSimulator(arenaId: ArenaId): UseSimulatorReturn {
             perspective: parsed.perspective || parsed.childPerspective || '',
             score: parsed.score || 0,
           });
-        } catch {
+        } catch (parseError) {
+          console.error('Analysis JSON parse error:', parseError);
+          console.error('Raw response text:', result.text);
           setAnalysis({
             mainFeedback: 'Kunne ikke lese analysen. Prøv igjen.',
             strengths: [],
@@ -295,7 +314,8 @@ export function useSimulator(arenaId: ArenaId): UseSimulatorReturn {
           });
         }
       }
-    } catch {
+    } catch (networkError) {
+      console.error('Analysis network error:', networkError);
       setAnalysis({
         mainFeedback: 'Feil ved analyse. Prøv igjen.',
         strengths: [],
@@ -306,7 +326,7 @@ export function useSimulator(arenaId: ArenaId): UseSimulatorReturn {
     }
 
     setIsAnalyzing(false);
-  }, [arena, config, messages, customScenario, scenario, buildHistoryText]);
+  }, [arena, config, messages, customScenario, scenario, buildHistoryText, clientId]);
 
   // Reset
   const reset = useCallback(() => {
