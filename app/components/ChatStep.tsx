@@ -1,7 +1,10 @@
 'use client';
 
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 import { Message } from '../config/types';
+
+// Sjekk om vi er på mobil (under 768px)
+const isMobile = () => typeof window !== 'undefined' && window.innerWidth < 768;
 
 interface ChatStepProps {
   messages: Message[];
@@ -63,15 +66,39 @@ export default function ChatStep({
   onClearWarning,
 }: ChatStepProps) {
   const [input, setInput] = useState('');
+  const [isInitialLoad, setIsInitialLoad] = useState(true);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const prevMessageCountRef = useRef(messages.length);
 
   const charsRemaining = maxMessageLength - input.length;
   const isOverLimit = input.length > maxMessageLength;
 
-  // Auto-scroll to bottom
+  // Scroll til toppen ved første lasting
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    if (isInitialLoad) {
+      window.scrollTo(0, 0);
+      setIsInitialLoad(false);
+    }
+  }, [isInitialLoad]);
+
+  // Auto-scroll til bunn KUN når nye meldinger kommer (ikke ved oppstart)
+  useEffect(() => {
+    const hasNewMessages = messages.length > prevMessageCountRef.current;
+
+    if (hasNewMessages || isTyping) {
+      messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    prevMessageCountRef.current = messages.length;
   }, [messages, isTyping]);
+
+  // Fokuser input kun på desktop
+  useEffect(() => {
+    if (!isMobile() && inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, []);
 
   const handleSend = async () => {
     if (!input.trim() || isTyping || isOverLimit || isAtMessageLimit) return;
@@ -91,7 +118,7 @@ export default function ChatStep({
   const filteredMessages = messages.filter((m) => m.role !== 'system');
 
   return (
-    <div className="flex flex-col h-[calc(100dvh-12rem)] min-h-[400px] max-h-[700px] md:h-[600px] bg-slate-900">
+    <div className="flex flex-col h-[100dvh] md:h-[600px] md:max-h-[700px] bg-slate-900">
       {/* Tips bar */}
       <div className="bg-emerald-500/10 px-4 py-2 text-sm text-emerald-300 flex justify-between items-center border-b border-emerald-500/20 gap-2">
         <span className="flex-1">
@@ -117,7 +144,7 @@ export default function ChatStep({
       )}
 
       {/* Chat Area */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-6">
+      <div className="flex-1 overflow-y-auto p-2 md:p-4 space-y-4 md:space-y-6">
         {filteredMessages.map((msg, idx) => (
           <div
             key={idx}
@@ -149,7 +176,7 @@ export default function ChatStep({
                   {getChatLabel(msg.role as 'user' | 'ai')}
                 </span>
                 <div
-                  className={`p-4 shadow-sm text-[15px] leading-relaxed ${
+                  className={`p-3 md:p-4 shadow-sm text-[15px] leading-relaxed ${
                     msg.role === 'user'
                       ? 'bg-emerald-600 text-white rounded-l-2xl rounded-tr-2xl'
                       : 'bg-slate-800 text-slate-100 border border-white/10 rounded-r-2xl rounded-bl-2xl'
@@ -177,7 +204,7 @@ export default function ChatStep({
       </div>
 
       {/* Input Area */}
-      <div className="p-4 bg-slate-800/50 border-t border-white/10 flex flex-col gap-3">
+      <div className="p-2 md:p-4 bg-slate-800/50 border-t border-white/10 flex flex-col gap-2 md:gap-3">
         {/* Character counter */}
         <div className="flex justify-between items-center text-sm">
           <span className={`${isOverLimit ? 'text-red-400 font-medium' : charsRemaining <= 100 ? 'text-amber-400' : 'text-slate-500'}`}>
@@ -190,6 +217,7 @@ export default function ChatStep({
 
         <div className="flex gap-2">
           <input
+            ref={inputRef}
             type="text"
             value={input}
             onChange={(e) => setInput(e.target.value)}
@@ -202,7 +230,6 @@ export default function ChatStep({
                      text-white placeholder-slate-500
                      disabled:opacity-50 disabled:cursor-not-allowed
                      ${isOverLimit ? 'border-red-500 focus:ring-red-500' : 'border-white/10'}`}
-            autoFocus
           />
           <button
             onClick={handleSend}

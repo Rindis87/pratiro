@@ -54,12 +54,12 @@ function SimulatorContent() {
   }
 
   return (
-    <main className="min-h-screen flex items-center justify-center p-4 bg-slate-900">
-      <div className="w-full max-w-4xl glass-card rounded-3xl overflow-hidden min-h-[min(600px,calc(100dvh-2rem))] md:min-h-[600px] flex flex-col relative">
+    <main className="min-h-[100dvh] flex items-center justify-center p-0 md:p-4 bg-slate-900">
+      <div className="w-full max-w-4xl glass-card rounded-none md:rounded-3xl overflow-hidden h-[100dvh] md:h-auto md:min-h-[600px] flex flex-col relative">
 
-        {/* Header */}
-        <div className="bg-emerald-600 p-6 flex justify-between items-center text-white">
-          <div className="flex items-center gap-3">
+        {/* Header - kompakt på mobil under chat */}
+        <div className={`bg-emerald-600 p-3 md:p-6 flex justify-between items-center text-white shrink-0 ${simulator.step === 2 ? 'py-2 md:py-6' : ''}`}>
+          <div className="flex items-center gap-2 md:gap-3">
             <Link
               href="/"
               className="block"
@@ -67,10 +67,10 @@ function SimulatorContent() {
               <SpeechBubbleLogo />
             </Link>
             <div>
-              <h1 className="text-2xl md:text-3xl font-brand font-bold tracking-tight">
+              <h1 className={`font-brand font-bold tracking-tight ${simulator.step === 2 ? 'text-xl md:text-3xl' : 'text-2xl md:text-3xl'}`}>
                 Pratiro
               </h1>
-              <p className="text-white/70 text-xs font-medium uppercase tracking-wider">
+              <p className={`text-white/70 font-medium uppercase tracking-wider ${simulator.step === 2 ? 'text-[10px] md:text-xs' : 'text-xs'}`}>
                 {simulator.arena.name}
               </p>
             </div>
@@ -79,9 +79,9 @@ function SimulatorContent() {
           {simulator.step > 1 && (
             <button
               onClick={simulator.reset}
-              className="flex items-center gap-2 text-sm bg-white/20 hover:bg-white/30 px-3 py-1.5 rounded-lg transition font-medium"
+              className="flex items-center gap-1 md:gap-2 text-xs md:text-sm bg-white/20 hover:bg-white/30 px-2 md:px-3 py-1 md:py-1.5 rounded-lg transition font-medium"
             >
-              <RefreshIcon /> Start på nytt
+              <RefreshIcon /> <span className="hidden sm:inline">Start på nytt</span><span className="sm:hidden">Restart</span>
             </button>
           )}
         </div>
