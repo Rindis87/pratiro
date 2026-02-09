@@ -9,6 +9,7 @@ import { ArenaId } from '../config/types';
 import ConfigStep from '../components/ConfigStep';
 import ChatStep from '../components/ChatStep';
 import AnalysisStep from '../components/AnalysisStep';
+import { ProductIcon } from '../components/ui/Logo';
 
 // Icons
 const RefreshIcon = () => (
@@ -17,14 +18,6 @@ const RefreshIcon = () => (
     <polyline points="1 20 1 14 7 14" />
     <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15" />
   </svg>
-);
-
-// Speech Bubble Logo
-const SpeechBubbleLogo = () => (
-  <div className="w-8 h-7 bg-white/20 rounded-tl-lg rounded-tr-lg rounded-br-lg flex items-center justify-center gap-0.5 hover:bg-white/30 transition-colors">
-    <div className="w-1 h-3.5 bg-white rounded-full"></div>
-    <div className="w-1 h-3.5 bg-white rounded-full"></div>
-  </div>
 );
 
 function SimulatorContent() {
@@ -44,33 +37,30 @@ function SimulatorContent() {
     if (access !== 'true') {
       router.push('/');
     } else {
-      setIsAuthorized(true);
+      setIsAuthorized(true); // eslint-disable-line react-hooks/set-state-in-effect
     }
   }, [router]);
 
   // Loading state while checking auth
   if (!isAuthorized) {
-    return <div className="min-h-screen bg-slate-900" />;
+    return <div className="min-h-screen bg-[#F7F5F0]" />;
   }
 
   return (
-    <main className="min-h-[100dvh] flex items-center justify-center p-0 md:p-4 bg-slate-900">
-      <div className="w-full max-w-4xl glass-card rounded-none md:rounded-3xl overflow-hidden h-[100dvh] md:h-auto md:min-h-[600px] flex flex-col relative">
+    <main className="min-h-[100dvh] flex items-center justify-center p-0 md:p-4 bg-[#F7F5F0]">
+      <div className="w-full max-w-4xl bg-white rounded-none md:rounded-[24px] overflow-hidden h-[100dvh] md:h-auto md:min-h-[600px] flex flex-col relative shadow-[0_25px_50px_-12px_rgba(42,64,54,0.12)] border-0 md:border md:border-black/[0.06]">
 
-        {/* Header - kompakt på mobil under chat */}
-        <div className={`bg-emerald-600 p-3 md:p-6 flex justify-between items-center text-white shrink-0 ${simulator.step === 2 ? 'py-2 md:py-6' : ''}`}>
+        {/* Header */}
+        <div className={`bg-[#2A4036] p-3 md:p-6 flex justify-between items-center text-white shrink-0 ${simulator.step === 2 ? 'py-2 md:py-6' : ''}`}>
           <div className="flex items-center gap-2 md:gap-3">
-            <Link
-              href="/"
-              className="block"
-            >
-              <SpeechBubbleLogo />
+            <Link href="/" className="block">
+              <ProductIcon />
             </Link>
             <div>
-              <h1 className={`font-brand font-bold tracking-tight ${simulator.step === 2 ? 'text-xl md:text-3xl' : 'text-2xl md:text-3xl'}`}>
-                Pratiro
+              <h1 className={`font-sans font-medium tracking-tight text-white ${simulator.step === 2 ? 'text-lg md:text-xl' : 'text-xl md:text-xl'}`}>
+                Pratiro Øving
               </h1>
-              <p className={`text-white/70 font-medium uppercase tracking-wider ${simulator.step === 2 ? 'text-[10px] md:text-xs' : 'text-xs'}`}>
+              <p className={`text-white/80 ${simulator.step === 2 ? 'text-[10px] md:text-xs' : 'text-xs'}`}>
                 {simulator.arena.name}
               </p>
             </div>
@@ -79,7 +69,7 @@ function SimulatorContent() {
           {simulator.step > 1 && (
             <button
               onClick={simulator.reset}
-              className="flex items-center gap-1 md:gap-2 text-xs md:text-sm bg-white/20 hover:bg-white/30 px-2 md:px-3 py-1 md:py-1.5 rounded-lg transition font-medium"
+              className="flex items-center gap-1 md:gap-2 text-xs md:text-sm bg-white/15 hover:bg-white/25 px-3 md:px-3 py-2 md:py-1.5 min-h-[44px] rounded-lg transition font-medium"
             >
               <RefreshIcon /> <span className="hidden sm:inline">Start på nytt</span><span className="sm:hidden">Restart</span>
             </button>
@@ -135,7 +125,7 @@ function SimulatorContent() {
 // Wrap with Suspense for useSearchParams
 export default function SimulatorPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen bg-slate-900" />}>
+    <Suspense fallback={<div className="min-h-screen bg-[#F7F5F0]" />}>
       <SimulatorContent />
     </Suspense>
   );

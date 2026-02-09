@@ -8,7 +8,6 @@ const ACCESS_CODE = process.env.ACCESS_CODE;
 // === SIKKERHETSKONFIGURASJON ===
 const RATE_LIMIT_WINDOW_MS = 60 * 1000; // 1 minutt
 const MAX_REQUESTS_PER_WINDOW = 10; // Maks 10 forespørsler per minutt
-const MAX_INPUT_LENGTH = 1000; // Maks 1000 tegn per melding
 const MAX_OUTPUT_TOKENS_CHAT = 1500; // AI-respons lengde for chat
 const MAX_OUTPUT_TOKENS_ANALYSIS = 6000; // Komplett JSON-analyse med margin
 
@@ -16,7 +15,7 @@ const MAX_OUTPUT_TOKENS_ANALYSIS = 6000; // Komplett JSON-analyse med margin
 // I produksjon bør dette erstattes med Redis eller lignende
 const rateLimitMap = new Map<string, { count: number; resetTime: number }>();
 
-// Rens gamle rate limit entries periodisk
+// Rens gamle rate limit entries (lazy cleanup ved hver sjekk)
 function cleanupRateLimitMap() {
   const now = Date.now();
   for (const [key, value] of rateLimitMap.entries()) {
@@ -26,10 +25,10 @@ function cleanupRateLimitMap() {
   }
 }
 
-// Kjør cleanup hvert 5. minutt
-setInterval(cleanupRateLimitMap, 5 * 60 * 1000);
-
 function checkRateLimit(identifier: string): { allowed: boolean; remainingRequests: number; resetInSeconds: number } {
+  // Lazy cleanup: rens gamle entries ved behov
+  if (rateLimitMap.size > 100) cleanupRateLimitMap();
+
   const now = Date.now();
   const entry = rateLimitMap.get(identifier);
 
@@ -88,10 +87,10 @@ export async function chatWithGemini(
     };
   }
 
-  // 2. Valider input-lengde
-  if (prompt.length > MAX_INPUT_LENGTH * 10) { // Prompt inkluderer historikk, så vi gir mer rom
+  // 2. Valider input-lengde (prompten inkluderer samtalehistorikk, så vi gir romslig grense)
+  if (prompt.length > 200_000) {
     return {
-      error: 'Meldingen er for lang. Maks 1000 tegn.',
+      error: 'Samtalen er for lang. Avslutt for å få veiledning.',
       errorCode: 'INPUT_TOO_LONG'
     };
   }
@@ -105,11 +104,12 @@ export async function chatWithGemini(
   try {
 
     const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${API_KEY}`,
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent`,
       {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'x-goog-api-key': API_KEY,
         },
         body: JSON.stringify({
           contents: [{ parts: [{ text: prompt }] }],
@@ -143,7 +143,7 @@ export async function chatWithGemini(
     // Sjekk om responsen ble blokkert av sikkerhetsfiltre
     const candidate = data.candidates?.[0];
     if (!candidate) {
-      console.error('Gemini: No candidates in response', JSON.stringify(data));
+      console.error('Gemini: No candidates in response', data.promptFeedback);
       return { error: 'AI kunne ikke generere et svar. Prøv igjen.', errorCode: 'NO_RESPONSE' };
     }
 
@@ -169,7 +169,7 @@ export async function chatWithGemini(
     const text = candidate.content?.parts?.[0]?.text;
 
     if (!text) {
-      console.error('Gemini: No text in response', JSON.stringify(data));
+      console.error('Gemini: No text in response', data.candidates?.[0]?.finishReason);
       return { error: 'Ingen respons fra AI.', errorCode: 'NO_RESPONSE' };
     }
 

@@ -71,7 +71,7 @@ export const eksamenArena: ArenaConfig = {
   ],
 
   getScenarios: (config: Record<string, unknown>): Scenario[] => {
-    const subject = (config.subject as string) || 'naturfag';
+    const _subject = (config.subject as string) || 'naturfag';
     const level = (config.level as string) || 'videregaende';
 
     // Generelle scenarioer som tilpasses basert på fag og nivå

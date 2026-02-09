@@ -16,36 +16,36 @@ export function ArenaCard({ arena, onClick, selected, showStartButton = true }: 
       onClick={onClick}
       className={`
         relative flex flex-col text-left
-        bg-white/5 rounded-2xl p-6 md:p-8
+        bg-white rounded-[20px] p-6 md:p-8
         min-h-[280px]
         transition-all duration-250 ease-out
         cursor-pointer
-        border border-white/5
+        border border-black/[0.04]
         overflow-hidden
         group
+        shadow-[0_10px_30px_-5px_rgba(42,64,54,0.06)]
 
         hover:transform hover:-translate-y-2
-        hover:bg-white/10
-        hover:border-emerald-500/30
-        hover:shadow-[0_0_40px_-10px_rgba(16,185,129,0.3)]
+        hover:shadow-[0_25px_50px_-12px_rgba(42,64,54,0.12)]
+        hover:border-[rgba(42,64,54,0.15)]
 
-        focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/50 focus-visible:ring-offset-4 focus-visible:ring-offset-slate-900
+        focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2A4036]/40 focus-visible:ring-offset-4 focus-visible:ring-offset-[#F7F5F0]
 
-        ${selected ? 'ring-2 ring-emerald-500 border-emerald-500/30 bg-white/10' : ''}
+        ${selected ? 'ring-2 ring-[#2A4036] border-[rgba(42,64,54,0.2)] shadow-[0_25px_50px_-12px_rgba(42,64,54,0.12)]' : ''}
       `}
     >
       {/* Icon */}
-      <div className="w-14 h-14 bg-emerald-500/20 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform shadow-inner border border-emerald-500/10">
-        <Icon className="w-7 h-7 text-emerald-400" />
+      <div className="w-14 h-14 bg-[#E7ECEA] rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform border border-black/[0.04]">
+        <Icon className="w-7 h-7 text-[#2A4036]" />
       </div>
 
       {/* Title */}
-      <h3 className="text-xl font-brand font-bold text-white mb-2">
+      <h3 className="text-xl font-sans font-bold text-[#252825] mb-2">
         {arena.name}
       </h3>
 
       {/* Description */}
-      <p className="text-slate-400 text-sm leading-relaxed mb-5">
+      <p className="text-[#5C5F5C] text-sm leading-relaxed mb-5">
         {arena.description}
       </p>
 
@@ -54,7 +54,7 @@ export function ArenaCard({ arena, onClick, selected, showStartButton = true }: 
         {arena.tags.map((tag) => (
           <span
             key={tag}
-            className="bg-white/5 border border-white/10 px-3 py-1.5 rounded-full text-xs text-slate-300"
+            className="bg-[#FDFCFB] border border-black/5 px-3 py-1.5 rounded-full text-xs text-[#5C5F5C]"
           >
             {tag}
           </span>
@@ -64,7 +64,7 @@ export function ArenaCard({ arena, onClick, selected, showStartButton = true }: 
       {/* Start button */}
       {showStartButton && (
         <div className="mt-auto">
-          <span className="inline-flex items-center gap-2 text-emerald-400 text-sm font-medium group-hover:text-emerald-300">
+          <span className="inline-flex items-center gap-2 text-[#2A4036] text-sm font-medium group-hover:gap-3 transition-all">
             Start samtale
             <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
               <path strokeLinecap="round" strokeLinejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
@@ -93,14 +93,14 @@ export function SelectCard({ title, description, selected, onClick, children }: 
         w-full p-4 rounded-xl border text-left
         transition-all duration-200
         ${selected
-          ? 'border-emerald-500 bg-emerald-500/10 ring-1 ring-emerald-500 shadow-sm'
-          : 'border-white/10 bg-white/5 hover:border-emerald-500/50 hover:bg-white/10'
+          ? 'border-[#2A4036] bg-[rgba(42,64,54,0.06)] ring-1 ring-[#2A4036] shadow-sm'
+          : 'border-black/[0.06] bg-white hover:border-[rgba(42,64,54,0.3)] hover:bg-[#FDFCFB]'
         }
       `}
     >
-      <div className="font-semibold text-white">{title}</div>
+      <div className="font-semibold text-[#252825]">{title}</div>
       {description && (
-        <div className="text-xs text-slate-400 mt-1">{description}</div>
+        <div className="text-xs text-[#5C5F5C] mt-1">{description}</div>
       )}
       {children}
     </button>
@@ -116,10 +116,10 @@ interface InfoCardProps {
 
 export function InfoCard({ children, className = '', variant = 'default' }: InfoCardProps) {
   const variantStyles = {
-    default: 'bg-slate-800/50 border-white/10',
-    highlight: 'bg-emerald-500/10 border-emerald-500/30',
-    success: 'bg-green-500/10 border-green-500/30',
-    warning: 'bg-amber-500/10 border-amber-500/30',
+    default: 'bg-white border-black/[0.06]',
+    highlight: 'bg-[rgba(42,64,54,0.04)] border-[rgba(42,64,54,0.15)]',
+    success: 'bg-green-50 border-green-200',
+    warning: 'bg-amber-50 border-amber-200',
   };
 
   return (

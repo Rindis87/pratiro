@@ -6,15 +6,15 @@ interface LogoProps {
 }
 
 const sizeMap = {
-  sm: { text: 'text-xl', icon: 'w-5 h-5' },
-  md: { text: 'text-2xl', icon: 'w-6 h-6' },
-  lg: { text: 'text-4xl', icon: 'w-10 h-10' },
-  xl: { text: 'text-5xl', icon: 'w-12 h-12' },
+  sm: { text: 'text-lg', barH: 'h-[18px]', barW: 'w-[4px]', gap: 'gap-[3px]', logoGap: 'gap-[10px]' },
+  md: { text: 'text-[1.6rem]', barH: 'h-[22px]', barW: 'w-[5px]', gap: 'gap-[4px]', logoGap: 'gap-[12px]' },
+  lg: { text: 'text-[2.2rem]', barH: 'h-[26px]', barW: 'w-[5px]', gap: 'gap-[4px]', logoGap: 'gap-[12px]' },
+  xl: { text: 'text-[2.5rem]', barH: 'h-[30px]', barW: 'w-[6px]', gap: 'gap-[4px]', logoGap: 'gap-[12px]' },
 };
 
 const colorMap = {
-  forest: { text: 'text-[#2D4A3E]', icon: 'text-[#3D6B5A]' },
-  white: { text: 'text-white', icon: 'text-white/90' },
+  forest: { text: 'text-[#2A4036]', bar: 'bg-[#2A4036]' },
+  white: { text: 'text-white', bar: 'bg-white' },
 };
 
 export function Logo({ size = 'md', color = 'forest', showText = true, className = '' }: LogoProps) {
@@ -22,59 +22,41 @@ export function Logo({ size = 'md', color = 'forest', showText = true, className
   const colors = colorMap[color];
 
   return (
-    <div className={`flex items-center gap-2 ${className}`}>
+    <div className={`flex items-center ${sizes.logoGap} ${className}`}>
+      <div className={`flex ${sizes.gap} items-center`} aria-hidden="true">
+        <span className={`${sizes.barW} ${sizes.barH} ${colors.bar} block rounded-[1px]`}></span>
+        <span className={`${sizes.barW} ${sizes.barH} ${colors.bar} block rounded-[1px]`}></span>
+      </div>
       {showText && (
-        <span
-          className={`font-serif font-normal tracking-tight ${sizes.text} ${colors.text}`}
-          style={{ fontFamily: 'var(--font-dm-serif), Georgia, serif' }}
-        >
+        <span className={`font-serif tracking-tight ${sizes.text} ${colors.text}`}>
           Pratiro
         </span>
       )}
-      <PauseIcon className={`${sizes.icon} ${colors.icon}`} />
     </div>
-  );
-}
-
-export function PauseIcon({ className = '' }: { className?: string }) {
-  return (
-    <svg
-      className={className}
-      fill="none"
-      viewBox="0 0 32 32"
-      xmlns="http://www.w3.org/2000/svg"
-      style={{ filter: 'drop-shadow(0 4px 8px rgba(61, 107, 90, 0.12))' }}
-    >
-      {/* Sharp corners (rx="0") as specified in the design */}
-      <rect fill="currentColor" height="24" rx="0" width="7" x="6" y="4" />
-      <rect fill="currentColor" height="24" rx="0" width="7" x="19" y="4" />
-    </svg>
   );
 }
 
 export function LogoCorner({ className = '' }: { className?: string }) {
   return (
+    // eslint-disable-next-line @next/next/no-html-link-for-pages
     <a
       href="/"
-      className={`fixed top-4 left-4 z-20 flex items-baseline gap-2 ${className}`}
+      className={`fixed top-4 left-4 z-20 ${className}`}
       aria-label="Pratiro – til forsiden"
     >
-      <span
-        className="text-xl text-[#2D4A3E] tracking-tight"
-        style={{ fontFamily: 'var(--font-dm-serif), Georgia, serif' }}
-      >
-        Pratiro
-      </span>
-      <svg
-        className="w-4 h-4 text-[#3D6B5A]"
-        fill="none"
-        viewBox="0 0 32 32"
-        xmlns="http://www.w3.org/2000/svg"
-        style={{ transform: 'translateY(2px)' }}
-      >
-        <rect fill="currentColor" height="24" rx="0" width="7" x="6" y="4" />
-        <rect fill="currentColor" height="24" rx="0" width="7" x="19" y="4" />
-      </svg>
+      <Logo size="sm" color="forest" />
     </a>
+  );
+}
+
+// Product icon for simulator header: speech bubble with pause bars
+export function ProductIcon({ className = '' }: { className?: string }) {
+  return (
+    <div
+      className={`w-9 h-9 bg-white/15 rounded-tl-[12px] rounded-tr-[12px] rounded-br-[12px] rounded-bl-[4px] flex items-center justify-center gap-[4px] ${className}`}
+    >
+      <span className="w-[3px] h-[14px] bg-white rounded-[1px]"></span>
+      <span className="w-[3px] h-[14px] bg-white rounded-[1px]"></span>
+    </div>
   );
 }

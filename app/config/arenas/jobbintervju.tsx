@@ -152,7 +152,7 @@ IKKE GJØR DETTE:
       annet: customJobType || 'denne stillingen',
     };
 
-    const jobArea = jobTypeMap[jobType] || 'denne stillingen';
+    const _jobArea = jobTypeMap[jobType] || 'denne stillingen';
 
     return `Start jobbintervjuet. Du er intervjueren.
 

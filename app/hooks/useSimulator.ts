@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useCallback, useMemo, useEffect } from 'react';
+import { useState, useCallback, useMemo, useEffect, useRef } from 'react';
 import { ArenaId, Message, Analysis, ArenaConfig } from '../config/types';
 import { getArena } from '../config/arenas';
 import { chatWithGemini } from '../actions';
@@ -85,6 +85,11 @@ export function useSimulator(arenaId: ArenaId): UseSimulatorReturn {
   const [isTyping, setIsTyping] = useState(false);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [limitWarning, setLimitWarning] = useState<string | null>(null);
+
+  // Synkrone guards mot dobbeltklikk (React state oppdateres ikke før neste render)
+  const isStartingRef = useRef(false);
+  const isAnalyzingRef = useRef(false);
+
   const [clientId, setClientId] = useState<string>(() => {
     // Initialiser synkront hvis vi er på klientsiden
     if (typeof window !== 'undefined') {
@@ -93,10 +98,10 @@ export function useSimulator(arenaId: ArenaId): UseSimulatorReturn {
     return '';
   });
 
-  // Backup: Sett clientId hvis den ikke ble satt ved initialisering
+  // Backup: Sett clientId hvis den ikke ble satt ved initialisering (SSR)
   useEffect(() => {
     if (!clientId) {
-      setClientId(getClientId());
+      setClientId(getClientId()); // eslint-disable-line react-hooks/set-state-in-effect
     }
   }, [clientId]);
 
@@ -151,7 +156,8 @@ export function useSimulator(arenaId: ArenaId): UseSimulatorReturn {
   // Start simulation
   const startSimulation = useCallback(async () => {
     const finalScenario = customScenario || scenario;
-    if (!finalScenario || isLoading) return;
+    if (!finalScenario || isLoading || isStartingRef.current) return;
+    isStartingRef.current = true;
 
     setIsLoading(true);
     setLimitWarning(null);
@@ -183,6 +189,7 @@ export function useSimulator(arenaId: ArenaId): UseSimulatorReturn {
 
     setIsTyping(false);
     setIsLoading(false);
+    isStartingRef.current = false;
   }, [arena, config, customScenario, scenario, isLoading, clientId]);
 
   // Send message
@@ -252,6 +259,9 @@ export function useSimulator(arenaId: ArenaId): UseSimulatorReturn {
 
   // Run analysis
   const runAnalysis = useCallback(async () => {
+    if (isAnalyzingRef.current) return;
+    isAnalyzingRef.current = true;
+
     setIsAnalyzing(true);
     setLimitWarning(null);
     setStep(3);
@@ -326,6 +336,7 @@ export function useSimulator(arenaId: ArenaId): UseSimulatorReturn {
     }
 
     setIsAnalyzing(false);
+    isAnalyzingRef.current = false;
   }, [arena, config, messages, customScenario, scenario, buildHistoryText, clientId]);
 
   // Reset
@@ -336,6 +347,8 @@ export function useSimulator(arenaId: ArenaId): UseSimulatorReturn {
     setScenario('');
     setCustomScenario('');
     setLimitWarning(null);
+    isStartingRef.current = false;
+    isAnalyzingRef.current = false;
   }, []);
 
   return {

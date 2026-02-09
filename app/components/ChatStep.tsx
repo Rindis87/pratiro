@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef, useEffect, useCallback } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { Message } from '../config/types';
 
 // Sjekk om vi er på mobil (under 768px)
@@ -66,7 +66,7 @@ export default function ChatStep({
   onClearWarning,
 }: ChatStepProps) {
   const [input, setInput] = useState('');
-  const [isInitialLoad, setIsInitialLoad] = useState(true);
+  const isInitialLoadRef = useRef(true);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const prevMessageCountRef = useRef(messages.length);
@@ -76,11 +76,11 @@ export default function ChatStep({
 
   // Scroll til toppen ved første lasting
   useEffect(() => {
-    if (isInitialLoad) {
+    if (isInitialLoadRef.current) {
       window.scrollTo(0, 0);
-      setIsInitialLoad(false);
+      isInitialLoadRef.current = false;
     }
-  }, [isInitialLoad]);
+  }, []);
 
   // Auto-scroll til bunn KUN når nye meldinger kommer (ikke ved oppstart)
   useEffect(() => {
@@ -118,24 +118,24 @@ export default function ChatStep({
   const filteredMessages = messages.filter((m) => m.role !== 'system');
 
   return (
-    <div className="flex flex-col h-[100dvh] md:h-[600px] md:max-h-[700px] bg-slate-900">
+    <div className="flex flex-col flex-1 min-h-0 md:h-[600px] md:max-h-[700px] bg-[#FDFCFB]">
       {/* Tips bar */}
-      <div className="bg-emerald-500/10 px-4 py-2 text-sm text-emerald-300 flex justify-between items-center border-b border-emerald-500/20 gap-2">
+      <div className="bg-[rgba(42,64,54,0.05)] px-4 py-2 text-sm text-[#2A4036] flex justify-between items-center border-b border-[rgba(42,64,54,0.1)] gap-2">
         <span className="flex-1">
           <b>Tips:</b> {getTips()}
         </span>
-        <span className={`shrink-0 ${messageCount >= maxMessages - 5 ? 'text-amber-400 font-medium' : 'text-slate-400'}`}>
+        <span className={`shrink-0 ${messageCount >= maxMessages - 5 ? 'text-amber-600 font-medium' : 'text-[#7D786D]'}`}>
           {messageCount}/{maxMessages}
         </span>
       </div>
 
       {/* Warning banner */}
       {limitWarning && (
-        <div className="bg-amber-500/10 border-b border-amber-500/30 px-4 py-2 text-sm text-amber-300 flex justify-between items-center gap-2">
+        <div className="bg-amber-50 border-b border-amber-200 px-4 py-2 text-sm text-amber-700 flex justify-between items-center gap-2">
           <span className="flex-1">{limitWarning}</span>
           <button
             onClick={onClearWarning}
-            className="w-11 h-11 min-w-[44px] min-h-[44px] flex items-center justify-center text-amber-400 hover:text-amber-300 hover:bg-amber-500/20 rounded-lg transition-colors font-medium text-lg"
+            className="w-11 h-11 min-w-[44px] min-h-[44px] flex items-center justify-center text-amber-500 hover:text-amber-700 hover:bg-amber-100 rounded-lg transition-colors font-medium text-lg"
             aria-label="Lukk advarsel"
           >
             ✕
@@ -159,8 +159,8 @@ export default function ChatStep({
               <div
                 className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 shadow-sm ${
                   msg.role === 'user'
-                    ? 'bg-emerald-600 text-white'
-                    : 'bg-slate-800 text-emerald-400 border border-white/10'
+                    ? 'bg-[#2A4036] text-white'
+                    : 'bg-[#E7ECEA] text-[#2A4036] border border-black/[0.06]'
                 }`}
               >
                 {msg.role === 'user' ? <UserIcon /> : <AIIcon />}
@@ -170,16 +170,16 @@ export default function ChatStep({
               <div className="flex flex-col gap-1">
                 <span
                   className={`text-sm font-medium ${
-                    msg.role === 'user' ? 'text-right text-slate-400' : 'text-slate-400'
+                    msg.role === 'user' ? 'text-right text-[#7D786D]' : 'text-[#7D786D]'
                   }`}
                 >
                   {getChatLabel(msg.role as 'user' | 'ai')}
                 </span>
                 <div
-                  className={`p-3 md:p-4 shadow-sm text-[15px] leading-relaxed ${
+                  className={`p-3 md:p-4 shadow-sm text-[15px] md:text-[15px] leading-relaxed ${
                     msg.role === 'user'
-                      ? 'bg-emerald-600 text-white rounded-l-2xl rounded-tr-2xl'
-                      : 'bg-slate-800 text-slate-100 border border-white/10 rounded-r-2xl rounded-bl-2xl'
+                      ? 'bg-[#2A4036] text-white rounded-l-2xl rounded-tr-2xl'
+                      : 'bg-white text-[#252825] border border-black/[0.06] rounded-r-2xl rounded-bl-2xl'
                   }`}
                 >
                   {msg.content}
@@ -192,10 +192,10 @@ export default function ChatStep({
         {/* Typing indicator */}
         {isTyping && (
           <div className="flex justify-start ml-14">
-            <div className="bg-slate-800 px-4 py-2 rounded-full flex gap-1 animate-pulse border border-white/10">
-              <span className="w-1.5 h-1.5 bg-slate-500 rounded-full"></span>
-              <span className="w-1.5 h-1.5 bg-slate-500 rounded-full"></span>
-              <span className="w-1.5 h-1.5 bg-slate-500 rounded-full"></span>
+            <div className="bg-[#E7ECEA] px-4 py-2 rounded-full flex gap-1 animate-pulse border border-black/[0.04]">
+              <span className="w-1.5 h-1.5 bg-[#7D786D] rounded-full"></span>
+              <span className="w-1.5 h-1.5 bg-[#7D786D] rounded-full"></span>
+              <span className="w-1.5 h-1.5 bg-[#7D786D] rounded-full"></span>
             </div>
           </div>
         )}
@@ -204,14 +204,14 @@ export default function ChatStep({
       </div>
 
       {/* Input Area */}
-      <div className="p-2 md:p-4 bg-slate-800/50 border-t border-white/10 flex flex-col gap-2 md:gap-3">
+      <div className="p-2 md:p-4 bg-[#F7F5F0] border-t border-black/[0.06] flex flex-col gap-2 md:gap-3">
         {/* Character counter */}
         <div className="flex justify-between items-center text-sm">
-          <span className={`${isOverLimit ? 'text-red-400 font-medium' : charsRemaining <= 100 ? 'text-amber-400' : 'text-slate-500'}`}>
+          <span className={`${isOverLimit ? 'text-red-600 font-medium' : charsRemaining <= 100 ? 'text-amber-600' : 'text-[#7D786D]'}`}>
             {isOverLimit ? `${Math.abs(charsRemaining)} tegn for mye` : `${charsRemaining} tegn igjen`}
           </span>
           {isAtMessageLimit && (
-            <span className="text-amber-400 font-medium text-right">Maks nådd - avslutt for veiledning</span>
+            <span className="text-amber-600 font-medium text-right">Maks nådd - avslutt for veiledning</span>
           )}
         </div>
 
@@ -225,17 +225,17 @@ export default function ChatStep({
             placeholder={isAtMessageLimit ? "Maks meldinger nådd" : "Skriv svaret ditt..."}
             disabled={isAtMessageLimit}
             maxLength={maxMessageLength + 50}
-            className={`flex-1 bg-slate-900 border rounded-xl px-4 py-3
-                     focus:outline-none focus:ring-2 focus:ring-emerald-500
-                     text-white placeholder-slate-500
+            className={`flex-1 bg-white border rounded-xl px-4 py-3 min-h-[48px] text-base
+                     focus:outline-none focus:ring-2 focus:ring-[#2A4036]/30
+                     text-[#252825] placeholder-[#7D786D]
                      disabled:opacity-50 disabled:cursor-not-allowed
-                     ${isOverLimit ? 'border-red-500 focus:ring-red-500' : 'border-white/10'}`}
+                     ${isOverLimit ? 'border-red-500 focus:ring-red-500' : 'border-black/[0.08]'}`}
           />
           <button
             onClick={handleSend}
             disabled={!input.trim() || isTyping || isOverLimit || isAtMessageLimit}
-            className="bg-emerald-600 hover:bg-emerald-500 text-white p-3 rounded-xl
-                     transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="bg-[#2A4036] hover:bg-[#1F3029] text-white p-3 min-w-[48px] min-h-[48px] rounded-xl
+                     transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
           >
             <SendIcon />
           </button>
@@ -244,9 +244,11 @@ export default function ChatStep({
         {/* Analysis button */}
         <button
           onClick={onRunAnalysis}
-          className="w-full bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400
-                   font-medium py-3 rounded-xl flex items-center justify-center gap-2
-                   transition-colors mt-2 border border-emerald-500/30"
+          disabled={isTyping}
+          className="w-full bg-[rgba(42,64,54,0.06)] hover:bg-[rgba(42,64,54,0.1)] text-[#2A4036]
+                   font-medium py-3 min-h-[48px] rounded-xl flex items-center justify-center gap-2
+                   transition-colors mt-1 border border-[rgba(42,64,54,0.15)]
+                   disabled:opacity-50 disabled:cursor-not-allowed"
         >
           <AnalysisIcon />
           Avslutt og få veiledning

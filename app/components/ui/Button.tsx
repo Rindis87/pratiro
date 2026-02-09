@@ -11,27 +11,27 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 
 const variantStyles = {
   primary: `
-    bg-emerald-600 hover:bg-emerald-500 text-white
-    shadow-lg shadow-emerald-900/30
-    hover:shadow-xl hover:shadow-emerald-900/40
-    disabled:bg-emerald-600/50
-    border border-emerald-500/50
+    bg-[#2A4036] hover:bg-[#1F3029] text-white
+    shadow-[0_4px_12px_rgba(42,64,54,0.15)]
+    hover:shadow-[0_8px_20px_rgba(42,64,54,0.25)]
+    disabled:bg-[#2A4036]/50
+    border border-[rgba(42,64,54,0.3)]
   `,
   secondary: `
-    bg-slate-800 hover:bg-slate-700 text-white
-    border border-white/10
-    hover:border-white/20
+    bg-[#E7ECEA] hover:bg-[#D1D8D6] text-[#252825]
+    border border-black/[0.06]
+    hover:border-black/[0.1]
     shadow-sm
-    disabled:bg-slate-800/50
+    disabled:bg-[#E7ECEA]/50
   `,
   outline: `
-    bg-transparent hover:bg-emerald-500/10 text-emerald-400
-    border-2 border-emerald-500
-    disabled:border-emerald-500/30 disabled:text-emerald-500/30
+    bg-transparent hover:bg-[rgba(42,64,54,0.05)] text-[#2A4036]
+    border-2 border-[#2A4036]
+    disabled:border-[#2A4036]/30 disabled:text-[#2A4036]/30
   `,
   ghost: `
-    bg-transparent hover:bg-white/10 text-white
-    disabled:text-white/30
+    bg-transparent hover:bg-black/[0.04] text-[#252825]
+    disabled:text-[#252825]/30
   `,
 };
 
@@ -56,7 +56,7 @@ export function Button({
     <button
       className={`
         inline-flex items-center justify-center
-        font-bold font-brand
+        font-bold font-sans
         transition-all duration-200
         disabled:cursor-not-allowed disabled:opacity-60
         ${variantStyles[variant]}

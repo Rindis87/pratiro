@@ -1,32 +1,11 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
-import { Logo } from './components/ui/Logo';
+import { Logo, ProductIcon } from './components/ui/Logo';
 import { arenaList } from './config/arenas';
 import { ArenaId } from './config/types';
 import { validateAccessCode } from './actions';
-
-// New Speech Bubble Logo Component
-const SpeechBubbleLogo = ({ className = '' }: { className?: string }) => (
-  <div className={`flex items-center gap-2.5 group ${className}`}>
-    <div className="w-8 h-7 bg-emerald-500 rounded-tl-lg rounded-tr-lg rounded-br-lg flex items-center justify-center gap-0.5 shadow-lg shadow-emerald-500/20 group-hover:bg-emerald-400 transition-colors">
-      <div className="w-1 h-3.5 bg-white rounded-full"></div>
-      <div className="w-1 h-3.5 bg-white rounded-full"></div>
-    </div>
-    <span className="text-xl font-brand font-bold text-white tracking-tight group-hover:text-emerald-50 transition-colors">
-      Pratiro
-    </span>
-  </div>
-);
-
-// Mini logo for cards
-const MiniLogo = () => (
-  <div className="w-6 h-5 bg-emerald-500 rounded-tl-md rounded-tr-md rounded-br-md flex items-center justify-center gap-0.5">
-    <div className="w-0.5 h-3 bg-white rounded-full"></div>
-    <div className="w-0.5 h-3 bg-white rounded-full"></div>
-  </div>
-);
 
 export default function LandingPage() {
   const router = useRouter();
@@ -35,6 +14,31 @@ export default function LandingPage() {
   const [accessCode, setAccessCode] = useState('');
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+
+  // Scroll fade-in observer
+  const observerRef = useRef<IntersectionObserver | null>(null);
+  useEffect(() => {
+    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (prefersReduced) return;
+
+    observerRef.current = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('fade-in-up');
+            observerRef.current?.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.1, rootMargin: '0px 0px -40px 0px' }
+    );
+
+    document.querySelectorAll('.observe-fade').forEach((el) => {
+      observerRef.current?.observe(el);
+    });
+
+    return () => observerRef.current?.disconnect();
+  }, []);
 
   const handleArenaClick = (arenaId: ArenaId) => {
     setSelectedArena(arenaId);
@@ -51,7 +55,11 @@ export default function LandingPage() {
 
     if (isValid) {
       sessionStorage.setItem('pratiro_access', 'true');
-      router.push(`/simulator?arena=${selectedArena}`);
+      if (selectedArena) {
+        router.push(`/simulator?arena=${selectedArena}`);
+      } else {
+        router.push('/simulator');
+      }
     } else {
       setError('Feil tilgangskode. Prøv igjen.');
       setIsLoading(false);
@@ -68,378 +76,484 @@ export default function LandingPage() {
     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
   };
 
-  // Arena data
-  const arenaData = [
-    {
-      id: 'familie' as ArenaId,
-      name: 'Familie & Barn',
-      description: 'Grensesetting, skjermtid og samtaler om vanskelige følelser med barna.',
-      icon: (
-        <svg className="w-7 h-7 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.5">
-          <path strokeLinecap="round" strokeLinejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-        </svg>
-      ),
-    },
-    {
-      id: 'arbeidsliv' as ArenaId,
-      name: 'Arbeidsliv',
-      description: 'Medarbeidersamtaler, lønnsforhandlinger og krevende tilbakemeldinger.',
-      icon: (
-        <svg className="w-7 h-7 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.5">
-          <path strokeLinecap="round" strokeLinejoin="round" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-        </svg>
-      ),
-    },
-    {
-      id: 'jobbintervju' as ArenaId,
-      name: 'Jobbintervju',
-      description: 'Forbered deg grundig til drømmejobben med realistiske intervjuøvelser.',
-      icon: (
-        <svg className="w-7 h-7 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.5">
-          <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-        </svg>
-      ),
-    },
-    {
-      id: 'eksamen' as ArenaId,
-      name: 'Eksamen & Skole',
-      description: 'Test kunnskapene dine med en tålmodig AI-sensor tilpasset ditt fag.',
-      icon: (
-        <svg className="w-7 h-7 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.5">
-          <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-        </svg>
-      ),
-    },
-  ];
-
   return (
-    <div className="min-h-screen bg-slate-900 text-slate-50 selection:bg-emerald-500 selection:text-white">
-      {/* Background with nature image - more visible */}
-      <div className="fixed inset-0 z-0 pointer-events-none">
-        <img
-          src="https://images.unsplash.com/photo-1500382017468-9049fed747ef?q=80&w=2832&auto=format&fit=crop"
-          className="w-full h-full object-cover opacity-60"
-          alt=""
-        />
-        <div className="absolute inset-0 bg-gradient-to-r from-slate-900/80 via-slate-900/50 to-transparent"></div>
-        <div className="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-transparent to-transparent"></div>
-      </div>
+    <div className="landing min-h-screen bg-[#FDFCFB] text-[#252825] selection:bg-[#2A4036]/20">
 
-      {/* Navbar */}
-      <nav className="fixed top-0 left-0 right-0 z-50 glass-navbar">
-        <div className="max-w-7xl mx-auto px-6 h-20 flex justify-between items-center">
-          <a href="/" className="flex items-center">
-            <SpeechBubbleLogo />
+      {/* ===== NAVIGATION ===== */}
+      <nav
+        aria-label="Hovednavigasjon"
+        className="fixed top-0 w-full z-50 border-b border-black/[0.04]"
+        style={{
+          background: 'rgba(253,252,251,0.9)',
+          backdropFilter: 'blur(12px)',
+          WebkitBackdropFilter: 'blur(12px)',
+        }}
+      >
+        {/* Top stripe */}
+        <div
+          className="h-[2px] opacity-70"
+          style={{
+            background: 'linear-gradient(90deg, rgba(42,64,54,0.65), rgba(42,64,54,0.12), rgba(42,64,54,0.65))',
+          }}
+        />
+        <div className="max-w-[1140px] mx-auto px-6 py-5 flex justify-between items-center">
+          <a href="#top" aria-label="Pratiro – til toppen">
+            <Logo size="md" color="forest" />
           </a>
 
-          <div className="hidden md:flex items-center gap-8 text-sm font-medium text-slate-200">
-            <button onClick={() => scrollTo('hvordan')} className="hover:text-white transition-colors">
-              Slik fungerer det
-            </button>
-            <button onClick={() => scrollTo('arenaer')} className="hover:text-white transition-colors">
+          <div className="hidden md:flex items-center gap-8">
+            <button onClick={() => scrollTo('arenaer')} className="text-[0.95rem] font-medium text-[#5C5F5C] hover:text-[#2A4036] transition-colors">
               Arenaer
             </button>
-            <button onClick={() => scrollTo('om')} className="hover:text-white transition-colors">
+            <button onClick={() => scrollTo('slik')} className="text-[0.95rem] font-medium text-[#5C5F5C] hover:text-[#2A4036] transition-colors">
+              Slik fungerer det
+            </button>
+            <button onClick={() => scrollTo('om')} className="text-[0.95rem] font-medium text-[#5C5F5C] hover:text-[#2A4036] transition-colors">
               Om Pratiro
             </button>
           </div>
 
           <button
             onClick={() => scrollTo('arenaer')}
-            className="px-5 py-2 rounded-full bg-emerald-600 hover:bg-emerald-500 text-white text-sm font-bold shadow-lg shadow-emerald-900/50 transition-all hover:-translate-y-0.5 border border-emerald-500/50"
+            className="px-6 py-2.5 rounded-full bg-[#2A4036] text-white text-[0.95rem] font-medium
+                       shadow-[0_4px_12px_rgba(42,64,54,0.15)] hover:bg-[#1F3029] hover:-translate-y-0.5
+                       hover:shadow-[0_8px_20px_rgba(42,64,54,0.25)] transition-all duration-300"
           >
-            Start gratis
+            Start i ro
           </button>
         </div>
       </nav>
 
-      {/* Hero Section */}
-      <header className="relative z-10 pt-32 pb-20 lg:pt-48 lg:pb-32 px-6 min-h-screen flex items-center">
-        <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16 items-center w-full">
-          {/* Left: Content */}
-          <div className="space-y-8 max-w-2xl">
-            {/* Tagline */}
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-950/40 border border-emerald-500/30 text-emerald-300 text-xs font-bold uppercase tracking-wider backdrop-blur-md shadow-sm">
-              <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
-              </span>
-              AI-drevet simulering
-            </div>
-
-            {/* Headline */}
-            <h1 className="text-5xl md:text-6xl lg:text-7xl font-brand font-bold text-white leading-[1.1] tracking-tight drop-shadow-lg">
-              Vanskelige samtaler. <br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-teal-200">
-                Enkle å øve på.
-              </span>
+      {/* ===== HERO ===== */}
+      <header className="relative pt-[180px] pb-16 min-h-screen overflow-hidden" id="top" role="banner"
+        style={{
+          background: `
+            radial-gradient(ellipse at 80% 20%, rgba(255,248,225,0.45) 0%, transparent 55%),
+            radial-gradient(ellipse at 20% 80%, rgba(42,64,54,0.05) 0%, transparent 50%),
+            linear-gradient(180deg, #FAF9F6 0%, #F2EFE9 100%)
+          `,
+        }}
+      >
+        <div className="max-w-[1140px] mx-auto px-6 relative z-10 grid grid-cols-1 lg:grid-cols-[1.1fr_0.9fr] gap-14 items-center">
+          {/* Left: Text */}
+          <div>
+            <h1 className="text-[clamp(2.8rem,5.2vw,4.2rem)] leading-[1.12] tracking-[-0.025em] mb-5">
+              Prat i ro.<br />
+              &Oslash;v p&aring; samtalene som <span className="text-[#4A6359]">betyr noe.</span>
             </h1>
-
-            {/* Subtext */}
-            <p className="text-lg text-slate-200 leading-relaxed max-w-lg font-medium">
-              Pratiro gir deg et trygt rom for å mestre krevende dialoger.
-              Enten du er forelder, leder, eller student – øv i ro, prester når det gjelder.
+            <p className="text-[1.08rem] text-[#5C5F5C] leading-[1.72] mb-8 max-w-[48ch]">
+              Pratiro gj&oslash;r det enkelt &aring; &oslash;ve p&aring; vanskelige samtaler.
+              Ingen kompliserte instruksjoner &ndash; bare velg situasjon og start.
             </p>
 
-            {/* Buttons */}
-            <div className="flex flex-col sm:flex-row gap-4 pt-2">
+            <div className="flex items-center gap-3 mb-7 flex-wrap">
               <button
                 onClick={() => scrollTo('arenaer')}
-                className="px-8 py-4 rounded-full bg-emerald-600 hover:bg-emerald-500 text-white font-brand font-bold text-lg transition-all shadow-[0_0_40px_-10px_rgba(16,185,129,0.5)] hover:shadow-[0_0_60px_-10px_rgba(16,185,129,0.6)] hover:-translate-y-1 border-t border-white/20"
+                className="inline-flex items-center gap-2 px-7 py-3 rounded-full bg-[#2A4036] text-white font-semibold text-[0.92rem]
+                           shadow-[0_8px_24px_rgba(42,64,54,0.22)] hover:bg-[#1F3029] hover:-translate-y-0.5
+                           hover:shadow-[0_12px_32px_rgba(42,64,54,0.30)] transition-all duration-300"
               >
-                Prøv simulatoren
+                Start i ro
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14" /><path d="M12 5l7 7-7 7" /></svg>
               </button>
               <button
-                onClick={() => scrollTo('hvordan')}
-                className="px-8 py-4 rounded-full glass text-white font-brand font-semibold text-lg hover:bg-white/10 transition-all flex items-center justify-center gap-2 border border-white/20 shadow-lg"
+                onClick={() => scrollTo('slik')}
+                className="inline-flex items-center gap-2 px-7 py-3 rounded-full bg-white/80 text-[#2A4036] font-semibold text-[0.92rem]
+                           border border-[rgba(42,64,54,0.12)] shadow-[0_4px_16px_rgba(42,64,54,0.06)]
+                           hover:bg-white hover:border-[rgba(42,64,54,0.22)] hover:-translate-y-px hover:shadow-[0_8px_24px_rgba(42,64,54,0.10)]
+                           transition-all duration-300"
               >
                 Les mer
               </button>
             </div>
+
+            <div className="flex items-center gap-2 flex-wrap">
+              {['Trygt', 'Anonymt', 'Utviklet i Norge'].map((pill) => (
+                <span key={pill} className="px-3 py-1 rounded-full text-[0.8rem] font-medium text-[#7D786D] bg-white/50 border border-black/5">
+                  {pill}
+                </span>
+              ))}
+            </div>
           </div>
 
-          {/* Right: App Preview - Arbeidsliv simulator with dark theme */}
-          <div className="hidden lg:block relative">
-            {/* Ambient glows */}
-            <div className="absolute -top-20 -right-20 w-96 h-96 bg-emerald-500/15 rounded-full blur-[100px] animate-pulse"></div>
-            <div className="absolute -bottom-20 -left-20 w-80 h-80 bg-teal-500/10 rounded-full blur-[80px]"></div>
-
-            {/* Simulator Preview Card - Dark theme like real simulator */}
-            <div className="glass-card rounded-[24px] overflow-hidden animate-float">
-              {/* Header */}
-              <div className="bg-emerald-600 px-5 py-4 flex items-center gap-3">
-                <div className="w-8 h-7 bg-white/20 rounded-tl-md rounded-tr-md rounded-br-md flex items-center justify-center gap-0.5">
-                  <div className="w-0.5 h-3 bg-white rounded-full"></div>
-                  <div className="w-0.5 h-3 bg-white rounded-full"></div>
+          {/* Right: Simulator Preview - Arbeidsliv conversation */}
+          <div className="hidden lg:block">
+            <aside
+              className="bg-white rounded-[24px] shadow-[0_24px_60px_rgba(42,64,54,0.12)] overflow-hidden border border-black/[0.06]"
+              aria-label="Forhåndsvisning av simulator"
+            >
+              {/* Forest header */}
+              <div className="bg-[#2A4036] px-4 py-3 flex justify-between items-center text-white">
+                <div className="flex items-center gap-2.5">
+                  <ProductIcon />
+                  <div className="leading-tight">
+                    <div className="font-sans font-medium text-[0.95rem]">Pratiro &Oslash;ving</div>
+                    <div className="text-[0.7rem] opacity-80">Ny samtale</div>
+                  </div>
                 </div>
-                <div>
-                  <span className="text-white font-brand font-semibold">Pratiro</span>
-                  <p className="text-white/70 text-[10px] font-medium uppercase tracking-wider">Arbeidsliv</p>
+                <div className="flex items-center gap-1.5 text-[0.7rem] bg-white/15 px-2 py-1 rounded-md font-medium">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="23 4 23 10 17 10" /><polyline points="1 20 1 14 7 14" /><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15" /></svg>
+                  Start p&aring; nytt
                 </div>
               </div>
 
               {/* Tips bar */}
-              <div className="bg-emerald-500/10 px-4 py-2 text-xs text-emerald-300 flex justify-between items-center border-b border-emerald-500/20">
-                <span><b>Tips:</b> Bruk jeg-budskap og konkrete eksempler</span>
-                <span className="text-slate-400 font-medium">2/50</span>
+              <div className="bg-[rgba(42,64,54,0.05)] px-3.5 py-1.5 text-[0.72rem] text-[#2A4036] flex justify-between items-center border-b border-[rgba(42,64,54,0.1)]">
+                <span><b>Tips:</b> V&aelig;r konkret og bruk &laquo;og&raquo; i stedet for &laquo;men&raquo;.</span>
+                <span className="text-[#7D786D]">3/20</span>
               </div>
 
-              {/* Chat Area */}
-              <div className="bg-slate-900 p-4 space-y-4 min-h-[240px]">
-                {/* AI Message (Medarbeider) */}
-                <div className="flex gap-3">
-                  <div className="w-9 h-9 rounded-full bg-slate-800 border border-white/10 flex items-center justify-center shrink-0 shadow-sm">
-                    <svg className="w-5 h-5 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
-                    </svg>
+              {/* Chat area */}
+              <div className="bg-[#FDFCFB] p-3.5 flex flex-col gap-3 min-h-[320px]">
+                {/* Messages */}
+                <div className="flex flex-col gap-3 flex-1">
+                  {/* AI message */}
+                  <div className="flex gap-2">
+                    <div className="w-7 h-7 rounded-full bg-[#E7ECEA] border border-black/[0.06] flex items-center justify-center shrink-0">
+                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#2A4036" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" /></svg>
+                    </div>
+                    <div className="flex flex-col gap-0.5 max-w-[82%]">
+                      <span className="text-[0.68rem] font-medium text-[#7D786D]">Leder (AI)</span>
+                      <div className="bg-white border border-black/[0.05] rounded-r-[14px] rounded-bl-[14px] px-3 py-2 shadow-[0_2px_6px_rgba(0,0,0,0.02)]">
+                        <span className="text-[0.82rem] leading-[1.5] text-[#252825]">Jeg ser du har booket tid for en l&oslash;nnssamtale. Hva er dine forventninger?</span>
+                      </div>
+                    </div>
                   </div>
-                  <div className="flex flex-col gap-1">
-                    <span className="text-xs font-medium text-slate-400">Medarbeider</span>
-                    <div className="bg-slate-800 p-3 rounded-2xl rounded-tl-sm text-sm text-slate-100 border border-white/10 shadow-sm">
-                      Hei, du ville snakke med meg? Jeg var ikke helt sikker på hva det gjaldt.
+
+                  {/* User message */}
+                  <div className="flex gap-2 justify-end">
+                    <div className="flex flex-col gap-0.5 items-end max-w-[82%]">
+                      <span className="text-[0.68rem] font-medium text-[#7D786D]">Medarbeider (deg)</span>
+                      <div className="bg-[#2A4036] text-white rounded-l-[14px] rounded-tr-[14px] px-3 py-2">
+                        <span className="text-[0.82rem] leading-[1.5]">Jeg har levert sterke resultater i &aring;r, og mener det b&oslash;r reflekteres.</span>
+                      </div>
+                    </div>
+                    <div className="w-7 h-7 rounded-full bg-[#2A4036] flex items-center justify-center shrink-0">
+                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" /><circle cx="12" cy="7" r="4" /></svg>
+                    </div>
+                  </div>
+
+                  {/* AI message */}
+                  <div className="flex gap-2">
+                    <div className="w-7 h-7 rounded-full bg-[#E7ECEA] border border-black/[0.06] flex items-center justify-center shrink-0">
+                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#2A4036" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" /></svg>
+                    </div>
+                    <div className="flex flex-col gap-0.5 max-w-[82%]">
+                      <span className="text-[0.68rem] font-medium text-[#7D786D]">Leder (AI)</span>
+                      <div className="bg-white border border-black/[0.05] rounded-r-[14px] rounded-bl-[14px] px-3 py-2 shadow-[0_2px_6px_rgba(0,0,0,0.02)]">
+                        <span className="text-[0.82rem] leading-[1.5] text-[#252825]">Enig i at du har levert bra. Men budsjettet er stramt. Hva tenker du?</span>
+                      </div>
                     </div>
                   </div>
                 </div>
 
-                {/* User Message (Leder) */}
-                <div className="flex gap-3 flex-row-reverse">
-                  <div className="w-9 h-9 rounded-full bg-emerald-600 flex items-center justify-center shrink-0 shadow-sm">
-                    <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
-                      <circle cx="12" cy="7" r="4" />
-                    </svg>
-                  </div>
-                  <div className="flex flex-col gap-1 items-end">
-                    <span className="text-xs font-medium text-slate-400">Deg</span>
-                    <div className="bg-emerald-600 p-3 rounded-2xl rounded-tr-sm text-sm text-white shadow-sm">
-                      Ja, jeg ønsket å snakke om prosjektet. Jeg har lagt merke til noen utfordringer...
+                {/* Input area */}
+                <div className="bg-[#F7F5F0] rounded-xl p-2.5 border border-black/[0.05]">
+                  <div className="flex gap-2 items-center">
+                    <div className="flex-1 px-3 py-1.5 rounded-lg border border-black/[0.07] bg-white text-[0.8rem] text-[#7D786D]">
+                      Skriv svaret ditt&hellip;
+                    </div>
+                    <div className="w-[30px] h-[30px] rounded-lg bg-[#2A4036] flex items-center justify-center shrink-0">
+                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="22" y1="2" x2="11" y2="13" /><polygon points="22 2 15 22 11 13 2 9 22 2" /></svg>
                     </div>
                   </div>
-                </div>
-
-                {/* AI Response */}
-                <div className="flex gap-3">
-                  <div className="w-9 h-9 rounded-full bg-slate-800 border border-white/10 flex items-center justify-center shrink-0 shadow-sm">
-                    <svg className="w-5 h-5 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
-                    </svg>
-                  </div>
-                  <div className="flex flex-col gap-1">
-                    <span className="text-xs font-medium text-slate-400">Medarbeider</span>
-                    <div className="bg-slate-800 p-3 rounded-2xl rounded-tl-sm text-sm text-slate-100 border border-white/10 shadow-sm">
-                      Åh... Er det noe jeg har gjort feil? Jeg har jobbet veldig hardt.
-                    </div>
-                  </div>
+                  <button className="w-full mt-2 bg-[rgba(42,64,54,0.06)] text-[#2A4036] text-[0.76rem] font-medium py-1.5 rounded-lg border border-[rgba(42,64,54,0.12)] flex items-center justify-center gap-1.5">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                    Avslutt og f&aring; veiledning
+                  </button>
                 </div>
               </div>
-
-              {/* Input Area */}
-              <div className="bg-slate-800/50 p-4 border-t border-white/10">
-                <div className="flex gap-2 mb-3">
-                  <div className="flex-1 bg-slate-900 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-slate-500">
-                    Skriv svaret ditt...
-                  </div>
-                  <div className="bg-emerald-600 p-2.5 rounded-xl">
-                    <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-                      <line x1="22" y1="2" x2="11" y2="13" />
-                      <polygon points="22 2 15 22 11 13 2 9 22 2" />
-                    </svg>
-                  </div>
-                </div>
-                <button className="w-full bg-emerald-500/10 text-emerald-400 font-medium py-2.5 rounded-xl flex items-center justify-center gap-2 text-sm border border-emerald-500/30 transition-colors">
-                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                  Avslutt og få veiledning
-                </button>
-              </div>
-            </div>
+            </aside>
           </div>
         </div>
       </header>
 
-      {/* How It Works Section - Timeline design */}
-      <section id="hvordan" className="relative z-10 py-24">
-        <div className="max-w-5xl mx-auto px-6">
-          <div className="text-center mb-20">
-            <h2 className="text-4xl font-brand font-bold text-white mb-4">Slik fungerer det</h2>
-            <p className="text-slate-300 text-lg">
-              Tre enkle steg til bedre samtaler
+
+      {/* ===== SLIK FUNGERER DET (sand) ===== */}
+      <section className="py-[100px] bg-[#F7F5F0]" id="slik">
+        <div className="max-w-[1140px] mx-auto px-6">
+          <div className="text-center max-w-[600px] mx-auto mb-[60px] observe-fade" style={{ opacity: 0 }}>
+            <h2 className="text-[clamp(1.9rem,3.8vw,2.8rem)] mb-5">Slik fungerer det</h2>
+            <p className="text-[1.05rem] text-[#5C5F5C] leading-relaxed">
+              Tre enkle steg til bedre samtaler.
             </p>
           </div>
 
-          {/* Timeline */}
-          <div className="relative">
+          <div className="flex flex-col md:flex-row justify-between max-w-[900px] mx-auto relative">
             {/* Connecting line */}
-            <div className="hidden md:block absolute top-8 left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-emerald-500/30 to-transparent"></div>
+            <div className="hidden md:block absolute top-[25px] left-[10%] right-[10%] h-[2px] bg-[rgba(42,64,54,0.1)]" aria-hidden="true" />
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-12 md:gap-8">
-              {[
-                {
-                  num: '1',
-                  title: 'Velg scenario',
-                  desc: 'Velg din arena og situasjonen du vil øve på.',
-                },
-                {
-                  num: '2',
-                  title: 'Prat i ro',
-                  desc: 'Ha en realistisk samtale med AI-en som tilpasser seg dine svar.',
-                },
-                {
-                  num: '3',
-                  title: 'Få innsikt',
-                  desc: 'Motta tilbakemelding og konkrete tips til forbedring.',
-                },
-              ].map((step) => (
-                <div key={step.num} className="text-center relative">
-                  {/* Number circle */}
-                  <div className="w-16 h-16 mx-auto mb-6 rounded-full bg-emerald-500 flex items-center justify-center text-white text-2xl font-brand font-bold shadow-lg shadow-emerald-500/30 relative z-10">
-                    {step.num}
-                  </div>
-                  <h3 className="text-xl font-brand font-semibold text-white mb-3">{step.title}</h3>
-                  <p className="text-slate-400 text-sm leading-relaxed max-w-xs mx-auto">{step.desc}</p>
+            {[
+              { num: '1', title: 'Velg scenario', desc: 'Velg din arena og situasjonen du vil \u00f8ve p\u00e5.' },
+              { num: '2', title: 'Prat i ro', desc: '\u00d8v i en realistisk chat med AI som tilpasser seg svarene dine.' },
+              { num: '3', title: 'F\u00e5 innsikt', desc: 'Motta tilbakemelding og konkrete tips til forbedring.' },
+            ].map((step) => (
+              <div key={step.num} className="text-center relative z-10 bg-[#F7F5F0] px-5 flex-1 observe-fade mb-8 md:mb-0" style={{ opacity: 0 }}>
+                <div className="w-[50px] h-[50px] bg-[#2A4036] text-white rounded-full flex items-center justify-center mx-auto mb-5 font-serif text-[1.4rem]">
+                  {step.num}
                 </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Arenas Section */}
-      <section id="arenaer" className="relative z-10 py-24 px-6">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-brand font-bold text-white mb-4">Velg din arena</h2>
-            <p className="text-slate-400 text-lg max-w-2xl mx-auto">
-              Hver samtale er unik. Velg situasjonen du vil øve på.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {arenaData.map((arena) => (
-              <button
-                key={arena.id}
-                onClick={() => handleArenaClick(arena.id)}
-                className="p-8 rounded-2xl bg-white/5 border border-white/5 hover:bg-white/10 transition-all group text-left
-                         hover:-translate-y-2 hover:border-emerald-500/30 hover:shadow-[0_0_40px_-10px_rgba(16,185,129,0.3)]"
-              >
-                <div className="w-14 h-14 bg-emerald-500/20 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform shadow-inner border border-emerald-500/10">
-                  {arena.icon}
-                </div>
-                <h3 className="text-xl font-brand font-bold text-white mb-2">{arena.name}</h3>
-                <p className="text-slate-400 text-sm leading-relaxed mb-6">{arena.description}</p>
-                <span className="inline-flex items-center gap-2 text-emerald-400 text-sm font-medium group-hover:text-emerald-300">
-                  Start samtale
-                  <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                  </svg>
-                </span>
-              </button>
+                <h3 className="text-[1.2rem] mb-2.5">{step.title}</h3>
+                <p className="text-[0.95rem] text-[#5C5F5C]">{step.desc}</p>
+              </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* About Section */}
-      <section id="om" className="relative z-10 py-24 px-6 bg-slate-900/80 border-t border-white/5">
-        <div className="max-w-3xl mx-auto text-center">
-          <h2 className="text-4xl font-brand font-bold text-white mb-6">Om Pratiro</h2>
-          <p className="text-lg text-slate-300 leading-relaxed mb-6">
-            Pratiro betyr &quot;prat i ro&quot; – et trygt sted å øve på livets viktige samtaler.
-            Vi bruker AI-teknologi for å skape realistiske øvingsscenarioer, slik at du kan bli
-            tryggere før det virkelig gjelder.
-          </p>
-          <p className="text-lg text-slate-400 leading-relaxed">
-            Enten du er forelder som vil øve på grensesetting, leder som forbereder en vanskelig samtale,
-            eller student som skal opp til muntlig eksamen – Pratiro gir deg et rom til å prøve og feile,
-            helt uten konsekvenser.
-          </p>
+      {/* ===== ARENAER (sage) ===== */}
+      <section className="py-[100px] bg-[#E7ECEA]" id="arenaer">
+        <div className="max-w-[1140px] mx-auto px-6">
+          <div className="text-center max-w-[600px] mx-auto mb-[60px] observe-fade" style={{ opacity: 0 }}>
+            <h2 className="text-[clamp(1.9rem,3.8vw,2.8rem)] mb-5">Velg din arena</h2>
+            <p className="text-[1.05rem] text-[#5C5F5C] leading-relaxed">
+              Hver samtale er unik. Velg situasjonen du vil &oslash;ve p&aring;.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+            {/* Arbeidsliv */}
+            <button
+              onClick={() => handleArenaClick('arbeidsliv')}
+              className="bg-white rounded-[18px] p-6 text-left shadow-[0_10px_30px_-5px_rgba(42,64,54,0.06)]
+                         border border-black/[0.03] hover:-translate-y-[6px] hover:shadow-[0_25px_50px_-12px_rgba(42,64,54,0.18)]
+                         hover:border-[rgba(42,64,54,0.25)] hover:bg-[#FDFCFB] transition-all duration-300 flex flex-col observe-fade group cursor-pointer"
+              style={{ opacity: 0 }}
+            >
+              <div className="w-[52px] h-[52px] rounded-[14px] flex items-center justify-center mb-5" style={{ color: '#5B7A8C', background: '#EFF4F6' }}>
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                  <rect x="2" y="7" width="20" height="14" rx="2" ry="2" />
+                  <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />
+                </svg>
+              </div>
+              <h3 className="text-[1.3rem] mb-2">Arbeidsliv</h3>
+              <p className="text-[0.95rem] text-[#5C5F5C] leading-relaxed mb-auto">
+                Tren p&aring; god samtaleteknikk i jobbsituasjoner. Perfekt for ledere og medarbeidere.
+              </p>
+              <div className="flex flex-wrap gap-1.5 mt-4 pt-4">
+                <span className="text-[0.72rem] px-2.5 py-1 bg-[#FDFCFB] rounded-[20px] text-[#5C5F5C] border border-black/5">L&oslash;nnsforhandling</span>
+                <span className="text-[0.72rem] px-2.5 py-1 bg-[#FDFCFB] rounded-[20px] text-[#5C5F5C] border border-black/5">Konflikt</span>
+              </div>
+              <span className="inline-flex items-center gap-2 mt-4 font-semibold text-[#2A4036] text-[0.85rem]
+                             bg-[rgba(42,64,54,0.05)] border border-[rgba(42,64,54,0.12)] rounded-lg px-3 py-1.5
+                             group-hover:bg-[rgba(42,64,54,0.1)] group-hover:border-[rgba(42,64,54,0.2)] group-hover:gap-3 transition-all">
+                Start samtale <span aria-hidden="true">&rarr;</span>
+              </span>
+            </button>
+
+            {/* Jobbintervju */}
+            <button
+              onClick={() => handleArenaClick('jobbintervju')}
+              className="bg-white rounded-[18px] p-6 text-left shadow-[0_10px_30px_-5px_rgba(42,64,54,0.06)]
+                         border border-black/[0.03] hover:-translate-y-[6px] hover:shadow-[0_25px_50px_-12px_rgba(42,64,54,0.18)]
+                         hover:border-[rgba(42,64,54,0.25)] hover:bg-[#FDFCFB] transition-all duration-300 flex flex-col observe-fade group cursor-pointer"
+              style={{ opacity: 0 }}
+            >
+              <div className="w-[52px] h-[52px] rounded-[14px] flex items-center justify-center mb-5" style={{ color: '#8C705F', background: '#F4F0EE' }}>
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                  <circle cx="12" cy="7" r="4" />
+                </svg>
+              </div>
+              <h3 className="text-[1.3rem] mb-2">Jobbintervju</h3>
+              <p className="text-[0.95rem] text-[#5C5F5C] leading-relaxed mb-auto">
+                &Oslash;v p&aring; sp&oslash;rsm&aring;l og f&aring; konkrete forbedringspunkter f&oslash;r det gjelder.
+              </p>
+              <div className="flex flex-wrap gap-1.5 mt-4 pt-4">
+                <span className="text-[0.72rem] px-2.5 py-1 bg-[#FDFCFB] rounded-[20px] text-[#5C5F5C] border border-black/5">Presentasjon</span>
+                <span className="text-[0.72rem] px-2.5 py-1 bg-[#FDFCFB] rounded-[20px] text-[#5C5F5C] border border-black/5">Svakheter</span>
+              </div>
+              <span className="inline-flex items-center gap-2 mt-4 font-semibold text-[#2A4036] text-[0.85rem]
+                             bg-[rgba(42,64,54,0.05)] border border-[rgba(42,64,54,0.12)] rounded-lg px-3 py-1.5
+                             group-hover:bg-[rgba(42,64,54,0.1)] group-hover:border-[rgba(42,64,54,0.2)] group-hover:gap-3 transition-all">
+                Start samtale <span aria-hidden="true">&rarr;</span>
+              </span>
+            </button>
+
+            {/* Eksamen & Skole */}
+            <button
+              onClick={() => handleArenaClick('eksamen')}
+              className="bg-white rounded-[18px] p-6 text-left shadow-[0_10px_30px_-5px_rgba(42,64,54,0.06)]
+                         border border-black/[0.03] hover:-translate-y-[6px] hover:shadow-[0_25px_50px_-12px_rgba(42,64,54,0.18)]
+                         hover:border-[rgba(42,64,54,0.25)] hover:bg-[#FDFCFB] transition-all duration-300 flex flex-col observe-fade group cursor-pointer"
+              style={{ opacity: 0 }}
+            >
+              <div className="w-[52px] h-[52px] rounded-[14px] flex items-center justify-center mb-5" style={{ color: '#4A6359', background: '#E7ECEA' }}>
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                  <path d="M22 10v6" /><path d="M2 10l10-5 10 5-10 5z" /><path d="M6 12v5c0 2 2 3 6 3s6-1 6-3v-5" />
+                </svg>
+              </div>
+              <h3 className="text-[1.3rem] mb-2">Eksamen &amp; Skole</h3>
+              <p className="text-[0.95rem] text-[#5C5F5C] leading-relaxed mb-auto">
+                Tren p&aring; eksamen eller pr&oslash;ver med en t&aring;lmodig AI-sensor tilpasset ditt fag.
+              </p>
+              <div className="flex flex-wrap gap-1.5 mt-4 pt-4">
+                <span className="text-[0.72rem] px-2.5 py-1 bg-[#FDFCFB] rounded-[20px] text-[#5C5F5C] border border-black/5">Presentasjon</span>
+                <span className="text-[0.72rem] px-2.5 py-1 bg-[#FDFCFB] rounded-[20px] text-[#5C5F5C] border border-black/5">Muntlig</span>
+              </div>
+              <span className="inline-flex items-center gap-2 mt-4 font-semibold text-[#2A4036] text-[0.85rem]
+                             bg-[rgba(42,64,54,0.05)] border border-[rgba(42,64,54,0.12)] rounded-lg px-3 py-1.5
+                             group-hover:bg-[rgba(42,64,54,0.1)] group-hover:border-[rgba(42,64,54,0.2)] group-hover:gap-3 transition-all">
+                Start samtale <span aria-hidden="true">&rarr;</span>
+              </span>
+            </button>
+
+            {/* Familie */}
+            <button
+              onClick={() => handleArenaClick('familie')}
+              className="bg-white rounded-[18px] p-6 text-left shadow-[0_10px_30px_-5px_rgba(42,64,54,0.06)]
+                         border border-black/[0.03] hover:-translate-y-[6px] hover:shadow-[0_25px_50px_-12px_rgba(42,64,54,0.18)]
+                         hover:border-[rgba(42,64,54,0.25)] hover:bg-[#FDFCFB] transition-all duration-300 flex flex-col observe-fade group cursor-pointer"
+              style={{ opacity: 0 }}
+            >
+              <div className="w-[52px] h-[52px] rounded-[14px] bg-[#E7ECEA] flex items-center justify-center mb-5 text-[#2A4036]">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                  <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+                  <polyline points="9 22 9 12 15 12 15 22" />
+                </svg>
+              </div>
+              <h3 className="text-[1.3rem] mb-2">Familie</h3>
+              <p className="text-[0.95rem] text-[#5C5F5C] leading-relaxed mb-auto">
+                &Oslash;v p&aring; viktige samtaler hjemme. Fra grensesetting og skjermtid til vanskelige f&oslash;lelser.
+              </p>
+              <div className="flex flex-wrap gap-1.5 mt-4 pt-4">
+                <span className="text-[0.72rem] px-2.5 py-1 bg-[#FDFCFB] rounded-[20px] text-[#5C5F5C] border border-black/5">Ten&aring;ring</span>
+                <span className="text-[0.72rem] px-2.5 py-1 bg-[#FDFCFB] rounded-[20px] text-[#5C5F5C] border border-black/5">Grenser</span>
+              </div>
+              <span className="inline-flex items-center gap-2 mt-4 font-semibold text-[#2A4036] text-[0.85rem]
+                             bg-[rgba(42,64,54,0.05)] border border-[rgba(42,64,54,0.12)] rounded-lg px-3 py-1.5
+                             group-hover:bg-[rgba(42,64,54,0.1)] group-hover:border-[rgba(42,64,54,0.2)] group-hover:gap-3 transition-all">
+                Start samtale <span aria-hidden="true">&rarr;</span>
+              </span>
+            </button>
+          </div>
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="relative z-10 py-16 px-6 border-t border-white/5">
-        <div className="max-w-7xl mx-auto text-center">
-          <div className="flex items-center justify-center mb-4">
-            <SpeechBubbleLogo />
+      {/* ===== FOREST FEATURE BAND ===== */}
+      <section
+        className="py-20"
+        aria-label="Hvorfor Pratiro"
+        style={{
+          background: `
+            radial-gradient(700px 340px at 22% 20%, rgba(255,248,225,0.10), transparent 60%),
+            linear-gradient(180deg, #2A4036, #1F3029)
+          `,
+          color: 'rgba(255,255,255,0.92)',
+        }}
+      >
+        <div className="max-w-[1140px] mx-auto px-6">
+          <div className="text-center max-w-[600px] mx-auto mb-[60px] observe-fade" style={{ opacity: 0 }}>
+            <h2 className="text-[clamp(1.9rem,3.8vw,2.8rem)] mb-5 !text-white/[0.96]">
+              En rolig ramme for vanskelige samtaler
+            </h2>
+            <p className="text-[1.05rem] text-white/70 leading-relaxed">
+              Pratiro er bygget for &aring; gi deg trygghet &ndash; f&oslash;r den viktige samtalen.
+            </p>
           </div>
-          <p className="text-slate-400 mb-8">
-            Prat i ro – øv på samtaler som betyr noe.
-          </p>
 
-          <div className="flex flex-wrap justify-center gap-6 md:gap-8 mb-8 text-sm text-slate-400">
-            <a href="#" className="hover:text-white transition-colors py-2">Personvern</a>
-            <a href="#" className="hover:text-white transition-colors py-2">Vilkår</a>
-            <a href="#" className="hover:text-white transition-colors py-2">Kontakt oss</a>
+          <div
+            className="rounded-[20px] border border-white/10 p-5 grid grid-cols-1 md:grid-cols-3 gap-4
+                       shadow-[0_18px_50px_rgba(0,0,0,0.18)] observe-fade"
+            style={{ background: 'rgba(255,255,255,0.06)', opacity: 0 }}
+            role="list"
+          >
+            {[
+              { title: 'Trygt og anonymt', desc: 'Ingen lagrer samtalen. \u00d8v uten \u00e5 bli d\u00f8mt \u2013 i ditt eget tempo.' },
+              { title: 'I ditt tempo', desc: 'Pause, spol tilbake, pr\u00f8v igjen. Ingen tidspress, ingen konsekvenser.' },
+              { title: 'Konkrete setninger', desc: 'Ta med deg formuleringer og strategier du faktisk kan bruke i virkeligheten.' },
+            ].map((feat) => (
+              <div
+                key={feat.title}
+                className="rounded-[16px] border border-white/10 p-5"
+                style={{ background: 'rgba(255,255,255,0.06)' }}
+                role="listitem"
+              >
+                <b className="block mb-2 text-white/[0.94] text-[1rem] tracking-[-0.01em]">{feat.title}</b>
+                <p className="text-white/70 text-[0.92rem] leading-[1.65]">{feat.desc}</p>
+              </div>
+            ))}
           </div>
+        </div>
+      </section>
 
-          <p className="text-slate-500 text-sm">
-            © 2025 Pratiro. Laget i Norge.
+      {/* ===== OM PRATIRO (white) ===== */}
+      <section className="py-[100px] bg-white" id="om">
+        <div className="max-w-[1140px] mx-auto px-6">
+          <div className="text-center max-w-[600px] mx-auto mb-[60px]">
+            <h2 className="text-[clamp(1.9rem,3.8vw,2.8rem)] mb-5">Om Pratiro</h2>
+          </div>
+          <div className="max-w-[680px] mx-auto text-center observe-fade" style={{ opacity: 0 }}>
+            <p className="text-[1.05rem] text-[#5C5F5C] leading-[1.8] mb-4">
+              Pratiro betyr &laquo;prat i ro&raquo; &ndash; et trygt sted &aring; &oslash;ve p&aring; livets viktige samtaler.
+              Vi bruker AI-teknologi for &aring; skape realistiske &oslash;vingsscenarioer, slik at du kan bli
+              tryggere f&oslash;r det virkelig gjelder.
+            </p>
+            <p className="text-[1.05rem] text-[#5C5F5C] leading-[1.8]">
+              Enten du er forelder som vil &oslash;ve p&aring; grensesetting, leder som forbereder en vanskelig
+              tilbakemelding, eller student som skal opp til muntlig &ndash; Pratiro gir deg et rom til &aring;
+              pr&oslash;ve og feile, helt uten konsekvenser.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* ===== CTA ===== */}
+      <section className="py-[100px] bg-[#FDFCFB] text-center">
+        <div className="max-w-[1140px] mx-auto px-6">
+          <h2 className="text-[2.4rem] mb-4">Klar til &aring; &oslash;ve?</h2>
+          <p className="text-[1.05rem] text-[#5C5F5C] mb-8">Start din f&oslash;rste samtale i dag &ndash; helt gratis.</p>
+          <button
+            onClick={() => scrollTo('arenaer')}
+            className="inline-flex items-center gap-2 px-8 py-3.5 rounded-full bg-[#2A4036] text-white font-medium
+                       shadow-[0_4px_12px_rgba(42,64,54,0.15)] hover:bg-[#1F3029] hover:-translate-y-0.5
+                       hover:shadow-[0_8px_20px_rgba(42,64,54,0.25)] transition-all duration-300"
+          >
+            Start i ro
+          </button>
+        </div>
+      </section>
+
+      {/* ===== FOOTER ===== */}
+      <footer className="bg-[#2A4036] text-[#E0E5E2] py-20 text-center">
+        <div className="max-w-[1140px] mx-auto px-6">
+          <div className="flex items-center justify-center mb-5">
+            <Logo size="lg" color="white" />
+          </div>
+          <p className="opacity-70 max-w-[400px] mx-auto text-[1.05rem] leading-relaxed">
+            Prat i ro &ndash; &oslash;v p&aring; samtalene som betyr noe.
           </p>
+          <div className="flex gap-6 justify-center mt-8 mb-6">
+            <a href="#" className="text-white/50 text-[0.9rem] hover:text-white/80 transition-colors">Personvern</a>
+            <a href="#" className="text-white/50 text-[0.9rem] hover:text-white/80 transition-colors">Vilk&aring;r</a>
+            <a href="#" className="text-white/50 text-[0.9rem] hover:text-white/80 transition-colors">Kontakt oss</a>
+          </div>
+          <div className="text-[0.9rem] opacity-50">
+            &copy; 2026 Pratiro. Laget i Norge.
+          </div>
         </div>
       </footer>
 
-      {/* Login Modal */}
+      {/* ===== LOGIN MODAL ===== */}
       {showLoginModal && (
         <div
-          className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-4"
+          className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4"
           onClick={() => setShowLoginModal(false)}
         >
           <div
-            className="glass-card rounded-3xl p-8 max-w-md w-full"
+            className="bg-white rounded-[20px] p-8 max-w-md w-full shadow-[0_25px_50px_-12px_rgba(42,64,54,0.25)]"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="text-center mb-8">
               <div className="flex justify-center mb-4">
-                <SpeechBubbleLogo />
+                <Logo size="md" color="forest" />
               </div>
-              <h3 className="text-2xl font-brand font-bold text-white mb-2">
+              <h3 className="text-2xl mb-2">
                 Logg inn
               </h3>
-              <p className="text-slate-400 text-sm">
-                Skriv inn tilgangskoden for å starte
+              <p className="text-[#5C5F5C] text-sm">
+                Skriv inn tilgangskoden for &aring; starte
                 {selectedArena && (
-                  <span className="font-medium text-emerald-400"> {arenaList.find(a => a.id === selectedArena)?.name}</span>
+                  <span className="font-medium text-[#2A4036]"> {arenaList.find(a => a.id === selectedArena)?.name}</span>
                 )}
               </p>
             </div>
@@ -451,30 +565,31 @@ export default function LandingPage() {
                 onChange={(e) => setAccessCode(e.target.value)}
                 onKeyDown={handleKeyDown}
                 placeholder="Tilgangskode"
-                className="w-full px-4 py-3 bg-slate-800/50 border border-white/10 rounded-xl
-                         focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent
-                         text-white placeholder-slate-500"
+                className="w-full px-4 py-3 bg-[#F7F5F0] border border-[#E7ECEA] rounded-xl
+                           focus:outline-none focus:ring-2 focus:ring-[#2A4036]/30 focus:border-[#2A4036]
+                           text-[#252825] placeholder-[#7D786D]"
                 autoFocus
               />
 
               {error && (
-                <p className="text-red-400 text-sm text-center">{error}</p>
+                <p className="text-red-600 text-sm text-center">{error}</p>
               )}
 
               <button
                 onClick={handleLogin}
                 disabled={isLoading}
-                className="w-full bg-emerald-600 hover:bg-emerald-500 text-white
-                         font-bold py-3 rounded-xl transition-colors
-                         disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-emerald-900/50"
+                className="w-full bg-[#2A4036] hover:bg-[#1F3029] text-white
+                           font-medium py-3 rounded-xl transition-colors
+                           disabled:opacity-50 disabled:cursor-not-allowed
+                           shadow-[0_4px_12px_rgba(42,64,54,0.15)]"
               >
-                {isLoading ? 'Sjekker...' : 'Start øvingen'}
+                {isLoading ? 'Sjekker...' : 'Start i ro'}
               </button>
 
               <button
                 onClick={() => setShowLoginModal(false)}
-                className="w-full text-slate-400 hover:text-white
-                         font-medium py-2 transition-colors text-sm"
+                className="w-full text-[#5C5F5C] hover:text-[#2A4036]
+                           font-medium py-2 transition-colors text-sm"
               >
                 Avbryt
               </button>

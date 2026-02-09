@@ -9,19 +9,29 @@ module.exports = {
   theme: {
     extend: {
       fontFamily: {
-        sans: ['var(--font-dm-sans)', 'sans-serif'],
-        display: ['var(--font-fredoka)', 'sans-serif'],
+        sans: ['var(--font-inter)', 'Inter', 'sans-serif'],
+        serif: ['var(--font-dm-serif)', 'DM Serif Display', 'Georgia', 'serif'],
       },
       colors: {
-        brand: {
-          50: '#f0fdfa',
-          100: '#ccfbf1',
-          500: '#14b8a6',
-          600: '#0d9488',
-          900: '#134e4a',
+        forest: {
+          DEFAULT: '#2A4036',
+          light: '#4A6359',
+          dark: '#1F3029',
         },
-        background: "var(--background)",
-        foreground: "var(--foreground)",
+        sage: {
+          DEFAULT: '#E7ECEA',
+          dark: '#D1D8D6',
+        },
+        sand: {
+          DEFAULT: '#F7F5F0',
+        },
+        mist: {
+          DEFAULT: '#FDFCFB',
+        },
+        'ocean-muted': '#5B7A8C',
+        'text-primary': '#252825',
+        'text-soft': '#5C5F5C',
+        stone: '#7D786D',
       },
     },
   },

@@ -28,7 +28,7 @@ npm run lint     # Run ESLint
 
 | File | Purpose |
 |------|---------|
-| `app/page.tsx` | Landing page with access code login modal (code: `pratiro2024`). Stores `pratiro_access` in sessionStorage. |
+| `app/page.tsx` | Landing page with access code login modal. Access code is in `ACCESS_CODE` env variable. Stores `pratiro_access` in sessionStorage. |
 | `app/simulator/page.tsx` | Main app - single-file component with 3-step flow: configuration → chat → analysis. Contains all state, UI components, and business logic. |
 | `app/actions.ts` | Server action (`chatWithGemini`) that proxies requests to Gemini API. Keeps API key server-side only. |
 
@@ -54,6 +54,7 @@ All Gemini API calls go through `app/actions.ts` server action. The action:
 Required in `.env.local`:
 ```
 GEMINI_API_KEY=your_key_here
+ACCESS_CODE=your_access_code_here
 ```
 
 ## Code Style Notes
@@ -61,4 +62,4 @@ GEMINI_API_KEY=your_key_here
 - UI text and comments are in Norwegian
 - All components use Tailwind utility classes (no separate CSS modules)
 - SVG icons are defined inline in the simulator page (`Icons` object)
-- Color scheme uses teal (`teal-500`, `teal-600`) as primary
+- Color scheme: Nordic Calm v4.1 — forest (#2A4036), sage (#E7ECEA), sand (#F7F5F0), mist (#FDFCFB)
