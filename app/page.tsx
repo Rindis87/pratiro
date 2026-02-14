@@ -111,6 +111,10 @@ export default function LandingPage() {
             <button onClick={() => scrollTo('om')} className="text-[0.95rem] font-medium text-[#5C5F5C] hover:text-[#2A4036] transition-colors">
               Om Pratiro
             </button>
+            <a href="/skole" className="inline-flex items-center gap-1.5 text-[0.95rem] font-medium text-[#2A4036] hover:text-[#1F3029] transition-colors">
+              Skole
+              <span className="text-[0.6rem] font-bold uppercase tracking-wider bg-[#3A8B5B] text-white px-1.5 py-0.5 rounded-full leading-none">Ny</span>
+            </a>
           </div>
 
           <button
@@ -429,50 +433,25 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* ===== FOREST FEATURE BAND ===== */}
-      <section
-        className="py-20"
-        aria-label="Hvorfor Pratiro"
-        style={{
-          background: `
-            radial-gradient(700px 340px at 22% 20%, rgba(255,248,225,0.10), transparent 60%),
-            linear-gradient(180deg, #2A4036, #1F3029)
-          `,
-          color: 'rgba(255,255,255,0.92)',
-        }}
-      >
-        <div className="max-w-[1140px] mx-auto px-6">
-          <div className="text-center max-w-[600px] mx-auto mb-[60px] observe-fade" style={{ opacity: 0 }}>
-            <h2 className="text-[clamp(1.9rem,3.8vw,2.8rem)] mb-5 !text-white/[0.96]">
-              En rolig ramme for vanskelige samtaler
-            </h2>
-            <p className="text-[1.05rem] text-white/70 leading-relaxed">
-              Pratiro er bygget for &aring; gi deg trygghet &ndash; f&oslash;r den viktige samtalen.
-            </p>
-          </div>
-
-          <div
-            className="rounded-[20px] border border-white/10 p-5 grid grid-cols-1 md:grid-cols-3 gap-4
-                       shadow-[0_18px_50px_rgba(0,0,0,0.18)] observe-fade"
-            style={{ background: 'rgba(255,255,255,0.06)', opacity: 0 }}
-            role="list"
+      {/* ===== PRATIRO SKOLE PROMO ===== */}
+      <section className="py-20 px-6" style={{ background: 'linear-gradient(180deg, #2A4036, #1F3029)' }}>
+        <div className="max-w-[800px] mx-auto text-center observe-fade" style={{ opacity: 0 }}>
+          <span className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-white/10 border border-white/10 text-[0.72rem] font-bold uppercase tracking-[2px] text-[#4A9E6B] mb-6">
+            Nytt fra Pratiro
+          </span>
+          <h2 className="text-[clamp(1.6rem,3vw,2.2rem)] !text-white/95 mb-3 font-serif">
+            Pratiro<em className="not-italic text-[#4A9E6B]">Skole</em> er her
+          </h2>
+          <p className="text-white/60 text-[1rem] leading-relaxed max-w-[520px] mx-auto mb-8">
+            Gratis verkt&oslash;y for matte, gloser og pr&oslash;veforberedelse &ndash; laget for elever og foreldre.
+          </p>
+          <a
+            href="/skole"
+            className="inline-flex items-center gap-2 px-7 py-3 rounded-full bg-white/10 border border-white/15 text-white font-semibold text-[0.92rem]
+                       hover:bg-white/20 hover:border-white/25 hover:-translate-y-0.5 transition-all duration-300"
           >
-            {[
-              { title: 'Trygt og anonymt', desc: 'Ingen lagrer samtalen. \u00d8v uten \u00e5 bli d\u00f8mt \u2013 i ditt eget tempo.' },
-              { title: 'I ditt tempo', desc: 'Pause, spol tilbake, pr\u00f8v igjen. Ingen tidspress, ingen konsekvenser.' },
-              { title: 'Konkrete setninger', desc: 'Ta med deg formuleringer og strategier du faktisk kan bruke i virkeligheten.' },
-            ].map((feat) => (
-              <div
-                key={feat.title}
-                className="rounded-[16px] border border-white/10 p-5"
-                style={{ background: 'rgba(255,255,255,0.06)' }}
-                role="listitem"
-              >
-                <b className="block mb-2 text-white/[0.94] text-[1rem] tracking-[-0.01em]">{feat.title}</b>
-                <p className="text-white/70 text-[0.92rem] leading-[1.65]">{feat.desc}</p>
-              </div>
-            ))}
-          </div>
+            Utforsk Pratiro Skole <span aria-hidden="true">&rarr;</span>
+          </a>
         </div>
       </section>
 

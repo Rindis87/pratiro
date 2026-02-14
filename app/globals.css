@@ -7,13 +7,19 @@
   --forest: #2A4036;
   --forest-light: #4A6359;
   --forest-dark: #1F3029;
+  --forest-deep: #1A2B23;
 
   --sage: #E7ECEA;
   --sage-dark: #D1D8D6;
+  --sage-dim: #C8D0CD;
   --sand: #F7F5F0;
+  --sand-warm: #EDE9E0;
   --mist: #FDFCFB;
 
   --ocean-muted: #5B7A8C;
+  --green: #3A8B5B;
+  --green-soft: #4A9E6B;
+  --carry: #C4651A;
 
   --text: #252825;
   --text-soft: #5C5F5C;
