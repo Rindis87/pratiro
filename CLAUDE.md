@@ -20,7 +20,7 @@ npm run lint     # Run ESLint
 - **Next.js 16** with App Router
 - **React 19** with TypeScript
 - **Tailwind CSS v4** via PostCSS
-- **Google Gemini AI** (gemini-2.5-flash-preview) for chat and analysis
+- **Google Gemini AI** (gemini-2.5-flash) for chat and analysis
 
 ## Architecture
 
@@ -47,7 +47,13 @@ npm run lint     # Run ESLint
 All Gemini API calls go through `app/actions.ts` server action. The action:
 - Uses `GEMINI_API_KEY` from environment
 - Returns `{ text }` on success or `{ error }` on failure
-- Handles rate limiting (returns `RATE_LIMIT` error code)
+- Handles rate limiting with multiple layers:
+  - **Kill switch**: `API_ENABLED=false` deaktiverer alle API-kall umiddelbart
+  - **Global daglig grense**: `DAILY_GLOBAL_LIMIT` (standard 5000) for hele siden per dag
+  - **Brukergrense per dag**: 100 kall per bruker per dag
+  - **Burst-grense**: 10 kall per bruker per minutt
+  - Logger `[ADVARSEL]` ved 80% av grensene og `[RATE LIMIT]` når grenser nås
+- Error codes: `RATE_LIMIT`, `DAILY_LIMIT`, `SERVICE_DISABLED`, `INPUT_TOO_LONG`, `API_ERROR`, `NO_RESPONSE`, `NETWORK_ERROR`
 
 ### Environment Variables
 
@@ -55,6 +61,8 @@ Required in `.env.local`:
 ```
 GEMINI_API_KEY=your_key_here
 ACCESS_CODE=your_access_code_here
+API_ENABLED=true
+DAILY_GLOBAL_LIMIT=5000
 ```
 
 ## Code Style Notes
