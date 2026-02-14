@@ -8,14 +8,99 @@ const ACCESS_CODE = process.env.ACCESS_CODE;
 // === SIKKERHETSKONFIGURASJON ===
 const RATE_LIMIT_WINDOW_MS = 60 * 1000; // 1 minutt
 const MAX_REQUESTS_PER_WINDOW = 10; // Maks 10 forespørsler per minutt
+const MAX_REQUESTS_PER_DAY = 100; // Maks 100 forespørsler per bruker per dag
+const DAILY_GLOBAL_LIMIT = parseInt(process.env.DAILY_GLOBAL_LIMIT || '5000', 10);
 const MAX_OUTPUT_TOKENS_CHAT = 1500; // AI-respons lengde for chat
 const MAX_OUTPUT_TOKENS_ANALYSIS = 6000; // Komplett JSON-analyse med margin
 
 // In-memory rate limiting (per server instance)
 // I produksjon bør dette erstattes med Redis eller lignende
 const rateLimitMap = new Map<string, { count: number; resetTime: number }>();
+const dailyLimitMap = new Map<string, { count: number; resetTime: number }>();
 
-// Rens gamle rate limit entries (lazy cleanup ved hver sjekk)
+// Global daglig teller
+let globalDailyCount = 0;
+let globalDailyResetTime = getNextMidnight();
+let globalWarning80Logged = false;
+
+function getNextMidnight(): number {
+  const now = new Date();
+  const midnight = new Date(now);
+  midnight.setHours(24, 0, 0, 0);
+  return midnight.getTime();
+}
+
+// --- Kill switch ---
+function checkKillSwitch(): boolean {
+  const enabled = process.env.API_ENABLED;
+  // Kun deaktivert hvis eksplisitt satt til 'false'
+  return enabled === 'false';
+}
+
+// --- Global daglig grense ---
+function checkGlobalDailyLimit(): { allowed: boolean; remaining: number } {
+  const now = Date.now();
+  if (now > globalDailyResetTime) {
+    globalDailyCount = 0;
+    globalDailyResetTime = getNextMidnight();
+    globalWarning80Logged = false;
+  }
+
+  if (globalDailyCount >= DAILY_GLOBAL_LIMIT) {
+    console.error(`[RATE LIMIT] Global daglig grense nådd: ${globalDailyCount}/${DAILY_GLOBAL_LIMIT}`);
+    return { allowed: false, remaining: 0 };
+  }
+
+  globalDailyCount++;
+
+  // 80%-varsel
+  const threshold80 = Math.floor(DAILY_GLOBAL_LIMIT * 0.8);
+  if (globalDailyCount >= threshold80 && !globalWarning80Logged) {
+    console.warn(`[ADVARSEL] 80% av global daglig grense nådd: ${globalDailyCount}/${DAILY_GLOBAL_LIMIT}`);
+    globalWarning80Logged = true;
+  }
+
+  return { allowed: true, remaining: DAILY_GLOBAL_LIMIT - globalDailyCount };
+}
+
+// --- Daglig grense per bruker ---
+function checkDailyUserLimit(identifier: string): { allowed: boolean; remaining: number; resetInSeconds: number } {
+  const now = Date.now();
+
+  // Lazy cleanup
+  if (dailyLimitMap.size > 200) {
+    for (const [key, value] of dailyLimitMap.entries()) {
+      if (now > value.resetTime) dailyLimitMap.delete(key);
+    }
+  }
+
+  const entry = dailyLimitMap.get(identifier);
+
+  if (!entry || now > entry.resetTime) {
+    dailyLimitMap.set(identifier, { count: 1, resetTime: getNextMidnight() });
+    return { allowed: true, remaining: MAX_REQUESTS_PER_DAY - 1, resetInSeconds: Math.ceil((getNextMidnight() - now) / 1000) };
+  }
+
+  if (entry.count >= MAX_REQUESTS_PER_DAY) {
+    const resetInSeconds = Math.ceil((entry.resetTime - now) / 1000);
+    // 80%-varsel per bruker (logges når de treffer grensen)
+    console.warn(`[RATE LIMIT] Bruker ${identifier.substring(0, 8)}... har brukt opp daglig grense (${MAX_REQUESTS_PER_DAY})`);
+    return { allowed: false, remaining: 0, resetInSeconds };
+  }
+
+  entry.count++;
+
+  // 80%-varsel per bruker
+  const threshold80 = Math.floor(MAX_REQUESTS_PER_DAY * 0.8);
+  if (entry.count === threshold80) {
+    console.warn(`[ADVARSEL] Bruker ${identifier.substring(0, 8)}... har nådd 80% av daglig grense: ${entry.count}/${MAX_REQUESTS_PER_DAY}`);
+  }
+
+  const resetInSeconds = Math.ceil((entry.resetTime - now) / 1000);
+  return { allowed: true, remaining: MAX_REQUESTS_PER_DAY - entry.count, resetInSeconds };
+}
+
+// --- Burst rate limit (per minutt) ---
 function cleanupRateLimitMap() {
   const now = Date.now();
   for (const [key, value] of rateLimitMap.entries()) {
@@ -59,7 +144,7 @@ export async function validateAccessCode(code: string): Promise<boolean> {
 export type ChatResult = {
   text?: string;
   error?: string;
-  errorCode?: 'RATE_LIMIT' | 'INPUT_TOO_LONG' | 'API_ERROR' | 'NO_RESPONSE' | 'NETWORK_ERROR';
+  errorCode?: 'RATE_LIMIT' | 'DAILY_LIMIT' | 'SERVICE_DISABLED' | 'INPUT_TOO_LONG' | 'API_ERROR' | 'NO_RESPONSE' | 'NETWORK_ERROR';
   remainingRequests?: number;
   resetInSeconds?: number;
 };
@@ -76,7 +161,35 @@ export async function chatWithGemini(
   // Bruk høyere token-grense for analyse
   const maxOutputTokens = isAnalysis ? MAX_OUTPUT_TOKENS_ANALYSIS : MAX_OUTPUT_TOKENS_CHAT;
 
-  // 1. Sjekk rate limit
+  // 1. Kill switch — sjekk om API er deaktivert
+  if (checkKillSwitch()) {
+    return {
+      error: 'Pratiro er midlertidig deaktivert for vedlikehold. Prøv igjen senere.',
+      errorCode: 'SERVICE_DISABLED'
+    };
+  }
+
+  // 2. Global daglig grense
+  const globalCheck = checkGlobalDailyLimit();
+  if (!globalCheck.allowed) {
+    return {
+      error: 'Pratiro har nådd sin daglige kapasitet. Kom tilbake i morgen!',
+      errorCode: 'DAILY_LIMIT'
+    };
+  }
+
+  // 3. Daglig grense per bruker
+  const dailyCheck = checkDailyUserLimit(identifier);
+  if (!dailyCheck.allowed) {
+    return {
+      error: `Du har brukt opp dagens samtaler. Kom tilbake i morgen!`,
+      errorCode: 'DAILY_LIMIT',
+      remainingRequests: 0,
+      resetInSeconds: dailyCheck.resetInSeconds
+    };
+  }
+
+  // 4. Burst rate limit (per minutt)
   const rateCheck = checkRateLimit(identifier);
   if (!rateCheck.allowed) {
     return {
@@ -87,7 +200,7 @@ export async function chatWithGemini(
     };
   }
 
-  // 2. Valider input-lengde (prompten inkluderer samtalehistorikk, så vi gir romslig grense)
+  // 5. Valider input-lengde (prompten inkluderer samtalehistorikk, så vi gir romslig grense)
   if (prompt.length > 200_000) {
     return {
       error: 'Samtalen er for lang. Avslutt for å få veiledning.',
@@ -95,7 +208,7 @@ export async function chatWithGemini(
     };
   }
 
-  // 3. Sjekk API-nøkkel
+  // 6. Sjekk API-nøkkel
   if (!API_KEY) {
     console.error('[Gemini] API_KEY is missing!');
     return { error: 'API-nøkkel mangler på serveren.', errorCode: 'API_ERROR' };
