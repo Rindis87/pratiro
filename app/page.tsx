@@ -117,14 +117,20 @@ export default function LandingPage() {
             </a>
           </div>
 
-          <button
-            onClick={() => scrollTo('arenaer')}
-            className="px-6 py-2.5 rounded-full bg-[#2A4036] text-white text-[0.95rem] font-medium
-                       shadow-[0_4px_12px_rgba(42,64,54,0.15)] hover:bg-[#1F3029] hover:-translate-y-0.5
-                       hover:shadow-[0_8px_20px_rgba(42,64,54,0.25)] transition-all duration-300"
-          >
-            Start i ro
-          </button>
+          <div className="flex items-center gap-3">
+            <a href="/skole" className="md:hidden inline-flex items-center gap-1 text-[0.85rem] font-medium text-[#2A4036] hover:text-[#1F3029] transition-colors">
+              Skole
+              <span className="text-[0.55rem] font-bold uppercase tracking-wider bg-[#3A8B5B] text-white px-1.5 py-0.5 rounded-full leading-none">Ny</span>
+            </a>
+            <button
+              onClick={() => scrollTo('arenaer')}
+              className="px-5 sm:px-6 py-2.5 rounded-full bg-[#2A4036] text-white text-[0.85rem] sm:text-[0.95rem] font-medium
+                         shadow-[0_4px_12px_rgba(42,64,54,0.15)] hover:bg-[#1F3029] hover:-translate-y-0.5
+                         hover:shadow-[0_8px_20px_rgba(42,64,54,0.25)] transition-all duration-300"
+            >
+              Start i ro
+            </button>
+          </div>
         </div>
       </nav>
 
