@@ -372,7 +372,6 @@ export default function GloserPage() {
                         ref={fileInputRef}
                         type="file"
                         accept="image/*"
-                        capture="environment"
                         onChange={handleImageSelect}
                         className="hidden"
                       />
