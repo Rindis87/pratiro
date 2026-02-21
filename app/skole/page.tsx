@@ -21,7 +21,7 @@ const modules = [
     href: '/skole/gloser',
     variant: 'glose' as const,
     icon: '\u{1F30D}',
-    title: 'Glose\u00f8ving',
+    title: 'Gloser',
     desc: 'Lim inn gloser eller ta bilde av glosearket. AI oversetter og lager \u00f8vingskort du kan bla gjennom med flashcard-systemet.',
     tags: [
       { label: 'Klar', type: 'live' as const },

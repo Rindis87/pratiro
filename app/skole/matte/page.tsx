@@ -896,28 +896,26 @@ export default function MattePage() {
         {/* Header */}
         <div className="rounded-2xl overflow-hidden shadow-xl mb-6" style={{ background: 'linear-gradient(135deg, var(--forest), var(--forest-dark))' }}>
           <div className="px-5 py-4 flex items-center justify-between flex-wrap gap-3">
-            <div className="flex items-center gap-3">
-              <Link href="/skole" className="flex items-center gap-1 opacity-80 hover:opacity-100 transition-opacity" aria-label="Tilbake til Pratiro Skole">
+            <Link href="/skole" className="flex items-center gap-3 no-underline group" aria-label="Tilbake til Pratiro Skole">
+              <div className="flex items-center gap-1 opacity-80 group-hover:opacity-100 transition-opacity">
                 <div className="w-1 h-[18px] bg-white/70 rounded-[1px]" />
                 <div className="w-1 h-[18px] bg-white/70 rounded-[1px]" />
-              </Link>
-              <div>
-                <Link href="/skole" className="text-white text-[10px] font-semibold uppercase tracking-widest opacity-60 hover:opacity-80 transition-opacity no-underline block">
-                  Pratiro Skole
-                </Link>
-                <h1 className="text-white text-xl font-bold font-serif">
-                  {tab === 'oppstilling' ? 'MatteMester' : 'Gangetest'}
-                </h1>
               </div>
-            </div>
+              <h1 className="text-white text-xl font-bold font-serif leading-tight">
+                {tab === 'oppstilling' ? 'MatteMester' : 'Gangetest'}
+              </h1>
+            </Link>
             <div className="flex gap-1 p-1 rounded-xl bg-white/10">
               {([['oppstilling', 'Oppstilling'], ['gangetest', 'Gangetest']] as const).map(([k, l]) => (
                 <button key={k} onClick={() => setTab(k)}
-                  className={`px-4 py-1.5 rounded-lg text-xs font-semibold transition-all ${tab === k ? 'bg-white shadow-sm text-[var(--forest)]' : 'text-white/70 hover:text-white'}`}>
+                  className={`px-4 py-2 rounded-lg text-xs font-semibold transition-all ${tab === k ? 'bg-white shadow-sm text-[var(--forest)]' : 'text-white/70 hover:text-white'}`}>
                   {l}
                 </button>
               ))}
             </div>
+          </div>
+          <div className="px-5 pb-1.5">
+            <span className="text-white/40 text-[10px] font-semibold uppercase tracking-widest">Pratiro Skole</span>
           </div>
         </div>
 

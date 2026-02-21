@@ -1,7 +1,7 @@
 'use client';
 
-import { useEffect, useState, Suspense } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { Suspense } from 'react';
+import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { useSimulator } from '../hooks/useSimulator';
 import { isValidArenaId } from '../config/arenas';
@@ -21,30 +21,12 @@ const RefreshIcon = () => (
 );
 
 function SimulatorContent() {
-  const router = useRouter();
   const searchParams = useSearchParams();
-  const [isAuthorized, setIsAuthorized] = useState(false);
-
   // Get arena from URL params, default to 'familie'
   const arenaParam = searchParams.get('arena') || 'familie';
   const arenaId: ArenaId = isValidArenaId(arenaParam) ? arenaParam : 'familie';
 
   const simulator = useSimulator(arenaId);
-
-  // Auth check
-  useEffect(() => {
-    const access = sessionStorage.getItem('pratiro_access');
-    if (access !== 'true') {
-      router.push('/');
-    } else {
-      setIsAuthorized(true); // eslint-disable-line react-hooks/set-state-in-effect
-    }
-  }, [router]);
-
-  // Loading state while checking auth
-  if (!isAuthorized) {
-    return <div className="min-h-screen bg-[#F7F5F0]" />;
-  }
 
   return (
     <main className="min-h-[100dvh] flex items-center justify-center p-0 md:p-4 bg-[#F7F5F0]">

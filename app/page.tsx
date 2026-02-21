@@ -1,19 +1,11 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { Logo, ProductIcon } from './components/ui/Logo';
-import { arenaList } from './config/arenas';
-import { ArenaId } from './config/types';
-import { validateAccessCode } from './actions';
 
 export default function LandingPage() {
   const router = useRouter();
-  const [showLoginModal, setShowLoginModal] = useState(false);
-  const [selectedArena, setSelectedArena] = useState<ArenaId | null>(null);
-  const [accessCode, setAccessCode] = useState('');
-  const [error, setError] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
 
   // Scroll fade-in observer
   const observerRef = useRef<IntersectionObserver | null>(null);
@@ -40,36 +32,8 @@ export default function LandingPage() {
     return () => observerRef.current?.disconnect();
   }, []);
 
-  const handleArenaClick = (arenaId: ArenaId) => {
-    setSelectedArena(arenaId);
-    setShowLoginModal(true);
-    setError('');
-    setAccessCode('');
-  };
-
-  const handleLogin = async () => {
-    setIsLoading(true);
-    setError('');
-
-    const isValid = await validateAccessCode(accessCode);
-
-    if (isValid) {
-      sessionStorage.setItem('pratiro_access', 'true');
-      if (selectedArena) {
-        router.push(`/simulator?arena=${selectedArena}`);
-      } else {
-        router.push('/simulator');
-      }
-    } else {
-      setError('Feil tilgangskode. Prøv igjen.');
-      setIsLoading(false);
-    }
-  };
-
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter') {
-      handleLogin();
-    }
+  const handleArenaClick = (arenaId: string) => {
+    router.push(`/simulator?arena=${arenaId}`);
   };
 
   const scrollTo = (id: string) => {
@@ -147,9 +111,12 @@ export default function LandingPage() {
         <div className="max-w-[1140px] mx-auto px-6 relative z-10 grid grid-cols-1 lg:grid-cols-[1.1fr_0.9fr] gap-14 items-center">
           {/* Left: Text */}
           <div>
+            <p className="text-[clamp(1.4rem,2.6vw,2rem)] leading-[1.2] tracking-[-0.01em] mb-3 text-[#5C5F5C] font-medium">
+              Prat i ro.
+            </p>
             <h1 className="text-[clamp(2.8rem,5.2vw,4.2rem)] leading-[1.12] tracking-[-0.025em] mb-5">
-              Prat i ro.<br />
-              &Oslash;v p&aring; samtalene som <span className="text-[#4A6359]">betyr noe.</span>
+              Vanskelige samtaler,<br />
+              <span className="text-[#4A6359]">enkle &aring; &oslash;ve p&aring;.</span>
             </h1>
             <p className="text-[1.08rem] text-[#5C5F5C] leading-[1.72] mb-8 max-w-[48ch]">
               Pratiro gj&oslash;r det enkelt &aring; &oslash;ve p&aring; vanskelige samtaler.
@@ -177,13 +144,6 @@ export default function LandingPage() {
               </button>
             </div>
 
-            <div className="flex items-center gap-2 flex-wrap">
-              {['Trygt', 'Anonymt', 'Utviklet i Norge'].map((pill) => (
-                <span key={pill} className="px-3 py-1 rounded-full text-[0.8rem] font-medium text-[#7D786D] bg-white/50 border border-black/5">
-                  {pill}
-                </span>
-              ))}
-            </div>
           </div>
 
           {/* Right: Simulator Preview - Arbeidsliv conversation */}
@@ -518,70 +478,6 @@ export default function LandingPage() {
         </div>
       </footer>
 
-      {/* ===== LOGIN MODAL ===== */}
-      {showLoginModal && (
-        <div
-          className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4"
-          onClick={() => setShowLoginModal(false)}
-        >
-          <div
-            className="bg-white rounded-[20px] p-8 max-w-md w-full shadow-[0_25px_50px_-12px_rgba(42,64,54,0.25)]"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="text-center mb-8">
-              <div className="flex justify-center mb-4">
-                <Logo size="md" color="forest" />
-              </div>
-              <h3 className="text-2xl mb-2">
-                Logg inn
-              </h3>
-              <p className="text-[#5C5F5C] text-sm">
-                Skriv inn tilgangskoden for &aring; starte
-                {selectedArena && (
-                  <span className="font-medium text-[#2A4036]"> {arenaList.find(a => a.id === selectedArena)?.name}</span>
-                )}
-              </p>
-            </div>
-
-            <div className="space-y-4">
-              <input
-                type="password"
-                value={accessCode}
-                onChange={(e) => setAccessCode(e.target.value)}
-                onKeyDown={handleKeyDown}
-                placeholder="Tilgangskode"
-                className="w-full px-4 py-3 bg-[#F7F5F0] border border-[#E7ECEA] rounded-xl
-                           focus:outline-none focus:ring-2 focus:ring-[#2A4036]/30 focus:border-[#2A4036]
-                           text-[#252825] placeholder-[#7D786D]"
-                autoFocus
-              />
-
-              {error && (
-                <p className="text-red-600 text-sm text-center">{error}</p>
-              )}
-
-              <button
-                onClick={handleLogin}
-                disabled={isLoading}
-                className="w-full bg-[#2A4036] hover:bg-[#1F3029] text-white
-                           font-medium py-3 rounded-xl transition-colors
-                           disabled:opacity-50 disabled:cursor-not-allowed
-                           shadow-[0_4px_12px_rgba(42,64,54,0.15)]"
-              >
-                {isLoading ? 'Sjekker...' : 'Start i ro'}
-              </button>
-
-              <button
-                onClick={() => setShowLoginModal(false)}
-                className="w-full text-[#5C5F5C] hover:text-[#2A4036]
-                           font-medium py-2 transition-colors text-sm"
-              >
-                Avbryt
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 }

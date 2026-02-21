@@ -297,3 +297,98 @@ export async function chatWithGemini(
     return { error: 'Kunne ikke koble til AI-tjenesten.', errorCode: 'NETWORK_ERROR' };
   }
 }
+
+// === Gemini med bilde (multimodal) ===
+export async function chatWithGeminiImage(
+  prompt: string,
+  imageBase64: string,
+  mimeType: string,
+  clientId?: string
+): Promise<ChatResult> {
+  const identifier = clientId || 'anonymous';
+
+  if (checkKillSwitch()) {
+    return { error: 'Pratiro er midlertidig deaktivert for vedlikehold. Prøv igjen senere.', errorCode: 'SERVICE_DISABLED' };
+  }
+
+  const globalCheck = checkGlobalDailyLimit();
+  if (!globalCheck.allowed) {
+    return { error: 'Pratiro har nådd sin daglige kapasitet. Kom tilbake i morgen!', errorCode: 'DAILY_LIMIT' };
+  }
+
+  const dailyCheck = checkDailyUserLimit(identifier);
+  if (!dailyCheck.allowed) {
+    return { error: 'Du har brukt opp dagens samtaler. Kom tilbake i morgen!', errorCode: 'DAILY_LIMIT', remainingRequests: 0, resetInSeconds: dailyCheck.resetInSeconds };
+  }
+
+  const rateCheck = checkRateLimit(identifier);
+  if (!rateCheck.allowed) {
+    return { error: `Du sender meldinger for raskt. Vent ${rateCheck.resetInSeconds} sekunder.`, errorCode: 'RATE_LIMIT', remainingRequests: 0, resetInSeconds: rateCheck.resetInSeconds };
+  }
+
+  // Begrens bildestørrelse (ca 10 MB base64)
+  if (imageBase64.length > 10_000_000) {
+    return { error: 'Bildet er for stort. Prøv et mindre bilde.', errorCode: 'INPUT_TOO_LONG' };
+  }
+
+  if (!API_KEY) {
+    console.error('[Gemini] API_KEY is missing!');
+    return { error: 'API-nøkkel mangler på serveren.', errorCode: 'API_ERROR' };
+  }
+
+  try {
+    const response = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-goog-api-key': API_KEY,
+        },
+        body: JSON.stringify({
+          contents: [{
+            parts: [
+              { text: prompt },
+              { inlineData: { mimeType, data: imageBase64 } }
+            ]
+          }],
+          generationConfig: {
+            maxOutputTokens: 2000,
+            temperature: 0.3,
+          },
+        }),
+      }
+    );
+
+    if (!response.ok) {
+      const errorBody = await response.text();
+      console.error('Gemini Image API Error:', response.status, errorBody);
+      if (response.status === 429) {
+        return { error: 'Pratiro trenger en liten tenkepause. Vent litt og prøv igjen.', errorCode: 'RATE_LIMIT' };
+      }
+      return { error: `API error: ${response.status}`, errorCode: 'API_ERROR' };
+    }
+
+    const data = await response.json();
+    const candidate = data.candidates?.[0];
+
+    if (!candidate) {
+      console.error('Gemini Image: No candidates', data.promptFeedback);
+      return { error: 'Bildet kunne ikke behandles. Last opp et bilde av en gloseliste.', errorCode: 'NO_RESPONSE' };
+    }
+
+    if (candidate.finishReason === 'SAFETY') {
+      return { error: 'Bildet kunne ikke behandles. Last opp et bilde av en gloseliste.', errorCode: 'NO_RESPONSE' };
+    }
+
+    const text = candidate.content?.parts?.[0]?.text;
+    if (!text) {
+      return { error: 'Ingen respons fra AI.', errorCode: 'NO_RESPONSE' };
+    }
+
+    return { text, remainingRequests: rateCheck.remainingRequests, resetInSeconds: rateCheck.resetInSeconds };
+  } catch (error) {
+    console.error('Gemini Image Error:', error);
+    return { error: 'Kunne ikke koble til AI-tjenesten.', errorCode: 'NETWORK_ERROR' };
+  }
+}
