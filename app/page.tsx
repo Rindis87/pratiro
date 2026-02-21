@@ -111,9 +111,9 @@ export default function LandingPage() {
         <div className="max-w-[1140px] mx-auto px-6 relative z-10 grid grid-cols-1 lg:grid-cols-[1.1fr_0.9fr] gap-14 items-center">
           {/* Left: Text */}
           <div>
-            <p className="text-[clamp(1.4rem,2.6vw,2rem)] leading-[1.2] tracking-[-0.01em] mb-3 text-[#5C5F5C] font-medium">
-              Prat i ro.
-            </p>
+            <span className="inline-block text-[0.85rem] font-medium uppercase tracking-[1px] text-[#4A6359] bg-[#E7ECEA] px-4 py-1.5 rounded-full mb-5">
+              Prat i ro
+            </span>
             <h1 className="text-[clamp(2.8rem,5.2vw,4.2rem)] leading-[1.12] tracking-[-0.025em] mb-5">
               Vanskelige samtaler,<br />
               <span className="text-[#4A6359]">enkle &aring; &oslash;ve p&aring;.</span>

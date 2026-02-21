@@ -55,26 +55,51 @@ export default function GloserPage() {
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  // ── Bildekomprimering ──
+  const compressImage = useCallback((file: File, maxWidth = 1600): Promise<{ base64: string; mimeType: string; dataUrl: string }> => {
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        let w = img.width;
+        let h = img.height;
+        if (w > maxWidth) {
+          h = Math.round(h * (maxWidth / w));
+          w = maxWidth;
+        }
+        canvas.width = w;
+        canvas.height = h;
+        const ctx = canvas.getContext('2d');
+        if (!ctx) { reject(new Error('Canvas not supported')); return; }
+        ctx.drawImage(img, 0, 0, w, h);
+        const dataUrl = canvas.toDataURL('image/jpeg', 0.8);
+        const base64 = dataUrl.split(',')[1];
+        resolve({ base64, mimeType: 'image/jpeg', dataUrl });
+      };
+      img.onerror = () => reject(new Error('Kunne ikke lese bildet'));
+      img.src = URL.createObjectURL(file);
+    });
+  }, []);
+
   // ── Bilde-håndtering ──
-  const handleImageSelect = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageSelect = useCallback(async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    if (file.size > 5 * 1024 * 1024) {
-      setError('Bildet er for stort (maks 5 MB). Prøv et mindre bilde.');
+    if (file.size > 10 * 1024 * 1024) {
+      setError('Bildet er for stort (maks 10 MB). Prøv et mindre bilde.');
       return;
     }
 
-    const reader = new FileReader();
-    reader.onload = () => {
-      const result = reader.result as string;
-      setImagePreview(result);
-      const base64 = result.split(',')[1];
-      setImageData({ base64, mimeType: file.type });
+    try {
+      const compressed = await compressImage(file);
+      setImagePreview(compressed.dataUrl);
+      setImageData({ base64: compressed.base64, mimeType: compressed.mimeType });
       setError(null);
-    };
-    reader.readAsDataURL(file);
-  }, []);
+    } catch {
+      setError('Kunne ikke lese bildet. Prøv et annet bilde.');
+    }
+  }, [compressImage]);
 
   const clearImage = useCallback(() => {
     setImagePreview(null);
@@ -121,7 +146,11 @@ export default function GloserPage() {
       }
 
       const text = result.text || '';
-      const clean = text.replace(/```json\s*/g, '').replace(/```\s*/g, '').trim();
+      // Strip markdown code fences and find JSON object
+      let clean = text.replace(/```json\s*/g, '').replace(/```\s*/g, '').trim();
+      // If there's extra text around the JSON, extract just the JSON object
+      const jsonMatch = clean.match(/\{[\s\S]*\}/);
+      if (jsonMatch) clean = jsonMatch[0];
       const parsed = JSON.parse(clean);
       const wordList: WordPair[] = parsed.words || parsed.items || [];
 
