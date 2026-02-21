@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef, useCallback } from 'react';
+import { useState, useRef, useCallback, useEffect } from 'react';
 import Link from 'next/link';
 import { chatWithGemini, chatWithGeminiImage } from '@/app/actions';
 
@@ -16,7 +16,9 @@ const C = {
 // ── Typer ──
 type WordPair = { original: string; translation: string };
 
-type Phase = 'setup' | 'edit' | 'game' | 'result';
+type Phase = 'setup' | 'edit' | 'game' | 'result' | 'quiz' | 'quizResult';
+
+type QuizAnswer = { word: WordPair; userAnswer: string; status: 'correct' | 'wrong' | 'close' };
 
 type FlashcardItem = WordPair & { status: 'unseen' | 'correct' | 'retry' };
 
@@ -53,8 +55,16 @@ export default function GloserPage() {
   const [firstTryCorrect, setFirstTryCorrect] = useState(0);
   const [totalCards, setTotalCards] = useState(0);
 
+  // Quiz state
+  const [quizWords, setQuizWords] = useState<WordPair[]>([]);
+  const [quizIdx, setQuizIdx] = useState(0);
+  const [quizInput, setQuizInput] = useState('');
+  const [quizAnswers, setQuizAnswers] = useState<QuizAnswer[]>([]);
+  const [quizFeedback, setQuizFeedback] = useState<QuizAnswer | null>(null);
+
   const fileInputRef = useRef<HTMLInputElement>(null);
   const cameraInputRef = useRef<HTMLInputElement>(null);
+  const quizInputRef = useRef<HTMLInputElement>(null);
 
   // ── Bildekomprimering ──
   const compressImage = useCallback((file: File, maxWidth = 1600): Promise<{ base64: string; mimeType: string; dataUrl: string }> => {
@@ -232,6 +242,69 @@ export default function GloserPage() {
   const removeWord = useCallback((index: number) => {
     setWords(prev => prev.filter((_, i) => i !== index));
   }, []);
+
+  // ── Svarvurdering ──
+  const normalize = (s: string) => s.trim().toLowerCase();
+  const stripAccents = (s: string) => s.normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/-/g, '');
+
+  const checkAnswer = useCallback((input: string, correct: string): 'correct' | 'wrong' | 'close' => {
+    const a = normalize(input);
+    const b = normalize(correct);
+    if (a === b) return 'correct';
+    if (stripAccents(a) === stripAccents(b)) return 'close';
+    return 'wrong';
+  }, []);
+
+  // ── Start quiz ──
+  const startQuiz = useCallback((wordList?: WordPair[]) => {
+    const list = wordList || words;
+    const shuffled = [...list].sort(() => Math.random() - 0.5);
+    setQuizWords(shuffled);
+    setQuizIdx(0);
+    setQuizInput('');
+    setQuizAnswers([]);
+    setQuizFeedback(null);
+    setPhase('quiz');
+  }, [words]);
+
+  // ── Quiz submit ──
+  const handleQuizSubmit = useCallback(() => {
+    if (quizFeedback || !quizInput.trim()) return;
+    const word = quizWords[quizIdx];
+    const status = checkAnswer(quizInput, word.translation);
+    const answer: QuizAnswer = { word, userAnswer: quizInput.trim(), status };
+    setQuizAnswers(prev => [...prev, answer]);
+    setQuizFeedback(answer);
+
+    if (status === 'correct' || status === 'close') {
+      setTimeout(() => {
+        if (quizIdx + 1 >= quizWords.length) {
+          setPhase('quizResult');
+        } else {
+          setQuizIdx(prev => prev + 1);
+          setQuizInput('');
+          setQuizFeedback(null);
+        }
+      }, 1200);
+    }
+  }, [quizFeedback, quizInput, quizWords, quizIdx, checkAnswer]);
+
+  const handleQuizNext = useCallback(() => {
+    if (quizIdx + 1 >= quizWords.length) {
+      setPhase('quizResult');
+    } else {
+      setQuizIdx(prev => prev + 1);
+      setQuizInput('');
+      setQuizFeedback(null);
+    }
+  }, [quizIdx, quizWords.length]);
+
+  // Autofokus quiz input
+  useEffect(() => {
+    if (phase === 'quiz' && !quizFeedback) {
+      setTimeout(() => quizInputRef.current?.focus(), 50);
+    }
+  }, [phase, quizIdx, quizFeedback]);
 
   // ══════════════════════════════════════
   //  RENDER
@@ -626,6 +699,13 @@ export default function GloserPage() {
                 ↻ Øv på nytt
               </button>
               <button
+                onClick={() => startQuiz()}
+                className="w-full py-3 rounded-xl font-bold text-white shadow-md transition-all active:scale-[0.98]"
+                style={{ background: C.ocean }}
+              >
+                Ta gloseprøve
+              </button>
+              <button
                 onClick={resetAll}
                 className="w-full py-3 rounded-xl font-semibold transition-colors"
                 style={{ color: C.stone }}
@@ -633,6 +713,174 @@ export default function GloserPage() {
                 Nye gloser
               </button>
             </div>
+          </div>
+        )}
+        {/* ════════════════════════════════════ */}
+        {/*  QUIZ                                */}
+        {/* ════════════════════════════════════ */}
+        {phase === 'quiz' && quizWords.length > 0 && (
+          <div className="space-y-4">
+            {/* Progresjon */}
+            <div className="flex justify-between text-xs font-semibold uppercase tracking-wider" style={{ color: C.stone }}>
+              <span>Ord {quizIdx + 1} av {quizWords.length}</span>
+              <button onClick={() => setPhase('edit')} className="hover:underline" style={{ color: C.fl }}>Avslutt</button>
+            </div>
+            <div className="h-2 rounded-full overflow-hidden" style={{ background: C.sage }}>
+              <div
+                className="h-full rounded-full transition-all duration-500"
+                style={{
+                  width: `${(quizIdx / quizWords.length) * 100}%`,
+                  background: `linear-gradient(90deg, ${C.ocean}, ${C.forest})`
+                }}
+              />
+            </div>
+
+            {/* Ord-kort */}
+            <div className="rounded-3xl p-8 flex flex-col items-center justify-center text-center shadow-xl border border-black/5 bg-white" style={{ minHeight: 200 }}>
+              <span className="px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider mb-4" style={{ background: C.sage, color: C.forest }}>
+                {srcLang}
+              </span>
+              <h2 className="text-2xl sm:text-3xl font-bold mb-6" style={{ color: C.text }}>
+                {quizWords[quizIdx]?.original}
+              </h2>
+
+              {/* Input */}
+              <div className="w-full max-w-sm">
+                <div className="flex gap-2">
+                  <input
+                    ref={quizInputRef}
+                    type="text"
+                    value={quizInput}
+                    onChange={e => setQuizInput(e.target.value)}
+                    onKeyDown={e => { if (e.key === 'Enter') { if (quizFeedback && quizFeedback.status === 'wrong') handleQuizNext(); else handleQuizSubmit(); } }}
+                    disabled={!!quizFeedback}
+                    placeholder={`Skriv på ${targetLang}...`}
+                    className="flex-1 px-4 py-3 border rounded-xl text-sm outline-none disabled:opacity-60"
+                    style={{ borderColor: 'rgba(42,64,54,0.15)', background: C.sand }}
+                    autoComplete="off"
+                    autoCorrect="off"
+                    autoCapitalize="off"
+                    spellCheck={false}
+                  />
+                  {!quizFeedback && (
+                    <button
+                      onClick={handleQuizSubmit}
+                      disabled={!quizInput.trim()}
+                      className="px-5 py-3 rounded-xl font-bold text-white text-sm shadow-md disabled:opacity-40 transition-all active:scale-[0.98]"
+                      style={{ background: C.forest }}
+                    >
+                      Sjekk
+                    </button>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            {/* Feedback */}
+            {quizFeedback && (
+              <div className="rounded-2xl p-5 text-center" style={{
+                background: quizFeedback.status === 'correct' ? 'rgba(42,107,69,0.08)' :
+                  quizFeedback.status === 'close' ? 'rgba(196,101,26,0.08)' : 'rgba(176,64,64,0.08)',
+              }}>
+                {quizFeedback.status === 'correct' && (
+                  <div>
+                    <span className="text-2xl">✓</span>
+                    <p className="font-bold mt-1" style={{ color: C.green }}>Riktig!</p>
+                  </div>
+                )}
+                {quizFeedback.status === 'close' && (
+                  <div>
+                    <p className="font-bold" style={{ color: C.carry }}>Nesten!</p>
+                    <p className="text-sm mt-1" style={{ color: C.ts }}>
+                      Riktig stavemåte er: <strong style={{ color: C.green }}>{quizFeedback.word.translation}</strong>
+                    </p>
+                  </div>
+                )}
+                {quizFeedback.status === 'wrong' && (
+                  <div>
+                    <p className="font-bold" style={{ color: C.red }}>Feil</p>
+                    <p className="text-sm mt-1" style={{ color: C.ts }}>
+                      Riktig svar: <strong style={{ color: C.green }}>{quizFeedback.word.translation}</strong>
+                    </p>
+                    <button
+                      onClick={handleQuizNext}
+                      className="mt-3 px-6 py-2.5 rounded-xl font-bold text-white text-sm shadow-md transition-all active:scale-[0.98]"
+                      style={{ background: C.forest }}
+                    >
+                      Neste
+                    </button>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* ════════════════════════════════════ */}
+        {/*  QUIZ RESULT                         */}
+        {/* ════════════════════════════════════ */}
+        {phase === 'quizResult' && (
+          <div className="text-center py-8">
+            {(() => {
+              const correctCount = quizAnswers.filter(a => a.status === 'correct').length;
+              const closeCount = quizAnswers.filter(a => a.status === 'close').length;
+              const wrongAnswers = quizAnswers.filter(a => a.status === 'wrong' || a.status === 'close');
+              const pct = Math.round(((correctCount + closeCount) / quizAnswers.length) * 100);
+              return (
+                <>
+                  <div className="text-5xl mb-2">{pct >= 80 ? '🏆' : pct >= 50 ? '👍' : '💪'}</div>
+                  <h2 className="text-4xl font-bold mb-1 font-serif" style={{ color: C.forest }}>{pct}%</h2>
+                  <p className="mb-2" style={{ color: C.ts }}>
+                    {correctCount + closeCount} av {quizAnswers.length} riktig
+                  </p>
+                  {closeCount > 0 && (
+                    <p className="text-xs mb-4" style={{ color: C.carry }}>{closeCount} nesten riktig (aksenter/bindestrek)</p>
+                  )}
+
+                  {/* Liste over feil */}
+                  {wrongAnswers.length > 0 && (
+                    <div className="text-left max-w-sm mx-auto mb-6 space-y-2">
+                      <h3 className="text-xs font-bold uppercase tracking-wider mb-2" style={{ color: C.stone }}>Å øve mer på</h3>
+                      {wrongAnswers.map((a, i) => (
+                        <div key={i} className="flex items-center gap-2 p-3 rounded-xl bg-white border" style={{ borderColor: 'rgba(42,64,54,0.06)' }}>
+                          <span className="font-semibold text-sm" style={{ color: C.forest }}>{a.word.original}</span>
+                          <span style={{ color: C.stone }}>→</span>
+                          <span className="text-sm line-through" style={{ color: a.status === 'close' ? C.carry : C.red }}>{a.userAnswer}</span>
+                          <span style={{ color: C.stone }}>→</span>
+                          <span className="text-sm font-semibold" style={{ color: C.green }}>{a.word.translation}</span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+
+                  <div className="space-y-3 max-w-xs mx-auto">
+                    {wrongAnswers.length > 0 && (
+                      <button
+                        onClick={() => startQuiz(wrongAnswers.map(a => a.word))}
+                        className="w-full py-3 rounded-xl font-bold text-white shadow-md transition-all active:scale-[0.98]"
+                        style={{ background: C.ocean }}
+                      >
+                        Prøv på nytt (kun feil)
+                      </button>
+                    )}
+                    <button
+                      onClick={() => startQuiz()}
+                      className="w-full py-3 rounded-xl font-bold text-white shadow-md transition-all active:scale-[0.98]"
+                      style={{ background: C.forest }}
+                    >
+                      Prøv alle på nytt
+                    </button>
+                    <button
+                      onClick={() => setPhase('edit')}
+                      className="w-full py-3 rounded-xl font-semibold transition-colors"
+                      style={{ color: C.stone }}
+                    >
+                      Tilbake til gloser
+                    </button>
+                  </div>
+                </>
+              );
+            })()}
           </div>
         )}
       </div>
