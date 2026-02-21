@@ -562,6 +562,14 @@ export default function GloserPage() {
             >
               Start flashcards ({words.length} kort)
             </button>
+            <button
+              onClick={() => startQuiz()}
+              disabled={words.length === 0}
+              className="w-full py-3.5 rounded-xl font-bold text-white text-base shadow-md disabled:opacity-40 flex items-center justify-center gap-2 transition-all active:scale-[0.98]"
+              style={{ background: C.ocean }}
+            >
+              Ta gloseprøve ({words.length} ord)
+            </button>
           </div>
         )}
 
