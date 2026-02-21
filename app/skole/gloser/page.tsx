@@ -54,6 +54,7 @@ export default function GloserPage() {
   const [totalCards, setTotalCards] = useState(0);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const cameraInputRef = useRef<HTMLInputElement>(null);
 
   // ── Bildekomprimering ──
   const compressImage = useCallback((file: File, maxWidth = 1600): Promise<{ base64: string; mimeType: string; dataUrl: string }> => {
@@ -105,6 +106,7 @@ export default function GloserPage() {
     setImagePreview(null);
     setImageData(null);
     if (fileInputRef.current) fileInputRef.current.value = '';
+    if (cameraInputRef.current) cameraInputRef.current.value = '';
   }, []);
 
   // ── Send til AI ──
@@ -359,15 +361,35 @@ export default function GloserPage() {
                       </button>
                     </div>
                   ) : (
-                    <label className="block cursor-pointer">
-                      <div
-                        className="border-2 border-dashed rounded-xl p-10 text-center transition-all hover:border-[rgba(42,64,54,0.3)]"
+                    <div className="grid grid-cols-2 gap-3">
+                      <button
+                        type="button"
+                        onClick={() => cameraInputRef.current?.click()}
+                        className="border-2 border-dashed rounded-xl p-6 text-center transition-all hover:border-[rgba(42,64,54,0.3)] cursor-pointer"
                         style={{ borderColor: 'rgba(42,64,54,0.15)' }}
                       >
-                        <div className="text-3xl mb-2">📸</div>
-                        <p className="font-semibold text-sm" style={{ color: C.forest }}>Ta bilde eller velg fra album</p>
-                        <p className="text-xs mt-1" style={{ color: C.stone }}>JPG, PNG – maks 5 MB</p>
-                      </div>
+                        <div className="text-2xl mb-1.5">📷</div>
+                        <p className="font-semibold text-sm" style={{ color: C.forest }}>Ta bilde</p>
+                        <p className="text-xs mt-1" style={{ color: C.stone }}>Bruk kameraet</p>
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => fileInputRef.current?.click()}
+                        className="border-2 border-dashed rounded-xl p-6 text-center transition-all hover:border-[rgba(42,64,54,0.3)] cursor-pointer"
+                        style={{ borderColor: 'rgba(42,64,54,0.15)' }}
+                      >
+                        <div className="text-2xl mb-1.5">📁</div>
+                        <p className="font-semibold text-sm" style={{ color: C.forest }}>Velg fra album</p>
+                        <p className="text-xs mt-1" style={{ color: C.stone }}>JPG, PNG</p>
+                      </button>
+                      <input
+                        ref={cameraInputRef}
+                        type="file"
+                        accept="image/*"
+                        capture="environment"
+                        onChange={handleImageSelect}
+                        className="hidden"
+                      />
                       <input
                         ref={fileInputRef}
                         type="file"
@@ -375,7 +397,7 @@ export default function GloserPage() {
                         onChange={handleImageSelect}
                         className="hidden"
                       />
-                    </label>
+                    </div>
                   )}
                 </div>
               )}
