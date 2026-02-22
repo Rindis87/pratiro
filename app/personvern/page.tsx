@@ -16,7 +16,7 @@ export default function PersonvernPage() {
   const [tab, setTab] = useState<Tab>('personvern');
 
   return (
-    <div className="min-h-screen" style={{ background: C.mist }}>
+    <div className="min-h-screen overflow-x-hidden" style={{ background: C.mist }}>
 
       {/* ── Nav ── */}
       <nav
@@ -45,27 +45,27 @@ export default function PersonvernPage() {
       </nav>
 
       {/* ── Header ── */}
-      <div className="max-w-[720px] mx-auto px-6 pt-14 pb-8">
-        <h1 className="text-[2rem] font-serif font-normal mb-2" style={{ color: C.forest }}>
+      <div className="max-w-[720px] mx-auto px-4 sm:px-6 pt-10 sm:pt-14 pb-6 sm:pb-8">
+        <h1 className="text-[1.6rem] sm:text-[2rem] font-serif font-normal mb-2" style={{ color: C.forest }}>
           Personvern og vilk&aring;r
         </h1>
         <p className="text-[0.82rem]" style={{ color: C.stone }}>Sist oppdatert: februar 2026</p>
       </div>
 
       {/* ── Content ── */}
-      <div className="max-w-[720px] mx-auto px-6 pb-20">
+      <div className="max-w-[720px] mx-auto px-4 sm:px-6 pb-20">
 
         {/* Tabs */}
         <div className="flex gap-1 p-1 rounded-xl mb-10" style={{ background: C.sage }}>
           {([
-            ['personvern', 'Personvernerkl\u00e6ring'],
-            ['vilkar', 'Bruksvilk\u00e5r'],
-            ['cookies', 'Informasjonskapsler'],
+            ['personvern', 'Personvern'],
+            ['vilkar', 'Vilk\u00e5r'],
+            ['cookies', 'Cookies'],
           ] as [Tab, string][]).map(([id, label]) => (
             <button
               key={id}
               onClick={() => { setTab(id); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
-              className="flex-1 py-2.5 px-4 rounded-lg text-[0.85rem] font-semibold transition-all"
+              className="flex-1 py-2.5 px-2 sm:px-4 rounded-lg text-[0.8rem] sm:text-[0.85rem] font-semibold transition-all"
               style={tab === id
                 ? { background: C.white, color: C.forest, boxShadow: '0 2px 8px rgba(42,64,54,0.08)' }
                 : { color: C.stone, background: 'transparent' }}
@@ -275,14 +275,14 @@ function ContactCard({ children }: { children: React.ReactNode }) {
 
 function DataTable({ headers, rows }: { headers: string[]; rows: string[][] }) {
   return (
-    <div className="overflow-x-auto my-4">
-      <table className="w-full border-collapse text-[0.85rem]">
+    <div className="overflow-x-auto my-4 -mx-2 px-2">
+      <table className="w-full border-collapse text-[0.78rem] sm:text-[0.85rem]">
         <thead>
           <tr>
             {headers.map((h, i) => (
               <th
                 key={i}
-                className="text-left py-2.5 px-3.5 text-[0.78rem] font-bold uppercase tracking-[0.5px]"
+                className="text-left py-2 px-2.5 sm:py-2.5 sm:px-3.5 text-[0.72rem] sm:text-[0.78rem] font-bold uppercase tracking-[0.5px]"
                 style={{ background: '#E7ECEA', color: '#2A4036' }}
               >
                 {h}
@@ -296,7 +296,7 @@ function DataTable({ headers, rows }: { headers: string[]; rows: string[][] }) {
               {row.map((cell, j) => (
                 <td
                   key={j}
-                  className="py-2.5 px-3.5 border-b"
+                  className="py-2 px-2.5 sm:py-2.5 sm:px-3.5 border-b"
                   style={{ borderColor: 'rgba(42,64,54,0.04)', color: '#5C5F5C' }}
                   dangerouslySetInnerHTML={{ __html: cell }}
                 />
