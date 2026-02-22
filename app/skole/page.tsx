@@ -268,7 +268,9 @@ export default function SkolePage() {
             {' \u00b7 '}
             <Link href="/skole" className="text-[rgba(231,236,234,0.22)] no-underline hover:text-[rgba(231,236,234,0.45)] transition-colors">Skole</Link>
             {' \u00b7 '}
-            <Link href="/personvern" className="text-[rgba(231,236,234,0.22)] no-underline hover:text-[rgba(231,236,234,0.45)] transition-colors">Personvern</Link>
+            <Link href="/personvern" className="text-[rgba(231,236,234,0.22)] no-underline hover:text-[rgba(231,236,234,0.45)] transition-colors">Personvern og vilk&aring;r</Link>
+            {' \u00b7 '}
+            <a href="mailto:pratiroinfo@gmail.com" className="text-[rgba(231,236,234,0.22)] no-underline hover:text-[rgba(231,236,234,0.45)] transition-colors">Kontakt oss</a>
             {' \u00b7 \u00a9 2026'}
           </p>
         </footer>

@@ -468,9 +468,8 @@ export default function LandingPage() {
             Prat i ro &ndash; &oslash;v p&aring; samtalene som betyr noe.
           </p>
           <div className="flex gap-6 justify-center mt-8 mb-6">
-            <a href="#" className="text-white/50 text-[0.9rem] hover:text-white/80 transition-colors">Personvern</a>
-            <a href="#" className="text-white/50 text-[0.9rem] hover:text-white/80 transition-colors">Vilk&aring;r</a>
-            <a href="#" className="text-white/50 text-[0.9rem] hover:text-white/80 transition-colors">Kontakt oss</a>
+            <a href="/personvern" className="text-white/50 text-[0.9rem] hover:text-white/80 transition-colors">Personvern og vilk&aring;r</a>
+            <a href="mailto:pratiroinfo@gmail.com" className="text-white/50 text-[0.9rem] hover:text-white/80 transition-colors">Kontakt oss</a>
           </div>
           <div className="text-[0.9rem] opacity-50">
             &copy; 2026 Pratiro. Laget i Norge.

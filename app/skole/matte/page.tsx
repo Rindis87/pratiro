@@ -582,10 +582,10 @@ function MatteMester() {
           </div>
         </div>
 
-        <div className="flex flex-col sm:flex-row gap-3 items-end justify-center">
+        <div className="flex flex-col gap-3 items-center">
           {mode === 'standard' ? (
             <div className="flex gap-2 items-end justify-center">
-              <div className="text-center flex-1 min-w-0 max-w-[6.5rem]">
+              <div className="text-center min-w-0 w-[6.5rem]">
                 <label className="block text-[10px] font-semibold mb-1 uppercase tracking-wider text-[var(--forest-light)]">Tall 1</label>
                 <input type="text" inputMode="decimal" value={n1} onChange={e => setN1(e.target.value.replace(/[^0-9,.\-]/g, ''))}
                   className="w-full p-2.5 sm:p-3 text-lg border border-[rgba(42,64,54,0.12)] rounded-xl outline-none font-mono text-center bg-[var(--sand)] focus:border-[var(--forest)] focus:ring-1 focus:ring-[var(--forest)]/20" placeholder="0" />
@@ -597,7 +597,7 @@ function MatteMester() {
                 <option value="*">&times;</option>
                 <option value="/">&divide;</option>
               </select>
-              <div className="text-center flex-1 min-w-0 max-w-[6.5rem]">
+              <div className="text-center min-w-0 w-[6.5rem]">
                 <label className="block text-[10px] font-semibold mb-1 uppercase tracking-wider text-[var(--forest-light)]">Tall 2</label>
                 <input type="text" inputMode="decimal" value={n2} onChange={e => setN2(e.target.value.replace(/[^0-9,.\-]/g, ''))}
                   className="w-full p-2.5 sm:p-3 text-lg border border-[rgba(42,64,54,0.12)] rounded-xl outline-none font-mono text-center bg-[var(--sand)] focus:border-[var(--forest)] focus:ring-1 focus:ring-[var(--forest)]/20" placeholder="0" />
@@ -627,8 +627,8 @@ function MatteMester() {
               </div>
             </div>
           )}
-          <div className="flex gap-2 w-full sm:w-auto justify-center">
-            <button onClick={calc} className="px-6 py-2.5 sm:py-3 rounded-xl font-bold text-sm text-white shadow-md hover:opacity-90 bg-[var(--forest)] flex-1 sm:flex-initial">BEREGN</button>
+          <div className="flex gap-2 justify-center">
+            <button onClick={calc} className="px-6 py-2.5 sm:py-3 rounded-xl font-bold text-sm text-white shadow-md hover:opacity-90 bg-[var(--forest)]">BEREGN</button>
             <button onClick={reset} className="p-2.5 sm:p-3 rounded-xl border border-[rgba(42,64,54,0.1)] text-[var(--stone)] shrink-0" title="Nullstill">{'\u21BA'}</button>
           </div>
         </div>
@@ -936,7 +936,10 @@ export default function MattePage() {
             </div>
             <span className="text-sm font-semibold text-[var(--forest-light)] font-serif">Pratiro Skole</span>
           </div>
-          <p className="text-xs text-[var(--stone)]">pratiro.no/skole/matte &middot; &copy; 2026</p>
+          <p className="text-xs text-[var(--stone)]">
+            <Link href="/personvern" className="text-[var(--stone)] no-underline hover:underline">Personvern</Link>
+            {' \u00b7 '}pratiro.no/skole/matte &middot; &copy; 2026
+          </p>
         </div>
       </div>
     </div>

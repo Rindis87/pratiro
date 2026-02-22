@@ -312,24 +312,23 @@ export default function GloserPage() {
 
   return (
     <div className="min-h-screen" style={{ background: `linear-gradient(180deg, ${C.mist}, ${C.sand})` }}>
-
-      {/* ── Header ── */}
-      <div className="rounded-b-2xl overflow-hidden shadow-xl" style={{ background: `linear-gradient(135deg, ${C.forest}, ${C.fd})` }}>
-        <div className="max-w-3xl mx-auto px-5 py-4 flex items-center justify-between flex-wrap gap-3">
-          <Link href="/skole" className="flex items-center gap-3 no-underline group" aria-label="Tilbake til Pratiro Skole">
-            <div className="flex items-center gap-1 opacity-80 group-hover:opacity-100 transition-opacity">
-              <div style={{ width: 4, height: 18, background: 'rgba(255,255,255,0.7)', borderRadius: 1 }} />
-              <div style={{ width: 4, height: 18, background: 'rgba(255,255,255,0.7)', borderRadius: 1 }} />
-            </div>
-            <h1 className="text-white text-xl font-bold font-serif leading-tight">Gloser</h1>
-          </Link>
-        </div>
-        <div className="max-w-3xl mx-auto px-5 pb-1.5">
-          <span className="text-white/40 text-[10px] font-semibold uppercase tracking-widest">Pratiro Skole</span>
-        </div>
-      </div>
-
       <div className="max-w-xl mx-auto px-4 py-6">
+
+        {/* ── Header ── */}
+        <div className="rounded-2xl overflow-hidden shadow-xl mb-6" style={{ background: `linear-gradient(135deg, ${C.forest}, ${C.fd})` }}>
+          <div className="px-5 py-4 flex items-center justify-between flex-wrap gap-3">
+            <Link href="/skole" className="flex items-center gap-3 no-underline group" aria-label="Tilbake til Pratiro Skole">
+              <div className="flex items-center gap-1 opacity-80 group-hover:opacity-100 transition-opacity">
+                <div style={{ width: 4, height: 18, background: 'rgba(255,255,255,0.7)', borderRadius: 1 }} />
+                <div style={{ width: 4, height: 18, background: 'rgba(255,255,255,0.7)', borderRadius: 1 }} />
+              </div>
+              <h1 className="text-white text-xl font-bold font-serif leading-tight">Gloser</h1>
+            </Link>
+          </div>
+          <div className="px-5 pb-1.5">
+            <span className="text-white/40 text-[10px] font-semibold uppercase tracking-widest">Pratiro Skole</span>
+          </div>
+        </div>
 
         {/* ════════════════════════════════════ */}
         {/*  SETUP                              */}
@@ -891,18 +890,21 @@ export default function GloserPage() {
             })()}
           </div>
         )}
-      </div>
 
-      {/* ── Footer ── */}
-      <div className="text-center mt-8 pb-6">
-        <div className="flex items-center justify-center gap-2 mb-2">
-          <div className="flex gap-1">
-            <div style={{ width: 4, height: 16, background: C.fl, borderRadius: 1 }} />
-            <div style={{ width: 4, height: 16, background: C.fl, borderRadius: 1 }} />
+        {/* ── Footer ── */}
+        <div className="text-center mt-8 pb-6">
+          <div className="flex items-center justify-center gap-2 mb-2">
+            <div className="flex gap-1">
+              <div style={{ width: 4, height: 16, background: C.fl, borderRadius: 1 }} />
+              <div style={{ width: 4, height: 16, background: C.fl, borderRadius: 1 }} />
+            </div>
+            <span className="text-sm font-semibold font-serif" style={{ color: C.fl }}>Pratiro Skole</span>
           </div>
-          <span className="text-sm font-semibold font-serif" style={{ color: C.fl }}>Pratiro Skole</span>
+          <p className="text-xs" style={{ color: C.stone }}>
+            <Link href="/personvern" className="no-underline hover:underline" style={{ color: C.stone }}>Personvern</Link>
+            {' \u00b7 '}pratiro.no/skole &middot; &copy; 2026
+          </p>
         </div>
-        <p className="text-xs" style={{ color: C.stone }}>pratiro.no/skole · © 2026</p>
       </div>
     </div>
   );
