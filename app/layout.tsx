@@ -17,6 +17,10 @@ const inter = Inter({
 export const metadata: Metadata = {
   title: "Pratiro – Finn ordene før det gjelder",
   description: "Pratiro gir deg et trygt rom for å øve på krevende samtaler – i ditt eget tempo, uten konsekvenser.",
+  icons: {
+    icon: [{ url: '/favicon.svg', type: 'image/svg+xml' }],
+    apple: '/apple-touch-icon.png',
+  },
 };
 
 export default function RootLayout({
