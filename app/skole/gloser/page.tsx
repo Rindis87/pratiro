@@ -243,6 +243,13 @@ export default function GloserPage() {
     setWords(prev => prev.filter((_, i) => i !== index));
   }, []);
 
+  // ── Tegnteller ──
+  const CharCount = ({ len, max }: { len: number; max: number }) => {
+    const pct = len / max;
+    const color = pct >= 0.95 ? C.red : pct >= 0.8 ? C.carry : C.stone;
+    return <p className="text-[11px] text-right mt-1" style={{ color }}>{len} / {max} tegn</p>;
+  };
+
   // ── Svarvurdering ──
   const normalize = (s: string) => s.trim().toLowerCase();
   const stripAccents = (s: string) => s.normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/-/g, '');
@@ -400,11 +407,13 @@ export default function GloserPage() {
                   <textarea
                     value={textInput}
                     onChange={e => setTextInput(e.target.value)}
+                    maxLength={2000}
                     rows={8}
                     className="w-full p-4 border rounded-xl outline-none text-sm leading-relaxed resize-none"
                     style={{ borderColor: 'rgba(42,64,54,0.12)', background: C.sand }}
                     placeholder={`F.eks:\ndog - hund\ncat - katt\nhouse - hus\n\nEller bare skriv ordene:\ndog\ncat\nhouse`}
                   />
+                  <CharCount len={textInput.length} max={2000} />
                 </>
               )}
 
@@ -761,6 +770,7 @@ export default function GloserPage() {
                     onChange={e => setQuizInput(e.target.value)}
                     onKeyDown={e => { if (e.key === 'Enter') { if (quizFeedback && quizFeedback.status === 'wrong') handleQuizNext(); else handleQuizSubmit(); } }}
                     disabled={!!quizFeedback}
+                    maxLength={200}
                     placeholder={`Skriv på ${targetLang}...`}
                     className="flex-1 px-4 py-3 border rounded-xl text-sm outline-none disabled:opacity-60"
                     style={{ borderColor: 'rgba(42,64,54,0.15)', background: C.sand }}

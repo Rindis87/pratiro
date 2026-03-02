@@ -33,9 +33,9 @@ const modules = [
     variant: 'prove' as const,
     icon: '\u{1F4DD}',
     title: 'Pr\u00f8veforberedelse',
-    desc: 'Lim inn pensum eller sp\u00f8rsm\u00e5l fra l\u00e6reren. AI finner presise svar og lager en quiz du kan bruke til \u00e5 \u00f8ve f\u00f8r pr\u00f8ven.',
+    desc: 'Lim inn sp\u00f8rsm\u00e5l, ta bilde av \u00f8vingsarket eller last opp fil. AI finner presise svar og lager quiz du kan \u00f8ve med.',
     tags: [
-      { label: 'Kommer snart', type: 'soon' as const },
+      { label: 'Klar', type: 'live' as const },
       { label: 'Alle fag', type: 'default' as const },
     ],
   },
@@ -188,7 +188,7 @@ export default function SkolePage() {
                       className={`text-[0.68rem] font-bold uppercase tracking-[1.2px] px-3 py-1 rounded-full border ${
                         tag.type === 'live'
                           ? 'border-[rgba(58,139,91,0.3)] text-[var(--green-soft)] bg-[rgba(58,139,91,0.08)]'
-                          : tag.type === 'soon'
+                          : (tag.type as string) === 'soon'
                           ? 'border-[rgba(196,101,26,0.2)] text-[var(--carry)] bg-[rgba(196,101,26,0.06)]'
                           : 'border-[rgba(231,236,234,0.1)] text-[var(--sage-dim)]'
                       }`}
